@@ -1,0 +1,2108 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <!-- PWA Ayarları -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6d28d9">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icon.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lexora 2.0</title>
+<style>
+  :root {
+    --bg:#f5f3ff; --surface:#ffffff; --text:#1e1b4b; --muted:#6b7280; --primary:#6d28d9;
+    --ok:#16a34a; --bad:#dc2626; --border:#e5e7eb; --okbg:#dcfce7; --badbg:#fee2e2;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:#0f0d1f; --surface:#1c1934; --text:#ede9fe; --muted:#9ca3af; --primary:#a78bfa;
+      --border:#2e2a52; --okbg:#14532d; --badbg:#7f1d1d; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:#0f0d1f; --surface:#1c1934; --text:#ede9fe; --muted:#9ca3af; --primary:#a78bfa;
+    --border:#2e2a52; --okbg:#14532d; --badbg:#7f1d1d; color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  :root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  header { padding: 14px 16px 8px; font-size: 22px; font-weight: 700; text-align: center; display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .streak-badge { font-size: 13px; font-weight: 600; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 4px 10px; }
+  nav { display: flex; gap: 6px; padding: 0 12px 12px; overflow-x: auto; position: sticky; top: env(safe-area-inset-top, 0px); background: var(--bg); z-index: 5; }
+  nav button { flex: 1 0 auto; min-width: 70px; min-height: 44px; padding: 10px 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: 10px; cursor: pointer; font-size: 14px; }
+  nav button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+  button:focus-visible, select:focus-visible, input:focus-visible, summary:focus-visible, a:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+  main { padding: 12px; max-width: 640px; margin: 0 auto; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+  .muted { color: var(--muted); font-size: 14px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .col { display: grid; gap: 8px; align-content: start; }
+  .tile { min-height: 52px; padding: 12px; border: 2px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--text); cursor: pointer; font-size: 15px; text-align: center; transition: transform .15s, background .2s, border-color .2s; }
+  .tile:active:not(:disabled) { transform: scale(.97); }
+  .tile.sel { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(109, 40, 217, .25); }
+  .tile.ok { border-color: var(--ok); background: var(--okbg); }
+  .tile.bad { border-color: var(--bad); background: var(--badbg); }
+  .tile.hint { border: 2px dashed var(--ok); }
+  .tile.pop { animation: pop .35s ease; }
+  .tile.shake { animation: shake .4s ease; }
+  .tile:disabled { cursor: default; }
+  @keyframes pop { 0% { transform: scale(.92); } 60% { transform: scale(1.04); } 100% { transform: scale(1); } }
+  @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+  button.primary { min-height: 44px; padding: 12px 18px; background: var(--primary); color: #fff; border: 0; border-radius: 10px; font-size: 15px; cursor: pointer; }
+  button.primary:disabled { opacity: .6; cursor: default; }
+  button.ghost { min-height: 40px; padding: 8px 14px; background: transparent; color: var(--primary); border: 1px solid var(--primary); border-radius: 10px; cursor: pointer; font-size: 14px; }
+  button.icon { min-height: 40px; min-width: 40px; border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: 10px; cursor: pointer; font-size: 18px; }
+  .progress { height: 10px; background: var(--border); border-radius: 999px; overflow: hidden; margin: 8px 0 12px; }
+  .progress > div { height: 100%; background: var(--primary); transition: width .4s ease; }
+  .stat { font-size: 26px; font-weight: 700; }
+  .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 15px; }
+  .row:last-child { border-bottom: 0; }
+  .wordbtn { width: 100%; background: none; border: 0; border-bottom: 1px solid var(--border); color: var(--text); text-align: left; cursor: pointer; font-size: 15px; }
+  details summary { cursor: pointer; list-style-position: inside; }
+  details p { margin: 4px 0; font-size: 14px; line-height: 1.5; }
+  .toggle { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; gap: 12px; }
+  .level { font-weight: 700; margin: 0 0 6px; }
+  select, input[type="search"] { min-height: 40px; border-radius: 10px; padding: 6px 10px; background: var(--surface); color: var(--text); border: 1px solid var(--border); font-size: 14px; }
+  input[type="search"] { width: 100%; font-size: 15px; }
+  .hidden { display: none !important; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+  .chip { display: inline-flex; flex-direction: column; align-items: flex-start; padding: 6px 10px; border-radius: 10px; border: 1px solid; font-size: 15px; line-height: 1.25; }
+  .chip small { font-size: 12px; color: var(--muted); }
+  .chip.pre { background: rgba(59, 130, 246, .15); border-color: #3b82f6; }
+  .chip.root { background: rgba(22, 163, 74, .15); border-color: #16a34a; }
+  .chip.suf { background: rgba(249, 115, 22, .15); border-color: #f97316; }
+  .chip.unk { background: var(--border); border-color: var(--border); }
+  .legend { display: flex; gap: 6px; flex-wrap: wrap; }
+  .legend .chip { flex-direction: row; gap: 6px; align-items: center; }
+  .hook { background: rgba(109, 40, 217, .1); border-left: 3px solid var(--primary); padding: 8px 10px; border-radius: 8px; font-size: 14px; line-height: 1.5; }
+  .badge-hard { font-size: 12px; color: var(--bad); margin-left: 6px; }
+  mark { background: rgba(22, 163, 74, .25); color: inherit; padding: 0 2px; border-radius: 4px; }
+  .word { font-size: 26px; font-weight: 700; margin: 4px 0; }
+  .pos { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 999px; background: var(--border); color: var(--text); }
+  .sentence { font-size: 18px; line-height: 1.6; margin: 10px 0; }
+  .strength { height: 6px; width: 56px; background: var(--border); border-radius: 99px; overflow: hidden; display: inline-block; vertical-align: middle; }
+  .strength > div { height: 100%; background: var(--ok); }
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .bars { display: flex; align-items: flex-end; gap: 6px; height: 120px; margin-top: 10px; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+  .bar { width: 100%; background: var(--primary); border-radius: 6px 6px 0 0; min-height: 2px; }
+  .bar-col small { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .badge { padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border); font-size: 13px; color: var(--muted); }
+  .badge.on { border-color: var(--ok); background: var(--okbg); color: var(--text); }
+  .hearts { font-size: 16px; letter-spacing: 2px; }
+  .dtabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 12px 0; }
+  .dtabs button { min-height: 36px; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; font-size: 13px; }
+  .dtabs button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .links a { color: var(--primary); }
+  dialog { background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 16px; width: min(560px, calc(100% - 24px)); padding: 0; max-height: 88vh; }
+  dialog::backdrop { background: rgba(0, 0, 0, .45); }
+  .toast { position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%) translateY(120px); background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-size: 14px; transition: transform .3s ease; z-index: 20; max-width: calc(100% - 32px); text-align: center; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+  @media (max-width: 380px) { .grid { grid-template-columns: 1fr; } }
+  /* ---- v4 ---- */
+  body { font-family: var(--font); font-size: var(--fs); }
+  .card { padding: var(--pad); border-radius: var(--radius); }
+  nav button span { margin-right: 4px; }
+  nav button { white-space: nowrap; }
+  .expl { border-bottom: 1px dashed var(--border); padding: 6px 0; }
+  .expl summary { font-weight: 600; padding: 4px 0; cursor: pointer; }
+  .expl > p { font-size: 14px; line-height: 1.6; margin: 6px 0; }
+  .dialectic { border-left: 3px solid var(--bad); padding: 10px 12px; margin: 10px 0; border-radius: 8px; background: var(--badbg); }
+  textarea { width: 100%; min-height: 72px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--text); padding: 10px; font: inherit; margin-top: 6px; }
+  input[type="text"] { min-height: 44px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--text); padding: 8px 12px; font-size: 16px; font-family: inherit; }
+  .mode { min-height: 40px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; font-size: 14px; }
+  .mode.on { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .chips2 { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .station.tamam { border-left: 3px solid var(--ok); padding-left: 8px; }
+  .station.sirada { border-left: 3px solid var(--primary); padding-left: 8px; }
+  .station.kilitli { opacity: .6; }
+  .quote { font-size: 17px; font-style: italic; line-height: 1.6; margin: 0 0 8px; border-left: 3px solid var(--primary); padding-left: 12px; }
+  .themes { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; margin-top: 8px; }
+  .theme { min-height: 44px; padding: 8px 10px; border-radius: 10px; border: 2px solid var(--border); cursor: pointer; font-size: 14px; text-align: left; font-family: inherit; }
+  .theme.on { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary) inset; }
+  .swatches { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+  .swatch { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--border); cursor: pointer; }
+  .swatch.on { outline: 3px solid var(--text); outline-offset: 2px; }
+  .anim-r { animation: inR .32s ease; }
+  .anim-l { animation: inL .32s ease; }
+  .anim-f { animation: inF .3s ease; }
+  @keyframes inR { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
+  @keyframes inL { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: none; } }
+  @keyframes inF { from { opacity: 0; } to { opacity: 1; } }
+  [data-reduce="1"] *, [data-reduce="1"] *::before, [data-reduce="1"] *::after { animation: none !important; transition: none !important; }
+  [data-motion="yok"] main section { animation: none !important; }
+  blockquote { margin: 0; }
+</style>
+</head>
+<body>
+<header>
+  <span>Lexora 2.0</span>
+  <span class="streak-badge" id="streakBadge"></span>
+</header>
+<nav aria-label="Ana menü">
+  <button data-tab="today" class="active"><span aria-hidden="true">🏠</span>Bugün</button>
+  <button data-tab="path"><span aria-hidden="true">🗺️</span>Yol</button>
+  <button data-tab="learn"><span aria-hidden="true">🧠</span>Öğren</button>
+  <button data-tab="library"><span aria-hidden="true">📚</span>Sözlük</button>
+  <button data-tab="classes"><span aria-hidden="true">🗂️</span>Sınıf</button>
+  <button data-tab="philo"><span aria-hidden="true">📜</span>Felsefe</button>
+  <button data-tab="journal"><span aria-hidden="true">📝</span>Günlük</button>
+  <button data-tab="stats"><span aria-hidden="true">📊</span>İstatistik</button>
+  <button data-tab="look"><span aria-hidden="true">🎨</span>Görünüm</button>
+  <button data-tab="settings"><span aria-hidden="true">⚙️</span>Ayarlar</button>
+</nav>
+<main>
+  <section id="tab-today"></section>
+  <section id="tab-path" class="hidden"></section>
+  <section id="tab-learn" class="hidden"></section>
+  <section id="tab-library" class="hidden"></section>
+  <section id="tab-classes" class="hidden"></section>
+  <section id="tab-philo" class="hidden"></section>
+  <section id="tab-journal" class="hidden"></section>
+  <section id="tab-stats" class="hidden"></section>
+  <section id="tab-look" class="hidden"></section>
+  <section id="tab-settings" class="hidden"></section>
+  <section id="tab-session" class="hidden"></section>
+</main>
+<dialog id="detail" aria-labelledby="detailTitle">
+  <div id="detailBody"></div>
+</dialog>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script>
+
+// ===================== Yardımcılar =====================
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const pad = n => String(n).padStart(2, "0");
+const DAY = 864e5;
+const TTL = 7 * DAY;
+const dayKey = (d = new Date()) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const dayDiff = (a, b) => Math.round((new Date(b + "T00:00:00") - new Date(a + "T00:00:00")) / DAY);
+const LEVELS = ["A2", "B1", "B2", "C1"];
+const levelOf = f => (f >= 100 ? "A2" : f >= 20 ? "B1" : f >= 4 ? "B2" : "C1");
+const TYPE_LABEL = { pre: "önek", root: "kök", suf: "ek" };
+const POS_LIST = ["isim", "fiil", "sıfat", "zarf", "diğer"];
+const DATAMUSE_POS = { n: "isim", v: "fiil", adj: "sıfat", adv: "zarf" };
+const DICT_POS = { noun: "isim", verb: "fiil", adjective: "sıfat", adverb: "zarf" };
+const SOURCE_LABEL = { datamuse: "Kelime ilişkileri (Datamuse)", dictionary: "Sözlük (dictionaryapi.dev)", mymemory: "Çeviri (MyMemory)" };
+const CATS = [
+  { id: "emotion", label: "Duygu", topic: "emotion" },
+  { id: "nature", label: "Doğa", topic: "nature" },
+  { id: "society", label: "Toplum", topic: "society" },
+  { id: "science", label: "Akademik", topic: "science" },
+  { id: "food", label: "Yemek", topic: "food" },
+  { id: "technology", label: "Teknoloji", topic: "technology" },
+  { id: "travel", label: "Seyahat", topic: "travel" },
+  { id: "personality", label: "Karakter", topic: "personality" }
+];
+const speechOK = () => "speechSynthesis" in window;
+const shuffle = a => {
+  a = [...a];
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+};
+function levenshtein(a, b) {
+  let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    for (let j = 1; j <= b.length; j++) {
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    }
+    prev = cur;
+  }
+  return prev[b.length];
+}
+const wordRe = w => new RegExp("\\b" + w.en.replace(/[^a-z]/gi, "") + "\\b", "i");
+const blankOf = w => esc(w.example).replace(wordRe(w), "_____");
+const highlightOf = w => esc(w.example).replace(wordRe(w), x => `<mark>${x}</mark>`);
+
+// ===================== Morfoloji sözlüğü (el ile) =====================
+// pre = önek, root = kök, suf = ek. ex = o kökten örnek kelimeler (kaynak: genel etimoloji).
+const PREFIXES = [
+  { f: "un", tr: "değil, zıt", en: "not, reverse" }, { f: "re", tr: "yeniden, geri", en: "again, back" },
+  { f: "pre", tr: "önce", en: "before" }, { f: "dis", tr: "ayrı, zıt", en: "apart, not" },
+  { f: "mis", tr: "yanlış", en: "wrongly" }, { f: "in", tr: "içine, değil", en: "in, not" },
+  { f: "non", tr: "değil", en: "not" }, { f: "inter", tr: "arasında", en: "between" },
+  { f: "trans", tr: "öte, karşıya", en: "across" }, { f: "sub", tr: "altında", en: "under" },
+  { f: "super", tr: "üstünde, aşırı", en: "above, beyond" }, { f: "anti", tr: "karşı", en: "against" },
+  { f: "co", tr: "birlikte", en: "together" }, { f: "ex", tr: "dışarı, eski", en: "out, former" },
+  { f: "e", tr: "dışarı (ex- kısaltması)", en: "out" }, { f: "de", tr: "aşağı, uzaklaşma", en: "down, away" },
+  { f: "pro", tr: "ileri, yerine", en: "forward, for" }, { f: "ab", tr: "uzaklaşma, -den", en: "away from" },
+  { f: "mal", tr: "kötü", en: "bad" }, { f: "auto", tr: "kendi", en: "self" },
+  { f: "mono", tr: "tek", en: "one" }, { f: "bi", tr: "iki", en: "two" }, { f: "tri", tr: "üç", en: "three" },
+  { f: "poly", tr: "çok", en: "many" }, { f: "hyper", tr: "aşırı", en: "over" },
+  { f: "circum", tr: "etrafında", en: "around" }, { f: "per", tr: "boyunca", en: "through" }
+];
+
+const ROOTS = [
+  { f: "und", tr: "dalga, taşmak", en: "wave, overflow", ex: ["abound", "inundate", "redundant"] },
+  { f: "bene", tr: "iyi", en: "good", ex: ["benefit", "benign", "benediction"] },
+  { f: "vol", tr: "istemek", en: "wish, will", ex: ["volunteer", "voluntary", "volition"] },
+  { f: "cand", tr: "parlak, beyaz", en: "shine, white", ex: ["candle", "incandescent", "candidate"] },
+  { f: "dilig", tr: "sevmek, değer vermek", en: "love, esteem", ex: ["diligence"] },
+  { f: "loqu", tr: "konuşmak", en: "speak", ex: ["loquacious", "colloquial", "soliloquy"] },
+  { f: "frug", tr: "meyve, değer", en: "fruit, worth", ex: ["frugality"] },
+  { f: "greg", tr: "sürü", en: "flock, herd", ex: ["congregate", "segregate", "egregious"] },
+  { f: "hum", tr: "toprak, alçak", en: "earth, low", ex: ["humility", "humus", "exhume"] },
+  { f: "met", tr: "korku", en: "fear", ex: [] },
+  { f: "sil", tr: "sıçramak", en: "leap, jump", ex: ["resile"] },
+  { f: "ten", tr: "tutmak", en: "hold", ex: ["tenant", "tenable", "tenacity"] },
+  { f: "sincer", tr: "saf, temiz", en: "pure, clean", ex: [] }
+];
+
+const SUFFIXES = [
+  { f: "ent", tr: "yapan, durumda olan", en: "doing, being" }, { f: "ant", tr: "yapan, durumda olan", en: "doing, being" },
+  { f: "ient", tr: "yapan, durumda olan", en: "doing, being" }, { f: "id", tr: "sıfat eki", en: "adjective suffix" },
+  { f: "al", tr: "ile ilgili", en: "relating to" }, { f: "ar", tr: "ile ilgili", en: "relating to" },
+  { f: "ious", tr: "dolu, nitelikli", en: "full of" }, { f: "ous", tr: "dolu", en: "full of" },
+  { f: "acious", tr: "eğilimli, dolu", en: "inclined to, full of" }, { f: "iculous", tr: "eğilimli, dolu", en: "inclined to" },
+  { f: "ful", tr: "dolu", en: "full of" }, { f: "less", tr: "-siz, -sız", en: "without" },
+  { f: "ness", tr: "durum, nitelik", en: "state, quality" }, { f: "ity", tr: "nitelik", en: "quality" },
+  { f: "tion", tr: "eylem, durum", en: "action, state" }, { f: "ment", tr: "sonuç", en: "result" },
+  { f: "ly", tr: "-ce, -ca (zarf eki)", en: "in a manner" }, { f: "er", tr: "yapan kişi", en: "one who" },
+  { f: "or", tr: "yapan kişi", en: "one who" }, { f: "ist", tr: "uzman, yapan", en: "specialist" },
+  { f: "ism", tr: "akım, öğreti", en: "doctrine" }, { f: "ive", tr: "yapısında olan", en: "having the nature of" },
+  { f: "ic", tr: "ile ilgili", en: "relating to" }, { f: "ish", tr: "-ımsı", en: "somewhat" },
+  { f: "ize", tr: "yapmak", en: "make" }, { f: "able", tr: "yapılabilir", en: "able to be" },
+  { f: "ible", tr: "yapılabilir", en: "able to be" }
+];
+
+// Seed kelimelerin el ile girilmiş analizleri: [biçim, tür] dizisi
+const ANALYSIS = {
+  abundant:   { parts: [["ab", "pre"], ["und", "root"], ["ant", "suf"]], note: "Latince abundare (taşmak) fiilinden. Dalgalanıp taşmak anlamı buradan gelir." },
+  benevolent: { parts: [["bene", "root"], ["vol", "root"], ["ent", "suf"]], note: "bene (iyi) + vol (istemek): iyiliği isteyen." },
+  candid:     { parts: [["cand", "root"], ["id", "suf"]], note: "Parlak, beyaz anlamından: açık, berrak, samimi." },
+  diligent:   { parts: [["dilig", "root"], ["ent", "suf"]], note: "Latince diligere (sevmek, değer vermek) fiilinden." },
+  eloquent:   { parts: [["e", "pre"], ["loqu", "root"], ["ent", "suf"]], note: "e- (dışarı) + loqu (konuşmak): dışarı, yani açıkça konuşan." },
+  frugal:     { parts: [["frug", "root"], ["al", "suf"]], note: "Latince frugalis, frux (meyve, değer) kökenli." },
+  gregarious: { parts: [["greg", "root"], ["ar", "suf"], ["ious", "suf"]], note: "Latince grex (sürü). Sürü gibi birlikte yaşamayı seven." },
+  humble:     { parts: [["hum", "root"]], note: "Latince humilis (alçak) kökenli. Parçalara ayrılması zayıftır." },
+  meticulous: { parts: [["met", "root"], ["iculous", "suf"]], note: "Latince metus (korku) kökenli. Hata yapmaktan korkarak özen göstermek." },
+  resilient:  { parts: [["re", "pre"], ["sil", "root"], ["ient", "suf"]], note: "re- (geri) + sil (sıçramak): geri sıçrayabilen." },
+  sincere:    { parts: [["sincer", "root"]], note: "Latince sincerus (saf, temiz). Tek parça kabul edilir." },
+  tenacious:  { parts: [["ten", "root"], ["acious", "suf"]], note: "ten (tutmak) + -acious (eğilimli): bırakmayan." }
+};
+
+const LIB = { pre: PREFIXES, root: ROOTS, suf: SUFFIXES };
+const lookup = (f, type) => (LIB[type] || []).find(x => x.f === f) || null;
+
+function analyze(word) {
+  const key = word.en.toLowerCase();
+  if (ANALYSIS[key]) {
+    const a = ANALYSIS[key];
+    return { auto: false, note: a.note || "", parts: a.parts.map(([f, type]) => ({ f, type, info: lookup(f, type) })) };
+  }
+  return { auto: true, note: "", parts: autoSplit(key) };
+}
+
+// Tahmini bölme: önek yalnızca kalan kısım bilinen bir ek ile biterse ya da bilinen bir kökle başlarsa kabul edilir
+function autoSplit(w) {
+  let rest = w;
+  const parts = [];
+  const pre = PREFIXES
+    .filter(p => rest.startsWith(p.f) && rest.length - p.f.length >= 4)
+    .filter(p => {
+      const r2 = rest.slice(p.f.length);
+      return SUFFIXES.some(s => r2.endsWith(s.f) && r2.length - s.f.length >= 3) || ROOTS.some(r => r2.startsWith(r.f));
+    })
+    .sort((a, b) => b.f.length - a.f.length)[0];
+  if (pre) { parts.push({ f: pre.f, type: "pre", info: pre }); rest = rest.slice(pre.f.length); }
+  const suf = SUFFIXES.filter(s => rest.endsWith(s.f) && rest.length - s.f.length >= 3).sort((a, b) => b.f.length - a.f.length)[0];
+  const stem = suf ? rest.slice(0, rest.length - suf.f.length) : rest;
+  const root = ROOTS.filter(r => stem.startsWith(r.f)).sort((a, b) => b.f.length - a.f.length)[0];
+  parts.push({ f: stem, type: "root", info: root || null });
+  if (suf) parts.push({ f: suf.f, type: "suf", info: suf });
+  return parts;
+}
+
+function chipsHtml(parts) {
+  return `<div class="chips">${parts.map(p => `
+    <span class="chip ${p.info ? p.type : "unk"}" title="${esc(p.info ? p.info.en : "")}">
+      <strong>${esc(p.f)}</strong>
+      <small>${esc(TYPE_LABEL[p.type])}: ${esc(p.info ? p.info.tr : "anlamı bilinmiyor")}</small>
+    </span>`).join("")}</div>`;
+}
+
+// ===================== Seed kelimeler =====================
+const SEED = [
+  { en: "abundant", tr: "bol, bereketli", level: "B2", pos: "sıfat", cat: "Doğa", def: "existing or available in large quantities", example: "The valley has abundant wildlife.", syn: ["plentiful", "ample"], hook: "ab + und (dalga) + ant: dalga gibi taşan = bol" },
+  { en: "benevolent", tr: "iyiliksever", level: "C1", pos: "sıfat", cat: "Karakter", def: "well-meaning and kind", example: "She was a benevolent leader who helped everyone.", syn: ["kind", "generous"], hook: "bene (iyi) + vol (istemek): iyiliği isteyen = iyiliksever" },
+  { en: "candid", tr: "samimi, açık sözlü", level: "B2", pos: "sıfat", cat: "Karakter", def: "truthful and straightforward", example: "He gave me a candid opinion of my essay.", syn: ["frank", "honest"], hook: "cand (parlak): ışık gibi açık = açık sözlü" },
+  { en: "diligent", tr: "çalışkan, özenli", level: "B2", pos: "sıfat", cat: "Karakter", def: "showing care and effort in one's work", example: "A diligent student always does her homework.", syn: ["hardworking", "industrious"], hook: "dilig (değer vermek) + ent: değer verdiği işe özen gösteren" },
+  { en: "eloquent", tr: "etkileyici konuşan", level: "C1", pos: "sıfat", cat: "Toplum", def: "fluent and persuasive in speech", example: "The eloquent speaker moved the crowd.", syn: ["articulate", "fluent"], hook: "e (dışarı) + loqu (konuşmak): dışarı konuşan = etkili konuşan" },
+  { en: "frugal", tr: "tutumlu", level: "C1", pos: "sıfat", cat: "Karakter", def: "sparing with money or resources", example: "They lead a frugal life and save most of their income.", syn: ["thrifty", "economical"], hook: "frug (meyve, değer): değerli şeyi boşa harcamayan = tutumlu" },
+  { en: "gregarious", tr: "sosyal, topluluğu seven", level: "C1", pos: "sıfat", cat: "Karakter", def: "fond of company; sociable", example: "My gregarious cousin knows everyone at the party.", syn: ["sociable", "outgoing"], hook: "greg (sürü) + ious (dolu): sürü gibi insanlarla dolu olmayı seven" },
+  { en: "humble", tr: "alçakgönüllü", level: "B1", pos: "sıfat", cat: "Karakter", def: "not proud or arrogant", example: "Despite his success, he remained humble.", syn: ["modest", "unassuming"], hook: "hum (toprak): toprağa yakın, yerde = alçakgönüllü" },
+  { en: "meticulous", tr: "titiz, detaycı", level: "C1", pos: "sıfat", cat: "Karakter", def: "showing great attention to detail", example: "The meticulous editor checked every comma.", syn: ["careful", "precise"], hook: "met (korku) + iculous: hata yapmaktan korkan = titiz" },
+  { en: "resilient", tr: "dayanıklı, toparlanabilen", level: "B2", pos: "sıfat", cat: "Duygu", def: "able to recover quickly from difficulties", example: "Children are often more resilient than adults expect.", syn: ["tough", "adaptable"], hook: "re (geri) + sil (sıçramak): geri sıçrayan = dayanıklı" },
+  { en: "sincere", tr: "içten, samimi", level: "B1", pos: "sıfat", cat: "Duygu", def: "free from pretense; genuine", example: "She gave a sincere apology.", syn: ["genuine", "honest"], hook: "sincer (saf, temiz): içi temiz = içten" },
+  { en: "tenacious", tr: "azimli, inatçı", level: "C1", pos: "sıfat", cat: "Karakter", def: "holding firmly to something; persistent", example: "The tenacious climber reached the summit.", syn: ["persistent", "determined"], hook: "ten (tutmak) + acious: bırakmayı reddeden = azimli" }
+];
+
+// ===================== Kayıt ve taşıma =====================
+const KEYS = ["lexora_web_v3", "lexora_web_v2", "lexora_web_v1"];
+const CACHE_KEY = "lexora_cache_v1";
+
+const WORD_DEFAULTS = {
+  tr: "", def: "", example: "", syn: [], ant: [], examples: [], hook: "", phonetic: "", audio: "", origin: "",
+  pos: "diğer", cat: "Genel", level: "B2", source: "seed",
+  ease: 2.5, interval: 0, next: 0, last: 0, correct: 0, wrong: 0, mastered: false
+};
+
+function stripEmpty(o) {
+  const out = {};
+  for (const [k, v] of Object.entries(o)) if (v !== undefined && v !== null && v !== "") out[k] = v;
+  return out;
+}
+
+function normalize(w) {
+  const s = SEED.find(x => x.en === w.en) || {};
+  const o = { ...WORD_DEFAULTS, ...s, ...stripEmpty(w) };
+  o.id = o.id ?? Math.floor(Math.random() * 1e9);
+  o.source = w.source || (s.en ? "seed" : "web");
+  return o;
+}
+
+const DEFAULT_SETTINGS = { pairs: 4, dark: "system", speak: true, goal: 10, hearts: false, sessionLen: 10 };
+
+function load() { return upgradeState(loadRaw()); }
+function loadRaw() {
+  let data = null;
+  for (const k of KEYS) {
+    try { const raw = localStorage.getItem(k); if (raw) { data = JSON.parse(raw); break; } } catch (e) {}
+  }
+  if (!data || !Array.isArray(data.words)) data = { words: SEED.map((s, i) => ({ id: i + 1, en: s.en })) };
+  const totalsDefault = { answers: 0, correct: 0, wrong: 0, ms: 0, msCount: 0, fastestMs: null, rounds: 0, perfect: 0, sessions: 0, lookups: 0, fetched: 0 };
+  return {
+    words: data.words.map(normalize),
+    settings: { ...DEFAULT_SETTINGS, ...(data.settings || {}) },
+    xp: data.xp || 0,
+    streak: data.streak || 0,
+    longest: data.longest || data.streak || 0,
+    freezes: data.freezes || 0,
+    lastActive: data.lastActive ?? (data.lastDay ? dayKey(new Date(data.lastDay)) : null),
+    history: data.history || {},
+    totals: { ...totalsDefault, ...(data.totals || {}) },
+    badges: data.badges || []
+  };
+}
+
+let state = load();
+let cache = loadCache();
+
+function save() {
+  try { localStorage.setItem(KEYS[0], JSON.stringify(state)); } catch (e) {}
+}
+
+function loadCache() {
+  try { return JSON.parse(localStorage.getItem(CACHE_KEY)) || {}; } catch (e) { return {}; }
+}
+
+function saveCache() {
+  try {
+    const keys = Object.keys(cache);
+    if (keys.length > 300) {
+      keys.sort((a, b) => cache[a].t - cache[b].t).slice(0, keys.length - 300).forEach(k => delete cache[k]);
+    }
+    localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+  } catch (e) {}
+}
+
+// ===================== SRS ve güç =====================
+const isDue = w => !w.mastered && w.next <= Date.now();
+const isHard = w => w.wrong >= 3 && w.wrong > w.correct;
+const dueWords = () => state.words.filter(isDue);
+const masteredCount = () => state.words.filter(w => w.mastered).length;
+const learnedWords = () => state.words.filter(w => w.correct > 0).length;
+
+// Unutma eğrisine benzer güç: son tekrardan beri geçen süre ve aralığa göre
+function strengthOf(w) {
+  if (!w.last) return 0;
+  const elapsed = (Date.now() - w.last) / DAY;
+  const S = Math.max(0.5, w.interval || 0.5);
+  return Math.round(100 * Math.pow(2, -elapsed / S));
+}
+
+function review(word, correct) {
+  if (correct) {
+    word.correct++;
+    word.interval = word.interval === 0 ? 1 : Math.round(word.interval * word.ease);
+    word.ease = Math.min(3.0, word.ease + 0.1);
+  } else {
+    word.wrong++;
+    word.interval = 0;
+    word.ease = Math.max(1.3, word.ease - 0.2);
+  }
+  word.last = Date.now();
+  word.next = Date.now() + (word.interval === 0 ? 10 * 60 * 1000 : word.interval * DAY);
+  word.mastered = word.interval >= 21;
+}
+
+// ===================== Seri, XP, geçmiş =====================
+// Seri yalnızca gerçek etkinlikle artar. Bir gün kaçırılırsa dondurucu varsa kullanılır.
+function updateStreakOnActivity(today) {
+  const last = state.lastActive;
+  if (last === today) return;
+  if (!last) {
+    state.streak = 1;
+  } else {
+    const gap = dayDiff(last, today);
+    if (gap === 1) state.streak += 1;
+    else if (gap === 2 && state.freezes > 0) { state.freezes--; state.streak += 1; toast("❄️ Seri dondurucu kullanıldı"); }
+    else state.streak = 1;
+  }
+  if (state.streak > 0 && state.streak % 7 === 0 && state.freezes < 2) {
+    state.freezes++;
+    toast("❄️ Yeni seri dondurucu kazandın");
+  }
+  state.longest = Math.max(state.longest, state.streak);
+  state.lastActive = today;
+}
+
+// Ekranda gösterilen seri: gün kaçırıldıysa ve dondurucu yoksa sıfır
+function effectiveStreak() {
+  if (!state.lastActive) return 0;
+  const gap = dayDiff(state.lastActive, dayKey());
+  return gap <= 1 || (gap === 2 && state.freezes > 0) ? state.streak : 0;
+}
+
+function todayStats() {
+  return state.history[dayKey()] || { answers: 0, correct: 0, xp: 0, ms: 0 };
+}
+
+function pruneHistory() {
+  const keys = Object.keys(state.history).sort();
+  while (keys.length > 60) delete state.history[keys.shift()];
+}
+
+function levelInfo() {
+  const L = Math.floor(Math.sqrt(state.xp / 40)) + 1;
+  const cur = 40 * (L - 1) ** 2;
+  const next = 40 * L ** 2;
+  return { L, cur, next, pct: Math.round((state.xp - cur) / (next - cur) * 100) };
+}
+
+// Her cevabı tek yerden kaydeder: SRS, XP, günlük geçmiş, seri, rozet
+// ===================== Rozetler =====================
+
+function learnedMorphs() {
+  const m = new Map();
+  state.words.filter(w => w.correct > 0).forEach(w =>
+    analyze(w).parts.forEach(p => { if (p.info) m.set(p.type + ":" + p.f, p); })
+  );
+  return [...m.values()];
+}
+
+function checkBadges() {
+  for (const b of BADGES) {
+    if (!state.badges.includes(b.id) && b.ok()) {
+      state.badges.push(b.id);
+      toast(`🏅 Rozet kazanıldı: ${b.name}`);
+    }
+  }
+}
+
+let toastTimer = null;
+function toast(msg) {
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2800);
+}
+
+// ===================== Soru üretimi ve oturum motoru =====================
+// Yanlış seçenekler: önce aynı seviyeden, aynı değeri tekrar etmeden
+function pickDistractors(word, key, n = 3) {
+  const seen = new Set([word[key]]);
+  const out = [];
+  const pool = [
+    ...shuffle(state.words.filter(x => x.id !== word.id && x.level === word.level)),
+    ...shuffle(state.words.filter(x => x.id !== word.id && x.level !== word.level))
+  ];
+  for (const x of pool) {
+    if (out.length >= n) break;
+    if (seen.has(x[key])) continue;
+    seen.add(x[key]);
+    out.push(x);
+  }
+  return out;
+}
+
+// Yazım benzerliğine göre en yakın kelimeler (dinleme alıştırması için)
+function pickSimilar(word, n = 2) {
+  return state.words
+    .filter(x => x.id !== word.id && x.en !== word.en)
+    .map(x => ({ x, d: levenshtein(word.en, x.en) }))
+    .sort((a, b) => a.d - b.d)
+    .slice(0, n)
+    .map(o => o.x);
+}
+
+// Bir harf yer değişikliğiyle yazım hatası üretir (sahte seçenek)
+function typoOf(word) {
+  const s = word.en;
+  const i = 1 + Math.floor(Math.random() * Math.max(1, s.length - 2));
+  if (i + 1 >= s.length) return null;
+  const t = s.slice(0, i) + s[i + 1] + s[i] + s.slice(i + 2);
+  return t !== s ? { id: -1, en: t, tr: "", level: word.level, fake: true } : null;
+}
+
+// Oturum için kelimeler: vadesi gelen, zayıf ve sık hata yapılan öncelikli
+function pickSessionWords(len, onlyHard) {
+  let pool = state.words.filter(w => !w.mastered || isDue(w));
+  if (onlyHard) pool = pool.filter(isHard);
+  // Havuz küçükse ustalaşılmış kelimeleri de tekrar için ekle (en zayıf olanlar önce)
+  if (!onlyHard && pool.length < len) {
+    const extra = state.words.filter(w => w.mastered && !isDue(w)).sort((a, b) => strengthOf(a) - strengthOf(b));
+    pool = [...pool, ...extra.slice(0, len - pool.length)];
+  }
+  const scored = pool.map(w => ({
+    w,
+    score: (isDue(w) ? 100 : 0) + (100 - strengthOf(w)) + (isHard(w) ? 30 : 0) + Math.random() * 10
+  }));
+  scored.sort((a, b) => b.score - a.score);
+  return scored.slice(0, len).map(s => s.w);
+}
+
+let session = null;
+
+// ===================== Ses =====================
+function speak(text) {
+  if (!speechOK()) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-US";
+  u.rate = 0.9;
+  speechSynthesis.speak(u);
+}
+
+// ===================== Ağ katmanı: önbellek, zaman aşımı, yeniden deneme, devre kesici =====================
+const health = {};
+function healthOf(src) {
+  return health[src] || (health[src] = { ok: 0, fail: 0, hits: 0, lastMs: null, status: "hazır", until: 0 });
+}
+
+// validate(data) false dönerse yanıt önbelleğe alınmaz (ör. kota uyarısı)
+async function net(src, url, ttl = TTL, validate = () => true) {
+  const h = healthOf(src);
+  const c = cache[url];
+  if (c && Date.now() - c.t < ttl) {
+    h.hits++;
+    return { ok: true, data: c.d, cached: true, notFound: c.d === null };
+  }
+  if (h.until > Date.now()) return { ok: false, reason: "geçici olarak kapalı" };
+  const t0 = performance.now();
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const ctl = new AbortController();
+    const timer = setTimeout(() => ctl.abort(), 7000);
+    try {
+      const r = await fetch(url, { signal: ctl.signal });
+      clearTimeout(timer);
+      if (r.status === 404) {
+        cache[url] = { d: null, t: Date.now() };
+        saveCache();
+        h.ok++; h.status = "ok"; h.lastMs = Math.round(performance.now() - t0);
+        return { ok: true, data: null, notFound: true };
+      }
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      const data = await r.json();
+      if (validate(data)) { cache[url] = { d: data, t: Date.now() }; saveCache(); }
+      h.ok++; h.fail = 0; h.status = "ok"; h.lastMs = Math.round(performance.now() - t0);
+      return { ok: true, data };
+    } catch (e) {
+      clearTimeout(timer);
+      if (attempt === 1) {
+        h.fail++;
+        h.status = "hata";
+        if (h.fail >= 3) { h.until = Date.now() + 5 * 60 * 1000; h.fail = 0; h.status = "geçici kapalı"; }
+        return { ok: false, reason: e.name === "AbortError" ? "zaman aşımı" : "bağlantı hatası" };
+      }
+    }
+  }
+  return { ok: false, reason: "bilinmeyen hata" };
+}
+
+function sourceSummary() {
+  return Object.keys(SOURCE_LABEL).map(s => `${s}: ${healthOf(s).status}`).join(" · ");
+}
+
+// ===================== Kaynaklar =====================
+async function lookupDict(word) {
+  const r = await net("dictionary", `https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`, 30 * DAY,
+    d => Array.isArray(d));
+  if (!r.ok) return { error: r.reason };
+  if (r.notFound || !Array.isArray(r.data) || !r.data.length) return null;
+  const meanings = r.data.flatMap(e => e.meanings || []);
+  const uniq = a => [...new Set(a.filter(Boolean))];
+  const defs = meanings.flatMap(m => (m.definitions || []).map(d => ({ pos: DICT_POS[m.partOfSpeech] || "diğer", def: d.definition, ex: d.example || "" })))
+    .filter(d => d.def).slice(0, 6);
+  if (!defs.length) return null;
+  const phon = r.data.flatMap(e => e.phonetics || []);
+  return {
+    pos: defs[0].pos,
+    def: defs[0].def,
+    defs,
+    examples: uniq(defs.map(d => d.ex)).slice(0, 3),
+    syn: uniq(meanings.flatMap(m => [...(m.synonyms || []), ...(m.definitions || []).flatMap(d => d.synonyms || [])])).slice(0, 6),
+    ant: uniq(meanings.flatMap(m => [...(m.antonyms || []), ...(m.definitions || []).flatMap(d => d.antonyms || [])])).slice(0, 6),
+    phonetic: (phon.find(p => p.text) || {}).text || "",
+    audio: (phon.find(p => p.audio) || {}).audio || "",
+    origin: r.data.map(e => e.origin).find(Boolean) || ""
+  };
+}
+
+async function translateTr(word) {
+  const r = await net("mymemory", `https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|tr`, 30 * DAY,
+    d => !/mymemory|quota|warning/i.test(String(d?.responseData?.translatedText || "")));
+  if (!r.ok) return { error: r.reason };
+  const t = String(r.data?.responseData?.translatedText || "").trim().toLowerCase();
+  if (!t || t === word || t.length > 40 || /mymemory|quota|warning/i.test(t)) return { value: null };
+  return { value: t };
+}
+
+const POS_TAGS = Object.keys(DATAMUSE_POS);
+function toCand(x, cat) {
+  const tags = x.tags || [];
+  const posTag = tags.find(t => POS_TAGS.includes(t));
+  const freqTag = tags.find(t => t.startsWith("f:"));
+  return { word: String(x.word || "").toLowerCase(), pos: DATAMUSE_POS[posTag] || "", cat, freq: freqTag ? parseFloat(freqTag.slice(2)) || 0 : 0 };
+}
+
+async function discover(mode, topicId) {
+  const m = mode === "mix" ? ["topic", "syn", "ant"][Math.floor(Math.random() * 3)] : mode;
+  if (m === "topic") {
+    const cat = CATS.find(c => c.id === topicId) || CATS[Math.floor(Math.random() * CATS.length)];
+    const r = await net("datamuse", `https://api.datamuse.com/words?topics=${cat.topic}&md=pf&max=40`);
+    if (!r.ok) return { error: r.reason };
+    return { cands: (r.data || []).map(x => toCand(x, cat.label)), label: `Konu: ${cat.label}` };
+  }
+  if (!state.words.length) return { error: "temel kelime yok" };
+  const base = state.words[Math.floor(Math.random() * state.words.length)];
+  const rel = m === "syn" ? "rel_syn" : "rel_ant";
+  const r = await net("datamuse", `https://api.datamuse.com/words?${rel}=${encodeURIComponent(base.en)}&md=pf&max=30`);
+  if (!r.ok) return { error: r.reason };
+  const label = m === "syn" ? `Eş anlam: ${base.en}` : `Zıt anlam: ${base.en}`;
+  return { cands: (r.data || []).map(x => toCand(x, m === "syn" ? "Eş anlam" : "Zıt anlam")), label };
+}
+
+async function enrich(c) {
+  const d = await lookupDict(c.word);
+  if (d && d.error) return { reason: "sözlük erişilemedi" };
+  if (!d) return { reason: "sözlükte yok" };
+  const tr = await translateTr(c.word);
+  if (tr.error) return { reason: "çeviri erişilemedi" };
+  if (!tr.value) return { reason: "çevirisi yok" };
+  return {
+    word: {
+      en: c.word, tr: tr.value, def: d.def, pos: d.pos || c.pos || "diğer", cat: c.cat,
+      example: d.examples[0] || "", examples: d.examples, syn: d.syn, ant: d.ant,
+      phonetic: d.phonetic, audio: d.audio, origin: d.origin,
+      level: levelOf(c.freq), source: "web"
+    }
+  };
+}
+
+// Yeni kelime çekme: aday listesi, paralel doğrulama, tekilleştirme
+async function fetchWords(mode, topicId) {
+  const btn = $("fetchBtn");
+  const msg = $("fetchMsg");
+  btn.disabled = true;
+  msg.textContent = "Kaynaklar sorgulanıyor...";
+  try {
+    const d = await discover(mode, topicId);
+    if (d.error) { msg.textContent = `Kelime listesi alınamadı: ${d.error}.`; return; }
+    const seen = new Set();
+    const cands = (d.cands || []).filter(c => {
+      if (!/^[a-z]{3,20}$/.test(c.word) || seen.has(c.word) || state.words.some(w => w.en === c.word)) return false;
+      seen.add(c.word);
+      return true;
+    });
+    if (!cands.length) { renderLibrary(`${d.label}: yeni aday bulunamadı.`); return; }
+    msg.textContent = `${Math.min(12, cands.length)} aday inceleniyor...`;
+    const results = await Promise.all(cands.slice(0, 12).map(enrich));
+    let added = 0;
+    const reasons = {};
+    for (const r of results) {
+      if (added >= 6) break;
+      if (!r.word) { reasons[r.reason] = (reasons[r.reason] || 0) + 1; continue; }
+      if (state.words.some(w => w.tr === r.word.tr)) { reasons["aynı anlam"] = (reasons["aynı anlam"] || 0) + 1; continue; }
+      state.words.push({ ...r.word, id: nextId() });
+      added++;
+    }
+    state.totals.fetched += added;
+    save();
+    checkBadges();
+    const why = Object.entries(reasons).map(([k, v]) => `${v} ${k}`).join(", ");
+    renderLibrary(`${d.label}: ${added} yeni kelime eklendi.${why ? " (" + why + ")" : ""}`);
+  } catch (e) {
+    msg.textContent = "Beklenmeyen bir hata oluştu. Tekrar deneyin.";
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// Kelimeye ait ek bilgileri (sözlük + eş/zıt anlam) tembel yükleme ile tamamlar
+const enrichTried = new Set();
+async function enrichWord(w) {
+  if (enrichTried.has(w.id)) return false;
+  enrichTried.add(w.id);
+  const d = await lookupDict(w.en);
+  if (!d || d.error) return false;
+  const ant = await net("datamuse", `https://api.datamuse.com/words?rel_ant=${encodeURIComponent(w.en)}&max=8`);
+  w.examples = w.examples?.length ? w.examples : d.examples;
+  w.syn = w.syn?.length ? w.syn : d.syn;
+  w.ant = ant.ok && ant.data?.length ? ant.data.map(x => x.word) : (w.ant?.length ? w.ant : d.ant);
+  w.phonetic = w.phonetic || d.phonetic;
+  w.audio = w.audio || d.audio;
+  w.origin = w.origin || d.origin;
+  w.defs = d.defs;
+  save();
+  return true;
+}
+
+function nextId() {
+  return Math.max(0, ...state.words.map(w => w.id)) + 1;
+}
+
+// ===================== Sekme yönetimi =====================
+
+// ===================== Bugün =====================
+function lastDays(n) {
+  const out = [];
+  for (let i = n - 1; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = dayKey(d);
+    const h = state.history[key] || { answers: 0, correct: 0 };
+    out.push({ key, label: d.toLocaleDateString("tr-TR", { weekday: "short" }), answers: h.answers, correct: h.correct });
+  }
+  return out;
+}
+
+// Gün boyunca sabit kalan kelime: tarih değerinden türetilir
+function wordOfDay() {
+  if (!state.words.length) return null;
+  const sorted = [...state.words].sort((a, b) => a.en.localeCompare(b.en));
+  let h = 0;
+  for (const ch of dayKey()) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return sorted[h % sorted.length];
+}
+
+function hookOf(w) {
+  if (w.hook) return w.hook;
+  const parts = analyze(w).parts.filter(p => p.info).map(p => `${p.f} (${p.info.tr})`);
+  return parts.length ? `Parçalar: ${parts.join(" + ")} → ${w.tr}` : "";
+}
+
+// ===================== Eşleştirme turu =====================
+let matchRound = null;
+
+function newRound() {
+  const due = dueWords();
+  const pool = due.length >= state.settings.pairs ? due : state.words.filter(w => !w.mastered);
+  const picked = shuffle(pool).slice(0, state.settings.pairs);
+  if (picked.length < 2) { matchRound = null; return; }
+  matchRound = {
+    words: picked,
+    left: shuffle(picked.map(w => w.id)),
+    right: shuffle(picked.map(w => w.id)),
+    selLeft: null, done: new Set(), flash: null, showHint: false,
+    wrongCount: 0, counted: false, t0: Date.now()
+  };
+}
+
+function renderMatch() {
+  const el = $("matchBody");
+  if (!matchRound) newRound();
+  if (!matchRound) {
+    el.innerHTML = `<div class="card"><p>Eşleştirilecek kelime kalmadı. Tüm kelimeleri öğrendin!</p></div>`;
+    return;
+  }
+  const r = matchRound;
+  const byId = id => state.words.find(w => w.id === id);
+  const finished = r.done.size === r.words.length;
+  const f = r.flash;
+
+  const leftHtml = r.left.map(id => {
+    const w = byId(id);
+    const isDone = r.done.has(id);
+    const cls = ["tile", isDone ? "ok" : "", r.selLeft === id ? "sel" : ""].join(" ");
+    return `<button class="${cls}" data-left="${id}" ${isDone ? "disabled" : ""}>${esc(w.en)}</button>`;
+  }).join("");
+
+  const rightHtml = r.right.map(id => {
+    const w = byId(id);
+    const isDone = r.done.has(id);
+    let cls = "tile";
+    if (isDone) {
+      cls += " ok";
+      if (f && f.type === "ok" && f.id === id && f.fresh) cls += " pop";
+    } else if (f && f.type === "bad" && f.id === id) {
+      cls += " bad" + (f.fresh ? " shake" : "");
+    } else if (f && f.type === "bad" && f.answer === id) {
+      cls += " hint";
+    }
+    return `<button class="${cls}" data-right="${id}" ${isDone ? "disabled" : ""}>${esc(w.tr)}</button>`;
+  }).join("");
+
+  let hintHtml = "";
+  if (r.showHint) {
+    hintHtml = r.selLeft != null
+      ? `<div style="margin-top:10px">${chipsHtml(analyze(byId(r.selLeft)).parts)}</div>`
+      : `<p class="muted" style="margin-top:10px">İpucu için önce soldan bir kelime seç.</p>`;
+  }
+
+  let wrongHtml = "";
+  if (f && f.type === "bad") {
+    const ans = byId(f.answer);
+    wrongHtml = `<div class="hook" style="margin-top:10px">
+      Doğru eşleşme: <strong>${esc(ans.en)}</strong> = ${esc(ans.tr)}
+      ${hookOf(ans) ? `<br>💡 ${esc(hookOf(ans))}` : ""}</div>`;
+  }
+
+  el.innerHTML = `
+    <div class="card">
+      <p class="muted">Soldaki kelimeyi, sağdaki anlamıyla eşleştir. İlerleme: ${r.done.size}/${r.words.length}</p>
+      <div class="progress" aria-hidden="true"><div style="width:${Math.round(r.done.size / r.words.length * 100)}%"></div></div>
+      <div class="grid">
+        <div class="col">${leftHtml}</div>
+        <div class="col">${rightHtml}</div>
+      </div>
+      <div style="margin-top:10px"><button class="ghost" id="hintBtn">💡 İpucu</button></div>
+      ${hintHtml}
+      ${wrongHtml}
+    </div>
+    ${finished ? `<div class="card"><p>Tur tamamlandı! 🎉</p><button class="primary" id="nextRound">Yeni tur</button></div>` : ""}`;
+
+  if (f) f.fresh = false;
+  el.querySelectorAll("[data-left]").forEach(b => b.onclick = () => {
+    r.selLeft = +b.dataset.left;
+    r.flash = null;
+    r.t0 = Date.now();
+    renderMatch();
+  });
+  el.querySelectorAll("[data-right]").forEach(b => b.onclick = () => pickRight(+b.dataset.right));
+  $("hintBtn").onclick = () => { r.showHint = !r.showHint; renderMatch(); };
+  const nr = $("nextRound");
+  if (nr) nr.onclick = () => { newRound(); renderMatch(); };
+}
+
+function pickRight(rightId) {
+  const r = matchRound;
+  if (r.selLeft == null) return;
+  const left = state.words.find(w => w.id === r.selLeft);
+  const ok = r.selLeft === rightId;
+  const ms = Date.now() - r.t0;
+  recordAnswer(left, ok, ms);
+  if (!ok) r.wrongCount++;
+  if (ok) {
+    r.done.add(rightId);
+    if (state.settings.speak) speak(left.en);
+  }
+  r.flash = { type: ok ? "ok" : "bad", id: rightId, answer: left.id, fresh: true };
+  r.selLeft = null;
+  if (r.done.size === r.words.length && !r.counted) {
+    r.counted = true;
+    state.totals.rounds++;
+    if (!r.wrongCount) {
+      state.totals.perfect++;
+      state.xp += 20;
+      toast("Mükemmel tur! +20 XP");
+    }
+    save();
+    checkBadges();
+  }
+  renderMatch();
+}
+
+// ===================== Oturum =====================
+// ===================== Sözlük =====================
+const lib = { q: "", pos: "hepsi", cat: "hepsi", level: "hepsi", sort: "alpha", hard: false, mode: "topic", topic: "emotion" };
+
+function diffScore(w) {
+  return (LEVELS.indexOf(w.level) + 1) * 10 + w.en.length + (w.wrong > w.correct ? 15 : 0);
+}
+
+function filteredWords() {
+  const q = lib.q.trim().toLowerCase();
+  const ws = state.words.filter(w =>
+    (!q || w.en.includes(q) || w.tr.toLowerCase().includes(q)) &&
+    (lib.pos === "hepsi" || w.pos === lib.pos) &&
+    (lib.cat === "hepsi" || w.cat === lib.cat) &&
+    (lib.level === "hepsi" || w.level === lib.level) &&
+    (!lib.hard || isHard(w))
+  );
+  const sorters = {
+    alpha: (a, b) => a.en.localeCompare(b.en),
+    strength: (a, b) => strengthOf(a) - strengthOf(b),
+    difficulty: (a, b) => diffScore(b) - diffScore(a),
+    recent: (a, b) => b.id - a.id
+  };
+  return ws.sort(sorters[lib.sort] || sorters.alpha);
+}
+
+function wordRowCompact(w) {
+  const s = w.last ? strengthOf(w) : null;
+  return `<button class="wordbtn" data-open="${w.id}">
+    <span><strong>${esc(w.en)}</strong> <span class="muted">${esc(w.tr)}</span>${isHard(w) ? ' <span class="badge-hard">⚠ zor</span>' : ""}</span>
+    <span class="muted" style="white-space:nowrap">${esc(w.pos)} · ${s == null ? "yeni" : `<span class="strength"><div style="width:${s}%"></div></span>`}</span>
+  </button>`;
+}
+
+function drawList() {
+  const ws = filteredWords();
+  $("libCount").textContent = `${ws.length} kelime`;
+  $("libList").innerHTML = ws.length ? ws.map(wordRowCompact).join("") : `<p class="muted">Eşleşen kelime yok.</p>`;
+  $("libList").querySelectorAll("[data-open]").forEach(b => b.onclick = () => openDetail(+b.dataset.open));
+}
+
+function renderLibrary(note = "") {
+  const el = $("tab-library");
+  const cats = [...new Set(state.words.map(w => w.cat))].sort();
+  const sel = (id, opts, val) => `<select id="${id}" aria-label="${id}">${opts.map(([v, l]) =>
+    `<option value="${esc(v)}" ${v === val ? "selected" : ""}>${esc(l)}</option>`).join("")}</select>`;
+  el.innerHTML = `
+    <div class="card">
+      <input type="search" id="libQ" placeholder="Kelime veya anlam ara" value="${esc(lib.q)}" aria-label="Kelime ara">
+      <div class="filters">
+        ${sel("libPos", [["hepsi", "Tüm türler"], ...POS_LIST.map(p => [p, p])], lib.pos)}
+        ${sel("libCat", [["hepsi", "Tüm kategoriler"], ...cats.map(c => [c, c])], lib.cat)}
+        ${sel("libLevel", [["hepsi", "Tüm seviyeler"], ...LEVELS.map(l => [l, l])], lib.level)}
+        ${sel("libSort", [["alpha", "A-Z"], ["strength", "Güç (düşük önce)"], ["difficulty", "Zorluk"], ["recent", "Son eklenen"]], lib.sort)}
+        <button class="ghost" id="libHard">${lib.hard ? "Tümünü göster" : "Sadece zorlar"}</button>
+      </div>
+    </div>
+    <div class="card">
+      <strong>Yeni kelime çek</strong>
+      <div class="filters">
+        ${sel("fMode", [["topic", "Konuya göre"], ["syn", "Eş anlamdan"], ["ant", "Zıt anlamdan"], ["mix", "Karışık"]], lib.mode)}
+        ${sel("fTopic", CATS.map(c => [c.id, c.label]), lib.topic)}
+        <button class="primary" id="fetchBtn">Çek</button>
+      </div>
+      <p class="muted" id="fetchMsg">${esc(note)}</p>
+      <p class="muted">Kaynak durumu: ${esc(sourceSummary())}</p>
+    </div>
+    <div class="card"><div class="muted" id="libCount"></div><div id="libList"></div></div>`;
+
+  $("libQ").oninput = e => { lib.q = e.target.value; drawList(); };
+  $("libPos").onchange = e => { lib.pos = e.target.value; drawList(); };
+  $("libCat").onchange = e => { lib.cat = e.target.value; drawList(); };
+  $("libLevel").onchange = e => { lib.level = e.target.value; drawList(); };
+  $("libSort").onchange = e => { lib.sort = e.target.value; drawList(); };
+  $("libHard").onclick = () => { lib.hard = !lib.hard; renderLibrary(); };
+  $("fMode").onchange = e => { lib.mode = e.target.value; };
+  $("fTopic").onchange = e => { lib.topic = e.target.value; };
+  $("fetchBtn").onclick = () => fetchWords(lib.mode, lib.topic);
+  drawList();
+}
+
+// ===================== Detay penceresi =====================
+let detailId = null;
+let detailTab = "summary";
+const DETAIL_TABS = [["summary", "Özet"], ["origin", "Köken"], ["examples", "Örnekler"], ["relations", "İlişkiler"], ["history", "Geçmiş"]];
+
+async function openDetail(id) {
+  const w = state.words.find(x => x.id === id);
+  if (!w) return;
+  detailId = id;
+  detailTab = "summary";
+  state.totals.lookups++;
+  save();
+  checkBadges();
+  renderDetail();
+  $("detail").showModal();
+  if (await enrichWord(w)) renderDetail();
+}
+
+function renderDetail() {
+  const w = state.words.find(x => x.id === detailId);
+  if (!w) return;
+  const a = analyze(w);
+  const s = w.last ? strengthOf(w) : null;
+  const ex = w.examples?.length ? w.examples : (w.example ? [w.example] : []);
+  const bodies = {
+    summary: `
+      <p style="font-size:18px;margin:8px 0"><strong>${esc(w.tr)}</strong></p>
+      <p>${esc(w.def || "Tanım yok")}</p>
+      ${w.defs?.length > 1 ? `<ul class="muted">${w.defs.slice(1, 4).map(d => `<li>${esc(d.def)}</li>`).join("")}</ul>` : ""}
+      <p class="muted">Tür: ${esc(w.pos)} · Seviye: ${esc(w.level)} · Kategori: ${esc(w.cat)}</p>`,
+    origin: `
+      ${chipsHtml(a.parts)}
+      ${a.auto ? `<p class="muted">Bu bölme otomatiktir, tahmini olabilir.</p>` : a.note ? `<p class="muted">${esc(a.note)}</p>` : ""}
+      ${w.origin ? `<p><strong>Köken (sözlük):</strong> ${esc(w.origin)}</p>` : ""}
+      ${hookOf(w) ? `<p class="hook">💡 ${esc(hookOf(w))}</p>` : ""}`,
+    examples: ex.length
+      ? ex.map(e => `<p class="sentence">“${esc(e)}”</p>`).join("")
+      : `<p class="muted">Örnek cümle bulunamadı.</p>`,
+    relations: `
+      ${w.syn?.length ? `<p><strong>Eş anlamlılar:</strong> ${w.syn.map(esc).join(", ")}</p>` : `<p class="muted">Eş anlamlı yok.</p>`}
+      ${w.ant?.length ? `<p><strong>Zıt anlamlılar:</strong> ${w.ant.map(esc).join(", ")}</p>` : `<p class="muted">Zıt anlamlı yok.</p>`}
+      ${familyLineHtml(w)}`,
+    history: `
+      <div class="row"><span>Güç</span><span>${s == null ? "henüz çalışılmadı" : `%${s}`}</span></div>
+      <div class="row"><span>Doğru / yanlış</span><span>✓${w.correct} ✗${w.wrong}</span></div>
+      <div class="row"><span>Sonraki tekrar</span><span>${w.mastered ? "ustalaşıldı" : w.next > Date.now() ? new Date(w.next).toLocaleString("tr-TR") : "şimdi"}</span></div>
+      <div class="row"><span>Durum</span><span>${w.mastered ? "✓ ustalaşıldı" : isHard(w) ? "⚠ zor" : "öğreniliyor"}</span></div>`
+  };
+  $("detailBody").innerHTML = `
+    <div style="padding:16px">
+      <div class="row" style="border:0;padding:0">
+        <div><div class="word" id="detailTitle">${esc(w.en)}</div>
+          <div class="muted">${esc(w.phonetic || "")} ${w.phonetic ? "·" : ""} ${esc(w.pos)} · ${esc(w.level)}</div></div>
+        <button class="icon" id="dPlay" aria-label="${esc(w.en)} kelimesini dinle">🔊</button>
+      </div>
+      <div class="dtabs" role="tablist">
+        ${DETAIL_TABS.map(([k, l]) => `<button role="tab" aria-selected="${k === detailTab}" class="${k === detailTab ? "active" : ""}" data-dtab="${k}">${l}</button>`).join("")}
+      </div>
+      ${bodies[detailTab]}
+      <p class="links" style="margin-top:12px">
+        <a href="https://en.wiktionary.org/wiki/${encodeURIComponent(w.en)}" target="_blank" rel="noopener">Wiktionary</a> ·
+        <a href="https://www.merriam-webster.com/dictionary/${encodeURIComponent(w.en)}" target="_blank" rel="noopener">Merriam-Webster</a>
+      </p>
+      <button class="primary" id="dClose" style="margin-top:12px">Kapat</button>
+    </div>`;
+  $("detailBody").querySelectorAll("[data-dtab]").forEach(b => b.onclick = () => { detailTab = b.dataset.dtab; renderDetail(); });
+  $("dPlay").onclick = () => {
+    if (w.audio) new Audio(w.audio).play().catch(() => speak(w.en));
+    else speak(w.en);
+  };
+  $("dClose").onclick = () => $("detail").close();
+}
+
+function familyLineHtml(w) {
+  const mine = state.words.filter(x => x.id !== w.id && analyze(x).parts.some(p => p.type === "root" && p.info &&
+    analyze(w).parts.some(q => q.type === "root" && q.f === p.f))).map(x => x.en);
+  const examples = analyze(w).parts.filter(p => p.type === "root" && p.info?.ex).flatMap(p => p.info.ex);
+  const all = [...new Set([...mine, ...examples])].filter(x => x !== w.en);
+  return all.length ? `<p class="muted"><strong>Aynı kökten:</strong> ${all.map(esc).join(", ")}</p>` : "";
+}
+
+// ===================== İstatistik =====================
+// ===================== Ayarlar =====================
+function exportData() {
+  const blob = new Blob([JSON.stringify({ app: "lexora", version: 3, exportedAt: new Date().toISOString(), state }, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "lexora-yedek.json";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+async function importData(e) {
+  const f = e.target.files[0];
+  if (!f) return;
+  try {
+    const obj = JSON.parse(await f.text());
+    const st = obj.state || obj;
+    if (!Array.isArray(st.words) || !st.words.every(w => typeof w.en === "string")) throw new Error("bad");
+    localStorage.setItem(KEYS[0], JSON.stringify(st));
+    state = load();
+    matchRound = null; session = null;
+    applyTheme();
+    renderSettings();
+    updateStreakBadge();
+    toast("Yedek yüklendi");
+  } catch (err) {
+    toast("Geçersiz yedek dosyası");
+  }
+}
+
+
+// =====================================================================
+// v4: durum yükseltme, tema motoru, sekmeler, Hegel katmanı, sınıflandırma,
+// öz-değerlendirme, üretim ve dikte alıştırmaları, günlük ve diyalektik notlar
+// =====================================================================
+
+// ---------- Durum yükseltme (eski kayıtlarla uyumlu, bağımlılığı yok) ----------
+function upgradeState(s) {
+  s.settings = { confidence: false, explain: true, keys: true, ...(s.settings || {}) };
+  s.totals = {
+    answers: 0, correct: 0, wrong: 0, ms: 0, msCount: 0, fastestMs: null, rounds: 0, perfect: 0,
+    sessions: 0, lookups: 0, fetched: 0, ...(s.totals || {})
+  };
+  s.totals.byType = s.totals.byType || {};
+  s.totals.calib = s.totals.calib || { 1: { n: 0, c: 0 }, 2: { n: 0, c: 0 }, 3: { n: 0, c: 0 } };
+  s.totals.synth = s.totals.synth || 0;
+  s.quotes = s.quotes || [];
+  s.ui = { theme: "lila", accent: "", font: "sistem", size: "orta", density: "rahat", radius: "yuvarlak", motion: "kayma", reduce: false, ...(s.ui || {}) };
+  if (s.settings.dark && !s.ui.migrated) {
+    if (s.settings.dark === "dark") s.ui.theme = "gece";
+    if (s.settings.dark === "light") s.ui.theme = "gunduz";
+    s.ui.migrated = true;
+  }
+  s.words.forEach(w => { w.notes = w.notes || []; });
+  return s;
+}
+
+// ---------- Tema motoru ----------
+const THEMES = {
+  lila:    { name: "Lila", dark: false, bg: "#f5f3ff", surface: "#ffffff", text: "#1e1b4b", muted: "#6b7280", primary: "#6d28d9", border: "#e5e7eb", ok: "#16a34a", bad: "#dc2626", okbg: "#dcfce7", badbg: "#fee2e2" },
+  gece:    { name: "Gece", dark: true, bg: "#0f0d1f", surface: "#1c1934", text: "#ede9fe", muted: "#9ca3af", primary: "#a78bfa", border: "#2e2a52", ok: "#34d399", bad: "#f87171", okbg: "#14532d", badbg: "#7f1d1d" },
+  gunduz:  { name: "Gündüz", dark: false, bg: "#f8fafc", surface: "#ffffff", text: "#0f172a", muted: "#64748b", primary: "#0ea5e9", border: "#e2e8f0", ok: "#16a34a", bad: "#dc2626", okbg: "#dcfce7", badbg: "#fee2e2" },
+  okyanus: { name: "Okyanus", dark: true, bg: "#042f3a", surface: "#064e5e", text: "#e0f7fa", muted: "#8fc9d6", primary: "#22d3ee", border: "#0e7490", ok: "#4ade80", bad: "#fb7185", okbg: "#14532d", badbg: "#7f1d1d" },
+  orman:   { name: "Orman", dark: false, bg: "#f1f8f1", surface: "#ffffff", text: "#14321c", muted: "#4b6b55", primary: "#15803d", border: "#bbf7d0", ok: "#15803d", bad: "#b91c1c", okbg: "#dcfce7", badbg: "#fee2e2" },
+  kagit:   { name: "Kağıt", dark: false, bg: "#f7f1e3", surface: "#fffbf2", text: "#3b2f1e", muted: "#7c6a52", primary: "#9a3412", border: "#e7dcc5", ok: "#3f6212", bad: "#9f1239", okbg: "#ecfccb", badbg: "#ffe4e6" },
+  mono:    { name: "Mono", dark: false, bg: "#f4f4f5", surface: "#ffffff", text: "#18181b", muted: "#71717a", primary: "#18181b", border: "#e4e4e7", ok: "#16a34a", bad: "#dc2626", okbg: "#dcfce7", badbg: "#fee2e2" },
+  yuksek:  { name: "Yüksek kontrast", dark: true, bg: "#000000", surface: "#000000", text: "#ffffff", muted: "#e5e5e5", primary: "#ffff00", border: "#ffffff", ok: "#00ff7f", bad: "#ff4d4d", okbg: "#003d1f", badbg: "#4d0000" }
+};
+const ACCENTS = ["", "#6d28d9", "#0ea5e9", "#16a34a", "#db2777", "#ea580c", "#0f766e"];
+const FONTS = { sistem: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif', serif: 'Georgia, "Times New Roman", serif', yuvarlak: '"Trebuchet MS", "Segoe UI", sans-serif', mono: 'ui-monospace, Menlo, Consolas, monospace' };
+const SIZES = { kucuk: "14px", orta: "16px", buyuk: "19px" };
+const RADII = { keskin: "4px", yuvarlak: "14px", cokyuvarlak: "24px" };
+
+function applyUi() {
+  const root = document.documentElement;
+  const u = state.ui;
+  const sysDark = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)").matches : false;
+  const key = u.theme === "sistem" ? (sysDark ? "gece" : "lila") : (THEMES[u.theme] ? u.theme : "lila");
+  const p = THEMES[key];
+  const vars = {
+    "--bg": p.bg, "--surface": p.surface, "--text": p.text, "--muted": p.muted, "--primary": u.accent || p.primary,
+    "--border": p.border, "--ok": p.ok, "--bad": p.bad, "--okbg": p.okbg, "--badbg": p.badbg
+  };
+  Object.entries(vars).forEach(([k, v]) => root.style.setProperty(k, v));
+  root.style.colorScheme = p.dark ? "dark" : "light";
+  root.style.setProperty("--font", FONTS[u.font] || FONTS.sistem);
+  root.style.setProperty("--fs", SIZES[u.size] || "16px");
+  root.style.setProperty("--pad", u.density === "kompakt" ? "10px" : "16px");
+  root.style.setProperty("--radius", RADII[u.radius] || "14px");
+  root.dataset.motion = u.motion;
+  root.dataset.reduce = u.reduce ? "1" : "0";
+}
+
+function applyTheme() { applyUi(); }
+
+// ---------- Sekmeler ve geçişler ----------
+const TAB_ORDER = ["today", "path", "learn", "library", "classes", "philo", "journal", "stats", "look", "settings"];
+let currentTab = "today";
+
+function updateStreakBadge() {
+  $("streakBadge").textContent = `🔥 ${effectiveStreak()} gün · Seviye ${levelInfo().L}`;
+}
+
+function showTab(tab) {
+  const prev = currentTab;
+  const dir = TAB_ORDER.indexOf(tab) >= TAB_ORDER.indexOf(prev) ? 1 : -1;
+  currentTab = tab;
+  const navKey = tab === "session" ? "learn" : tab;
+  document.querySelectorAll("nav button").forEach(b => {
+    const on = b.dataset.tab === navKey;
+    b.classList.toggle("active", on);
+    b.setAttribute("aria-current", on ? "page" : "false");
+  });
+  document.querySelectorAll("main section").forEach(s => {
+    const show = s.id === "tab-" + tab;
+    s.classList.toggle("hidden", !show);
+    if (show && prev !== tab && state.ui.motion !== "yok") {
+      s.classList.remove("anim-r", "anim-l", "anim-f");
+      void s.offsetWidth;
+      s.classList.add(state.ui.motion === "solma" ? "anim-f" : dir > 0 ? "anim-r" : "anim-l");
+    }
+  });
+  const r = renderers[tab];
+  if (r) r();
+  updateStreakBadge();
+  const navEl = document.querySelector(`nav button[data-tab="${navKey}"]`);
+  if (navEl && navEl.scrollIntoView) navEl.scrollIntoView({ block: "nearest", inline: "center" });
+}
+
+const renderers = {
+  today: renderToday, path: renderPath, learn: renderLearn, library: renderLibrary, classes: renderClasses,
+  philo: renderPhilo, journal: renderJournal, stats: renderStats, look: renderLook, settings: renderSettings,
+  session: renderSession
+};
+
+// ---------- Bugün ----------
+function renderToday() {
+  const el = $("tab-today");
+  const t = todayStats();
+  const goal = state.settings.goal;
+  const pct = Math.min(100, Math.round(t.answers / goal * 100));
+  const C = 2 * Math.PI * 50;
+  const li = levelInfo();
+  const week = lastDays(7);
+  const max = Math.max(1, ...week.map(d => d.answers));
+  const gotw = wordOfDay();
+  const stations = stationsUnlocked();
+  el.innerHTML = `
+    <div class="card" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+      <svg width="120" height="120" viewBox="0 0 120 120" role="img" aria-label="Günlük hedef yüzde ${pct}">
+        <circle cx="60" cy="60" r="50" fill="none" stroke="var(--border)" stroke-width="10"/>
+        <circle cx="60" cy="60" r="50" fill="none" style="stroke:var(--primary)" stroke-width="10" stroke-linecap="round"
+          stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - pct / 100)}" transform="rotate(-90 60 60)"/>
+        <text x="60" y="67" text-anchor="middle" font-size="22" font-weight="700" style="fill:var(--text)">${pct}%</text>
+      </svg>
+      <div style="flex:1;min-width:160px">
+        <strong>Günlük hedef</strong>
+        <div class="muted">${t.answers}/${goal} cevap ${t.answers >= goal ? "· tamamlandı 🎉" : ""}</div>
+        <div style="margin-top:10px"><strong>Seviye ${li.L}</strong> <span class="muted">· ${state.xp} XP</span></div>
+        <div class="progress"><div style="width:${li.pct}%"></div></div>
+        <div class="muted">Sonraki seviyeye ${li.next - state.xp} XP · Yolda ${stations}/${STATIONS.length} basamak</div>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="card"><div class="muted">Seri</div><div class="stat">🔥 ${effectiveStreak()}</div><div class="muted">Dondurucu: ❄️ ${state.freezes}</div></div>
+      <div class="card"><div class="muted">Bugün tekrar bekleyen</div><div class="stat">${dueWords().length}</div><div class="muted">kelime</div></div>
+    </div>
+    <div class="card">
+      <strong>Son 7 gün</strong>
+      <div class="bars" role="img" aria-label="Son yedi günde yapılan cevaplar">
+        ${week.map(d => `<div class="bar-col"><div class="bar" style="height:${Math.round(d.answers / max * 100)}%"></div><small>${esc(d.label)}</small></div>`).join("")}
+      </div>
+    </div>
+    <div class="card">
+      <strong>Hızlı başla</strong>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+        <button class="primary" id="startSes">Karışık oturum (${state.settings.sessionLen})</button>
+        <button class="ghost" id="startHard">Zorlar oturumu</button>
+        <button class="ghost" id="startMatch">Eşleştirme turu</button>
+      </div>
+    </div>
+    ${gotw ? `
+    <div class="card">
+      <div class="muted">Günün kelimesi</div>
+      <div class="word">${esc(gotw.en)} <span class="pos">${esc(gotw.pos)}</span></div>
+      <div>${esc(gotw.tr)}</div>
+      ${hookOf(gotw) ? `<p class="hook" style="margin-top:8px">💡 ${esc(hookOf(gotw))}</p>` : ""}
+      <button class="ghost" id="wotd" style="margin-top:10px">Detayları gör</button>
+    </div>` : ""}`;
+  $("startSes").onclick = () => startSession();
+  $("startHard").onclick = () => startSession({ onlyHard: true });
+  $("startMatch").onclick = () => { learnFocus = "match"; showTab("learn"); };
+  if (gotw) $("wotd").onclick = () => openDetail(gotw.id);
+}
+
+// ---------- Öğren merkezi ----------
+const LEARN_MODES = [
+  ["karisik", "Karışık"], ["meaning", "Anlam"], ["morph", "Kök"], ["cloze", "Cümle"],
+  ["listen", "Dinleme"], ["produce", "Yazma"], ["dictation", "Dikte"], ["match", "Eşleştirme"]
+];
+let learnFocus = "karisik";
+
+function renderLearn() {
+  const el = $("tab-learn");
+  el.innerHTML = `
+    <div class="card">
+      <strong>Öğrenme merkezi</strong>
+      <p class="muted">Bir mod seç. Karışık modda her kelime farklı bir yoldan sorulur. Bu, öğrendiğini farklı bağlamlarda kullanmanı sağlar.</p>
+      <div class="chips2">${LEARN_MODES.map(([k, l]) => `<button class="mode ${k === learnFocus ? "on" : ""}" data-mode="${k}" aria-pressed="${k === learnFocus}">${l}</button>`).join("")}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+        <button class="primary" id="learnGo">${learnFocus === "match" ? "Eşleştirme turu başlat" : "Oturumu başlat"}</button>
+        <button class="ghost" id="learnHard">Zorlar oturumu</button>
+      </div>
+      <p class="muted">Güven sorusu: ${state.settings.confidence ? "açık" : "kapalı"} (Ayarlar'dan değiştirebilirsin)</p>
+    </div>
+    <div id="matchBody" class="${learnFocus === "match" ? "" : "hidden"}"></div>`;
+  el.querySelectorAll("[data-mode]").forEach(b => b.onclick = () => { learnFocus = b.dataset.mode; renderLearn(); });
+  $("learnGo").onclick = () => {
+    if (learnFocus === "match") { newRound(); renderMatch(); }
+    else startSession({ focus: learnFocus });
+  };
+  $("learnHard").onclick = () => startSession({ onlyHard: true, focus: learnFocus === "match" ? "karisik" : learnFocus });
+  if (learnFocus === "match") renderMatch();
+}
+
+// ---------- Oturum: soru üretimi ----------
+function availableTypes(w) {
+  const types = ["meaning", "produce"];
+  if (analyze(w).parts.some(p => p.info)) types.push("morph");
+  if (w.example && wordRe(w).test(w.example)) types.push("cloze");
+  if (speechOK()) { types.push("listen"); types.push("dictation"); }
+  return types;
+}
+
+function buildQuestion(w, prevType, focus) {
+  let types = availableTypes(w);
+  if (focus && focus !== "karisik" && types.includes(focus)) types = [focus];
+  else { const alt = types.filter(t => t !== prevType); if (alt.length) types = alt; }
+  const type = types[Math.floor(Math.random() * types.length)];
+  let opts = [];
+  if (type === "meaning" || type === "morph") opts = shuffle([w, ...pickDistractors(w, "tr", 3)]);
+  else if (type === "cloze") opts = shuffle([w, ...pickDistractors(w, "en", 3)]);
+  else if (type === "listen") { const typo = typoOf(w); opts = shuffle([w, ...pickSimilar(w, 2), ...(typo ? [typo] : [])]); }
+  return { w, type, opts, spoken: false, conf: null };
+}
+
+const sessionQ = () => (session && !session.done ? session.queue[session.i] : null);
+const normEn = s => String(s || "").trim().toLowerCase().replace(/[^a-z]/g, "");
+const producedOk = (w, text) => { const t = String(text || "").trim(); return wordRe(w).test(t) && t.split(/\s+/).length >= 4; };
+
+function startSession(opts = {}) {
+  const len = opts.len || state.settings.sessionLen;
+  const words = pickSessionWords(len, !!opts.onlyHard);
+  if (words.length < 2) { toast("Oturum için yeterli kelime yok"); return; }
+  const focus = opts.focus || "karisik";
+  const queue = [];
+  let prev = null;
+  for (const w of words) { const q = buildQuestion(w, prev, focus); queue.push(q); prev = q.type; }
+  session = {
+    queue, i: 0, correct: 0, wrong: 0,
+    hearts: state.settings.hearts ? 3 : Infinity,
+    started: Date.now(), t0: Date.now(), xp0: state.xp, mastered0: masteredCount(),
+    answered: null, done: false, early: false, focus,
+    phase: state.settings.confidence ? "confidence" : "answer"
+  };
+  state.totals.sessions++;
+  save();
+  showTab("session");
+}
+
+function chooseConf(c) {
+  const q = sessionQ();
+  if (!q || session.phase !== "confidence") return;
+  q.conf = c;
+  session.phase = "answer";
+  session.t0 = Date.now();
+  renderSession();
+}
+
+function answerSession(pickedId) {
+  const q = sessionQ();
+  if (!q || session.answered || session.phase !== "answer") return;
+  resolveAnswer(q, pickedId === q.w.id, pickedId, null);
+}
+
+function answerText(value) {
+  const q = sessionQ();
+  if (!q || session.answered || session.phase !== "answer") return;
+  const ok = q.type === "produce" ? producedOk(q.w, value) : normEn(value) === q.w.en;
+  resolveAnswer(q, ok, null, value);
+}
+
+function resolveAnswer(q, ok, pickedId, typed) {
+  const ms = Date.now() - session.t0;
+  session.answered = { picked: pickedId, typed, ok, ms };
+  if (ok) session.correct++;
+  else { session.wrong++; if (state.settings.hearts) session.hearts--; }
+  recordAnswer(q.w, ok, ms, q.type);
+  if (q.conf) {
+    const c = state.totals.calib[q.conf];
+    c.n++;
+    if (ok) c.c++;
+  }
+  if (state.settings.speak) speak(q.w.en);
+  renderSession();
+}
+
+function nextQuestion() {
+  if (!session || !session.answered) return;
+  if (state.settings.hearts && session.hearts <= 0) return finishSession(true);
+  session.i++;
+  if (session.i >= session.queue.length) return finishSession(false);
+  session.answered = null;
+  session.t0 = Date.now();
+  session.phase = state.settings.confidence ? "confidence" : "answer";
+  renderSession();
+}
+
+function finishSession(early) {
+  if (!session || session.done) return;
+  session.done = true;
+  session.early = early;
+  if (!early && session.wrong === 0 && session.correct === session.queue.length) {
+    state.totals.perfect++;
+    state.xp += 20;
+    toast("Mükemmel oturum! +20 XP");
+  }
+  save();
+  checkBadges();
+  renderSession();
+}
+
+function recordAnswer(word, correct, ms, type = "match") {
+  const today = dayKey();
+  if (!state.history[today]) updateStreakOnActivity(today);
+  const h = state.history[today] || (state.history[today] = { answers: 0, correct: 0, xp: 0, ms: 0 });
+  h.answers++;
+  if (correct) h.correct++;
+  const gain = correct ? 10 : 2;
+  h.xp += gain;
+  state.xp += gain;
+  const t = state.totals;
+  t.answers++;
+  if (correct) t.correct++; else t.wrong++;
+  const bt = t.byType[type] || (t.byType[type] = { n: 0, c: 0 });
+  bt.n++;
+  if (correct) bt.c++;
+  if (ms != null) {
+    t.ms += ms; t.msCount++; h.ms += ms;
+    if (correct && (t.fastestMs == null || ms < t.fastestMs)) t.fastestMs = ms;
+  }
+  review(word, correct);
+  pruneHistory();
+  checkBadges();
+  save();
+}
+
+// ---------- Oturum: görünüm ----------
+function labelOf(q, id, useTr) {
+  const o = q.opts.find(x => x.id === id);
+  if (!o) return "";
+  return useTr ? o.tr : o.en;
+}
+
+function inputHtml(label) {
+  return `<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+    <input type="text" id="typedIn" aria-label="${label}" placeholder="${label}" autocomplete="off" autocapitalize="off" spellcheck="false" style="flex:1;min-width:180px">
+    <button class="primary" id="submitTyped">Gönder</button></div>`;
+}
+
+function questionHtml(q) {
+  const w = q.w;
+  const ans = session.answered;
+  if (session.phase === "confidence" && !ans) {
+    return `<p class="muted">Bu soruyu ne kadar emin cevaplayabileceğini tahmin et. Tahminin ile gerçek sonuç arasındaki fark, öz-değerlendirme gücünü gösterir.</p>
+      <div class="col" style="margin-top:12px">
+        <button class="tile" data-conf="1">1 · Emin değilim</button>
+        <button class="tile" data-conf="2">2 · Kısmen biliyorum</button>
+        <button class="tile" data-conf="3">3 · Eminim</button>
+      </div>`;
+  }
+  const useTr = q.type === "meaning" || q.type === "morph";
+  let head = "";
+  let isOpt = true;
+  if (q.type === "meaning") head = `<p class="muted">Bu kelimenin Türkçe anlamı nedir?</p><div class="word">${esc(w.en)}</div><span class="pos">${esc(w.pos)}</span>`;
+  else if (q.type === "morph") head = `<p class="muted">Parçalara bak, anlamı tahmin et.</p><div class="word">${esc(w.en)}</div>${chipsHtml(analyze(w).parts)}`;
+  else if (q.type === "cloze") head = `<p class="muted">Boşluğa uygun kelimeyi seç.</p><p class="sentence">${ans ? highlightOf(w) : blankOf(w)}</p>`;
+  else if (q.type === "listen") head = `<p class="muted">Dinle ve duyduğun kelimeyi seç.</p><button class="primary" id="playBtn">🔊 Dinle</button>`;
+  else {
+    isOpt = false;
+    if (q.type === "dictation") {
+      head = `<p class="muted">Dinle ve duyduğun kelimeyi yaz.</p><button class="primary" id="playBtn">🔊 Dinle</button>${ans ? "" : inputHtml("Kelimeyi yaz")}`;
+    } else {
+      head = `<p class="muted">Bu kelimeyi içeren kendi kısa cümleni yaz (en az 4 kelime).</p><div class="word">${esc(w.en)}</div>
+        ${ans ? "" : inputHtml("Kendi cümlen")}
+        ${ans ? "" : `<button class="ghost" id="typeHint" style="margin-top:8px">💡 İpucu</button><p class="muted" id="hintTxt"></p>`}`;
+    }
+  }
+  if (!isOpt) return head;
+  const optHtml = q.opts.map(o => {
+    const label = useTr ? o.tr : o.en;
+    let cls = "tile";
+    if (ans) {
+      if (o.id === w.id) cls += " ok";
+      else if (o.id === ans.picked) cls += " bad";
+    }
+    return `<button class="${cls}" data-opt="${o.id}" ${ans ? "disabled" : ""}>${esc(label)}</button>`;
+  }).join("");
+  return `${head}<div class="col" style="margin-top:12px">${optHtml}</div>`;
+}
+
+function feedbackHtml(q) {
+  const w = q.w;
+  const ans = session.answered;
+  const useTr = q.type === "meaning" || q.type === "morph";
+  const correctLabel = useTr ? w.tr : w.en;
+  const pickedLabel = ans.typed != null ? ans.typed : labelOf(q, ans.picked, useTr);
+  const isLast = session.i + 1 >= session.queue.length;
+  const a = analyze(w);
+  const logic = `${a.parts.length
+    ? "Parçalar: " + a.parts.map(p => `${p.f} (${p.info ? p.info.tr : "?"})`).join(" + ") + "."
+    : "Bu kelimenin bilinen bir kök ayrımı yok; bağlamdan çıkarım yap."}${w.syn?.length ? " Eş anlamlıları: " + w.syn.join(", ") + "." : ""}${w.ant?.length ? " Zıt anlamlıları: " + w.ant.join(", ") + "." : ""}`;
+  const dialectic = !ans.ok ? `
+    <div class="dialectic">
+      <p><strong>Tez</strong> (senin yanıtın): ${esc(pickedLabel || "—")}</p>
+      <p><strong>Antitez</strong> (doğrusu): ${esc(correctLabel)}</p>
+      <p class="muted">Aufhebung: çelişkide bir yan reddedilirken öteki yan korunur ve daha üst bir birlikte yükseltilir. Sentezini kendin yaz.</p>
+      <textarea id="synthText" aria-label="Sentezin" placeholder="Bu iki görüşü kaldıran ve koruyan kendi cümlen"></textarea>
+      <button class="ghost" id="saveSynth" style="margin-top:6px">Sentezi kaydet</button>
+    </div>` : "";
+  return `<div class="card">
+    <p>${ans.ok ? "Doğru! 🎉" : `Yanlış. Doğru cevap: <strong>${esc(correctLabel)}</strong>`}</p>
+    <p class="muted"><strong>${esc(w.en)}</strong> = ${esc(w.tr)}${w.def ? " · " + esc(w.def) : ""}</p>
+    ${q.type === "produce" && w.example ? `<p class="muted">Örnek cümle: “${esc(w.example)}”</p>` : ""}
+    ${dialectic}
+    <details class="expl" ${state.settings.explain ? "open" : ""}><summary>Mantıksal açıklama</summary><p>${esc(logic)}</p></details>
+    <details class="expl" ${state.settings.explain ? "open" : ""}><summary>Kavramsal açıklama</summary><p>${esc(w.def || "")}</p>${familyLineHtml(w)}</details>
+    ${hookOf(w) ? `<p class="hook">💡 ${esc(hookOf(w))}</p>` : ""}
+    <button class="primary" id="nextQ" style="margin-top:8px">${isLast ? "Sonucu gör" : "Devam"}</button>
+  </div>`;
+}
+
+function heartsHtml() {
+  if (!state.settings.hearts) return "";
+  const h = Math.max(0, session.hearts);
+  return `<span class="hearts" aria-label="${h} can">${"❤️".repeat(h)}${"🖤".repeat(3 - h)}</span>`;
+}
+
+function renderSession() {
+  const el = $("tab-session");
+  if (!session) {
+    el.innerHTML = `<div class="card"><p>Aktif oturum yok.</p><button class="primary" id="sessHome">Bugün'e dön</button></div>`;
+    $("sessHome").onclick = () => showTab("today");
+    return;
+  }
+  if (session.done) return renderSummary();
+  const q = sessionQ();
+  const total = session.queue.length;
+  const ans = session.answered;
+  const typeName = { meaning: "anlam", morph: "kök", cloze: "cümle", listen: "dinleme", produce: "yazma", dictation: "dikte" }[q.type];
+  el.innerHTML = `
+    <div class="card">
+      <div class="row" style="border:0;padding:0"><span class="muted">Soru ${session.i + 1} / ${total} · ${typeName}</span>${heartsHtml()}</div>
+      <div class="progress"><div style="width:${Math.round(session.i / total * 100)}%"></div></div>
+      ${questionHtml(q)}
+    </div>
+    ${ans ? feedbackHtml(q) : ""}
+    <div style="text-align:center;margin-top:8px"><button class="ghost" id="endSession">Oturumu bitir</button></div>`;
+  if (q.type === "listen" && !ans && session.phase === "answer" && !q.spoken) { q.spoken = true; speak(q.w.en); }
+  bindSession(q);
+}
+
+function bindSession(q) {
+  const el = $("tab-session");
+  el.querySelectorAll("[data-opt]").forEach(b => b.onclick = () => answerSession(+b.dataset.opt));
+  el.querySelectorAll("[data-conf]").forEach(b => b.onclick = () => chooseConf(+b.dataset.conf));
+  const play = $("playBtn");
+  if (play) play.onclick = () => speak(q.w.en);
+  const inp = $("typedIn");
+  const submit = () => answerText(inp.value);
+  if (inp) inp.onkeydown = e => { if (e.key === "Enter") submit(); };
+  const sb = $("submitTyped");
+  if (sb) sb.onclick = submit;
+  const th = $("typeHint");
+  if (th) th.onclick = () => { $("hintTxt").textContent = `Türkçesi: ${q.w.tr} · Başlangıç harfi: ${q.w.en[0]}`; };
+  const nx = $("nextQ");
+  if (nx) nx.onclick = nextQuestion;
+  const ss = $("saveSynth");
+  if (ss) ss.onclick = () => saveSynthesis(q);
+  $("endSession").onclick = () => finishSession(true);
+  if (inp && !session.answered) setTimeout(() => inp.focus(), 60);
+}
+
+function saveSynthesis(q) {
+  const v = ($("synthText").value || "").trim();
+  if (!v) { toast("Önce sentezini yaz"); return; }
+  q.w.notes.push({ d: dayKey(), text: v });
+  state.totals.synth++;
+  save();
+  checkBadges();
+  $("saveSynth").disabled = true;
+  toast("Sentez günlüğe kaydedildi");
+}
+
+function renderSummary() {
+  const el = $("tab-session");
+  const s = session;
+  const total = s.correct + s.wrong;
+  const acc = total ? Math.round(s.correct / total * 100) : 0;
+  const dur = Date.now() - s.started;
+  const learned = Math.max(0, masteredCount() - s.mastered0);
+  const outOfHearts = state.settings.hearts && s.hearts <= 0;
+  el.innerHTML = `
+    <div class="card" style="text-align:center">
+      <p style="font-size:44px;margin:0">${s.early ? (outOfHearts ? "💔" : "⏸️") : acc >= 80 ? "🎉" : "💪"}</p>
+      <h2 style="margin:6px 0">${s.early ? (outOfHearts ? "Canların bitti" : "Oturum yarıda kaldı") : "Oturum tamamlandı"}</h2>
+      ${outOfHearts ? `<p class="muted">Yeni bir oturumda tekrar dene.</p>` : ""}
+      <div class="grid" style="margin-top:12px">
+        <div class="card"><div class="muted">Doğruluk</div><div class="stat">%${acc}</div></div>
+        <div class="card"><div class="muted">Kazanılan XP</div><div class="stat">+${state.xp - s.xp0}</div></div>
+        <div class="card"><div class="muted">Süre</div><div class="stat">${Math.floor(dur / 60000)}:${pad(Math.floor(dur % 60000 / 1000))}</div></div>
+        <div class="card"><div class="muted">Yeni ustalaşma</div><div class="stat">${learned}</div></div>
+      </div>
+      <button class="primary" id="againBtn">Yeni oturum</button>
+      <button class="ghost" id="homeBtn" style="margin-left:8px">Bugün'e dön</button>
+    </div>`;
+  $("againBtn").onclick = () => startSession();
+  $("homeBtn").onclick = () => showTab("today");
+}
+
+// Klavye: 1–4 seçenek, 1–3 güven, Enter/Boşluk ileri
+document.addEventListener("keydown", e => {
+  if (!state.settings.keys || currentTab !== "session" || !session || session.done) return;
+  if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return;
+  const q = sessionQ();
+  if (!q) return;
+  if (session.answered && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); nextQuestion(); return; }
+  if (session.phase === "confidence" && /^[1-3]$/.test(e.key)) { chooseConf(+e.key); return; }
+  if (session.phase === "answer" && !session.answered && /^[1-4]$/.test(e.key) && q.opts && q.opts.length) {
+    const o = q.opts[+e.key - 1];
+    if (o) answerSession(o.id);
+  }
+});
+
+// ---------- Yol: bilinç basamakları ----------
+const STATIONS = [
+  { key: "learned", need: 0, name: "Duyusal kesinlik", sub: "İlk karşılaşma", desc: "Hegel, Tinin Görüngübilimi'ni (1807) duyusal kesinlikle başlatır: en yalın bilgi, 'bu'nun şimdi var olduğunu bilmektir. Burada kelimeyi görmek ve duymak yeterlidir." },
+  { key: "learned", need: 5, name: "Algı", sub: "Özelliklerin birliği", desc: "Algıda birçok özellik tek bir nesnede birleşir. Kelime artık tek bir karşılık değil, bağlamıyla birlikte okunan bir bütündür." },
+  { key: "morph", need: 3, name: "Anlama", sub: "Görünüşün ardındaki yasa", desc: "Anlamada gözlemlenenin ardındaki iç yapı aranır. Kök ve ekler, kelimenin iç yasasını açığa çıkarır." },
+  { key: "calib", need: 20, name: "Öz-bilinç", sub: "Kendi bilgini ölçmek", desc: "Öz-bilinçte bilinç kendini nesne olarak alır. Güven derecen ile gerçek doğruluğun karşılaştırılması bu basamağın alıştırmasıdır." },
+  { key: "mastered", need: 5, name: "Akıl", sub: "Kavramları bağlamak", desc: "Akılda kavramlar birbirinden çıkar: eş ve zıt anlamlar, kök aileleri bir sistem oluşturur. Bilgi, parçalardan bütüne doğru bağlanır." },
+  { key: "produced", need: 10, name: "Ruh", sub: "Bilgiyi kendi dilinde kullanmak", desc: "Ruhta bilgi kişinin kendi dilinde ve yaşamında gerçekleşir. Doğru kurduğun kendi cümlelerin bu basamağın ölçüsüdür." }
+];
+const REQ_LABEL = { learned: "öğrenilen kelime", morph: "öğrenilen kök parçası", calib: "öz-değerlendirme cevabı", mastered: "ustalaşılan kelime", produced: "doğru kendi cümle" };
+
+function progressOf(key) {
+  switch (key) {
+    case "learned": return learnedWords();
+    case "morph": return learnedMorphs().length;
+    case "calib": return totalCalibN();
+    case "mastered": return masteredCount();
+    case "produced": return (state.totals.byType.produce || { c: 0 }).c;
+    default: return 0;
+  }
+}
+
+function totalCalibN() {
+  return Object.values(state.totals.calib).reduce((s, x) => s + x.n, 0);
+}
+
+function stationsUnlocked() {
+  let n = 0;
+  for (const s of STATIONS) { if (progressOf(s.key) >= s.need) n++; else break; }
+  return n;
+}
+
+function renderPath() {
+  const el = $("tab-path");
+  let prevAll = true;
+  const rows = STATIONS.map((s, i) => {
+    const have = progressOf(s.key);
+    const done = have >= s.need;
+    const status = done && prevAll ? "tamam" : prevAll ? "sirada" : "kilitli";
+    prevAll = prevAll && done;
+    const pct = Math.min(100, Math.round(have / Math.max(1, s.need) * 100));
+    const label = { tamam: "tamamlandı", sirada: "sıradaki", kilitli: "kilitli" }[status];
+    return `<details class="expl station ${status}" ${state.settings.explain ? "open" : ""}>
+      <summary><strong>${i + 1}. ${esc(s.name)}</strong> <span class="muted">· ${esc(s.sub)}</span> <span class="pos">${label}</span></summary>
+      <p>${esc(s.desc)}</p>
+      <div class="progress"><div style="width:${pct}%"></div></div>
+      <p class="muted">İlerleme: ${Math.min(have, s.need)}/${s.need} ${REQ_LABEL[s.key]}</p>
+    </details>`;
+  }).join("");
+  el.innerHTML = `<div class="card"><strong>Bilinç yolculuğu</strong>
+    <p class="muted">Basamaklar sırayla açılır. Hegel'in Tinin Görüngübilimi'ndeki bilinç biçimlerinden esinlenmiştir; bu bir eşleme önerisidir, Hegel'in kendi öğretisinin birebir karşılığı değildir.</p></div>${rows}`;
+}
+
+// ---------- Günlük ----------
+const HEGEL_QUOTES = [
+  { text: "Minerva'nın baykuşu ancak alacakaranlık bastığında uçmaya başlar.", author: "G. W. F. Hegel", source: "Hukuk Felsefesinin Ana Hatları, Önsöz (1820) · çeviri bize ait", orig: "Die Eule der Minerva beginnt erst mit der einbrechenden Dämmerung ihren Flug." },
+  { text: "Ussal olan gerçektir; gerçek olan da ussaldır.", author: "G. W. F. Hegel", source: "Hukuk Felsefesinin Ana Hatları, Önsöz (1820) · çeviri bize ait", orig: "Was vernünftig ist, das ist wirklich; und was wirklich ist, das ist vernünftig." },
+  { text: "Hakikat bütündür.", author: "G. W. F. Hegel", source: "Tinin Görüngübilimi, Önsöz (1807) · çeviri bize ait", orig: "Das Wahre ist das Ganze." }
+];
+
+function pickQuote() {
+  const all = [...state.quotes, ...HEGEL_QUOTES];
+  let h = 0;
+  for (const ch of dayKey()) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return all[h % all.length];
+}
+
+function renderJournal() {
+  const el = $("tab-journal");
+  const k = dayKey();
+  const h = state.history[k] || {};
+  const days = Object.values(state.history).filter(x => x.reflection).length;
+  const mistakes = state.words.filter(w => w.wrong > 0).sort((a, b) => b.wrong - a.wrong).slice(0, 30);
+  const notes = state.words.flatMap(w => (w.notes || []).map(n => ({ ...n, en: w.en, tr: w.tr })))
+    .sort((a, b) => (b.d || "").localeCompare(a.d || ""));
+  const q = pickQuote();
+  el.innerHTML = `
+    <div class="card">
+      <blockquote class="quote">“${esc(q.text)}”</blockquote>
+      <p class="muted">— ${esc(q.author)}${q.source ? ", " + esc(q.source) : ""}</p>
+      ${q.orig ? `<details class="expl"><summary>Orijinal cümle</summary><p class="muted">${esc(q.orig)}</p></details>` : ""}
+    </div>
+    <div class="card">
+      <strong>Bugünkü yansıtma</strong>
+      <p class="muted">Bugün ne öğrendin, neye karşı çıktın, hangi kelime seni şaşırttı?</p>
+      <textarea id="refText" aria-label="Günlük yansıtma">${esc(h.reflection || "")}</textarea>
+      <div style="display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap">
+        <button class="primary" id="saveRef">Kaydet</button>
+        <span class="muted">Yansıtma yaptığın gün: ${days}</span>
+      </div>
+    </div>
+    <div class="card">
+      <strong>Diyalektik notların (${notes.length})</strong>
+      <p class="muted">Yanlış cevaplardan sonra yazdığın sentezler.</p>
+      ${notes.length ? notes.slice(0, 40).map(n => `<div class="row"><span><strong>${esc(n.en)}</strong> <span class="muted">${esc(n.tr)}</span><br>${esc(n.text)}</span><span class="muted">${esc(n.d)}</span></div>`).join("")
+        : `<p class="muted">Henüz not yok. Bir cevabı yanlış verdiğinde sentez yazabilirsin.</p>`}
+    </div>
+    <div class="card">
+      <strong>Hata dökümü</strong>
+      ${mistakes.length ? mistakes.map(w => `<div class="row"><span>${esc(w.en)} <span class="muted">${esc(w.tr)}</span></span><span class="muted">✗${w.wrong} ✓${w.correct}</span></div>`).join("")
+        : `<p class="muted">Henüz hata yok.</p>`}
+    </div>`;
+  $("saveRef").onclick = () => {
+    const st = state.history[k] || (state.history[k] = { answers: 0, correct: 0, xp: 0, ms: 0 });
+    st.reflection = $("refText").value.trim();
+    save();
+    checkBadges();
+    toast("Yansıtma kaydedildi");
+    renderJournal();
+  };
+}
+
+// ---------- Sınıf ----------
+const strengthBand = s => (s >= 75 ? "75–100" : s >= 50 ? "50–74" : s >= 25 ? "25–49" : "0–24");
+const GROUP_BY = {
+  cat: ["Anlam alanı", w => w.cat],
+  pos: ["Sözcük türü", w => w.pos],
+  level: ["Seviye", w => w.level],
+  root: ["Kök ailesi", w => { const r = analyze(w).parts.find(p => p.type === "root" && p.info); return r ? `${r.f} · ${r.info.tr}` : "Kök belirsiz"; }],
+  strength: ["Güç bandı", w => (!w.last ? "Yeni" : strengthBand(strengthOf(w)))],
+  status: ["Durum", w => (w.mastered ? "Ustalaşıldı" : isHard(w) ? "Zor" : w.last ? "Öğreniliyor" : "Yeni")]
+};
+let classBy = "cat";
+
+function renderClasses() {
+  const el = $("tab-classes");
+  const groups = {};
+  state.words.forEach(w => {
+    const k = GROUP_BY[classBy][1](w);
+    (groups[k] = groups[k] || []).push(w);
+  });
+  const keys = Object.keys(groups).sort((a, b) => groups[b].length - groups[a].length);
+  el.innerHTML = `
+    <div class="card">
+      <strong>Sınıflandırma</strong>
+      <p class="muted">Kelimeleri farklı ölçütlere göre grupla. Her grup açılıp kapanır.</p>
+      <select id="classBy" aria-label="Gruplama ölçütü">${Object.entries(GROUP_BY).map(([k, [l]]) => `<option value="${k}" ${k === classBy ? "selected" : ""}>${esc(l)}</option>`).join("")}</select>
+      <p class="muted">${state.words.length} kelime · ${keys.length} grup</p>
+    </div>
+    ${keys.map(k => `<details class="expl" ${state.settings.explain ? "open" : ""}>
+      <summary><strong>${esc(k)}</strong> <span class="muted">(${groups[k].length})</span></summary>
+      ${groups[k].map(wordRowCompact).join("")}
+    </details>`).join("")}`;
+  $("classBy").onchange = e => { classBy = e.target.value; renderClasses(); };
+  el.querySelectorAll("[data-open]").forEach(b => b.onclick = () => openDetail(+b.dataset.open));
+}
+
+// ---------- Felsefe ----------
+const YARDIMLI_BIB = [
+  ["G. W. F. Hegel", "Tinin Görüngübilimi", "Hacettepe Üniversitesi kütüphane kataloğu (çevirmen: Aziz Yardımlı)"],
+  ["G. W. F. Hegel", "Tüze Felsefesi (Grundlinien der Philosophie des Rechts)", "İdea Yayınevi, İstanbul, 2006 · KHAS kütüphane kataloğu"],
+  ["G. W. F. Hegel", "Felsefi Bilgiler Ansiklopedisi: Mantık Bilimi", "İdea, 1991 · Bilecik Üniversitesi kütüphane kataloğu"],
+  ["G. W. F. Hegel", "Felsefi Bilimler Ansiklopedisi II: Doğa Felsefesi I: Mekanik", "İdea Gençlik Arşivi 5, 1997 · Bilecik Üniversitesi kütüphane kataloğu"],
+  ["G. W. F. Hegel", "Mantık Bilimi (büyük mantık)", "Hacettepe Üniversitesi kütüphane kataloğu"],
+  ["G. W. F. Hegel", "Nürnberg Yazıları: Felsefi Propedötik", "Hacettepe Üniversitesi kütüphane kataloğu"],
+  ["R. Descartes", "Anlığın Yönetimi için Kurallar", "İdea, 1996 · Uludağ Üniversitesi ders kaynağı"],
+  ["R. Descartes", "Yöntem Üzerine Söylem", "İdea, 2010 · TR Dizin'de bir makalenin kaynakçasında"],
+  ["F. Copleston", "Alman İdealizmi", "İdea, 2011 · Nevşehir Üniversitesi ders bilgi paketi"]
+];
+
+const CONCEPTS = [
+  { t: "Aralıklı tekrar (spacing etkisi)", b: "Aynı bilgiyi aralıklarla tekrar etmek, tek seferde yığmaktan daha kalıcıdır. Uygulama, her doğru cevaptan sonra tekrar aralığını uzatır." },
+  { t: "Geri çağırma pratiği (testing etkisi)", b: "Bir bilgiyi hatırlamaya çalışmak, yeniden okumaktan daha güçlü bir pekiştirmedir. Bu yüzden uygulama sana okutmak yerine sorar." },
+  { t: "Karıştırma (interleaving)", b: "Farklı türdeki soruları karıştırmak, kavramlar arasında ayrım yapma becerisini güçlendirir." },
+  { t: "Üretim etkisi (generation etkisi)", b: "Kendin ürettiğin bilgi, sana verilen bilgiden daha iyi hatırlanır. Bu nedenle 'kendi cümleni yaz' alıştırması vardır." },
+  { t: "Öz-açıklama", b: "Bir cevabın neden doğru olduğunu kendi cümlelerinle açıklamak anlamayı derinleştirir. Mantıksal açıklama kutusu bunun için vardır." },
+  { t: "Unutma eğrisi (Ebbinghaus, 1885)", b: "Hermann Ebbinghaus, yeni öğrenilen bilginin hızla unutulduğunu ve tekrarla unutmanın yavaşladığını gösterdi. Güç göstergesi bu düşünceye dayanır." },
+  { t: "Metabiliş ve kalibrasyon", b: "Ne bildiğini bilmek de bir beceridir. Güven derecesi ile doğruluk arasındaki fark, kendini değerlendirme gücünü gösterir." },
+  { t: "Diyalektik (Hegel)", b: "Hegel'e göre düşünce çelişkileri aşarak ilerler. Burada yanlış cevap bir çelişkidir ve sentez, bilgiyi daha kapsayıcı bir düzeye taşır." },
+  { t: "Aufhebung (kaldırma-koruma-yükseltme)", b: "Almanca aufheben sözcüğü hem 'kaldırmak' hem 'korumak' hem 'yükseltmek' anlamına gelir. Hegel bu üç anlamı birlikte kullanır: bir şey aşılırken özü korunur ve daha yüksek bir birlik kurulur." },
+  { t: "Tez–antitez–sentez", b: "Bu üçlü Hegel'in kendi terimleri değildir; onun düşüncesinin popüler bir özetidir. Hegel, mantığın üç yönünden söz eder: soyut (anlama yetisi), olumsuzlayıcı-diyalektik ve olumlu-ussal (spekülatif) yön." },
+  { t: "Ussal (Vernunft)", b: "Hegel'de akıl yalnızca hesap yapan akıl değildir; kavramların kendi içinde gelişmesini izleyen ve bütünü kavrayan akıldır. Burada 'ussal' bu anlamda kullanılır." }
+];
+
+function renderPhilo() {
+  const el = $("tab-philo");
+  const q = pickQuote();
+  el.innerHTML = `
+    <div class="card">
+      <strong>Günün alıntısı</strong>
+      <blockquote class="quote">“${esc(q.text)}”</blockquote>
+      <p class="muted">— ${esc(q.author)}${q.source ? ", " + esc(q.source) : ""}</p>
+    </div>
+    <div class="card">
+      <strong>Ussal ilke</strong>
+      <p>Hegel'in en çok tartışılan cümlelerinden biri, 'wirklich' sözcüğünü kullanır. Bu sözcük yalnızca var olanı değil, özü gerçekleşmiş olanı da anlatabilir. Bu yüzden cümle, bilgiyi yalnızca ezberlemekle değil, onun içsel mantığını kavramakla ilgili bir ilke olarak okunabilir.</p>
+      <details class="expl" ${state.settings.explain ? "open" : ""}><summary>Orijinal Almanca</summary><p class="muted">Was vernünftig ist, das ist wirklich; und was wirklich ist, das ist vernünftig.</p></details>
+    </div>
+    <div class="card">
+      <strong>Bilinç yolculuğu</strong>
+      <p class="muted">Yol sekmesindeki altı basamak, Tinin Görüngübilimi'nin bilinç biçimlerinden esinlenmiştir: duyusal kesinlik, algı, anlama, öz-bilinç, akıl ve ruh.</p>
+      <button class="ghost" data-go="path">Yol'a git</button>
+    </div>
+    <div class="card">
+      <strong>Yardımlı'nın çevirileri ve kaynakça</strong>
+      <p class="muted">Aziz Yardımlı, Hegel, Descartes ve Copleston'ın eserlerini Türkçeye çevirmiştir. Aşağıdaki kayıtlar kütüphane kataloglarından ve ders kaynaklarından alınmıştır. İçerikleri bu uygulama tarafından doğrulanmamıştır. Alıntı için kendi nüshanı kullan.</p>
+      ${YARDIMLI_BIB.map(([a, t, s]) => `<div class="row"><span><strong>${esc(t)}</strong><br><span class="muted">${esc(a)}</span></span><span class="muted" style="text-align:right">${esc(s)}</span></div>`).join("")}
+    </div>
+    <div class="card">
+      <strong>Alıntı kütüphanesi</strong>
+      <p class="muted">Kendi okuduğun cümleleri ekle. Günün alıntısı arasında bunlar da çıkar.</p>
+      <input type="text" id="qAuthor" placeholder="Yazar" aria-label="Yazar" style="width:100%;margin-bottom:6px">
+      <input type="text" id="qSource" placeholder="Eser ve yıl" aria-label="Eser" style="width:100%;margin-bottom:6px">
+      <textarea id="qText" placeholder="Alıntı metni (en fazla 600 karakter)" aria-label="Alıntı metni" maxlength="600"></textarea>
+      <button class="primary" id="addQuote" style="margin-top:6px">Alıntıyı ekle</button>
+      <div style="margin-top:8px">${state.quotes.length ? state.quotes.map((x, i) => `<div class="row"><span>“${esc(x.text)}”<br><span class="muted">${esc(x.author)}${x.source ? ", " + esc(x.source) : ""}</span></span><button class="icon" data-delq="${i}" aria-label="Alıntıyı sil">🗑️</button></div>`).join("") : `<p class="muted">Henüz alıntı yok.</p>`}</div>
+    </div>
+    <div class="card">
+      <strong>Kavram kütüphanesi</strong>
+      <p class="muted">Her kavramı aç, kapat. Açıklamalar ayarlardaki 'açıklamaları varsayılan aç' seçeneğine göre başlar.</p>
+      ${CONCEPTS.map(c => `<details class="expl" ${state.settings.explain ? "open" : ""}><summary><strong>${esc(c.t)}</strong></summary><p>${esc(c.b)}</p></details>`).join("")}
+    </div>`;
+  el.querySelectorAll("[data-go]").forEach(b => b.onclick = () => showTab(b.dataset.go));
+  $("addQuote").onclick = () => {
+    const text = $("qText").value.trim();
+    const author = $("qAuthor").value.trim() || "Bilinmiyor";
+    if (!text) { toast("Alıntı metni boş olamaz"); return; }
+    state.quotes.push({ text: text.slice(0, 600), author: author.slice(0, 80), source: $("qSource").value.trim().slice(0, 120) });
+    save();
+    toast("Alıntı eklendi");
+    renderPhilo();
+  };
+  el.querySelectorAll("[data-delq]").forEach(b => b.onclick = () => {
+    state.quotes.splice(+b.dataset.delq, 1);
+    save();
+    renderPhilo();
+  });
+}
+
+// ---------- Görünüm ----------
+function renderLook() {
+  const el = $("tab-look");
+  const u = state.ui;
+  const sel = (id, opts, val) => `<select id="${id}" aria-label="${id}">${opts.map(([v, l]) => `<option value="${v}" ${v === val ? "selected" : ""}>${l}</option>`).join("")}</select>`;
+  el.innerHTML = `
+    <div class="card">
+      <strong>Tema</strong>
+      <div class="themes">
+        ${Object.entries(THEMES).map(([k, t]) => `<button class="theme ${u.theme === k ? "on" : ""}" data-theme="${k}" style="background:${t.bg};color:${t.text}"><span style="color:${t.primary}">●</span> ${esc(t.name)}</button>`).join("")}
+        <button class="theme ${u.theme === "sistem" ? "on" : ""}" data-theme="sistem">Sistem</button>
+      </div>
+    </div>
+    <div class="card">
+      <strong>Vurgu rengi</strong>
+      <div class="swatches">
+        ${ACCENTS.map(c => `<button class="swatch ${u.accent === c ? "on" : ""}" data-accent="${c}" aria-label="${c || "tema varsayılanı"}" style="background:${c || "var(--primary)"}"></button>`).join("")}
+      </div>
+    </div>
+    <div class="card">
+      <div class="toggle"><span>Yazı tipi</span>${sel("fontSel", [["sistem", "Sistem"], ["serif", "Serif"], ["yuvarlak", "Yuvarlak"], ["mono", "Monospace"]], u.font)}</div>
+      <div class="toggle"><span>Yazı boyutu</span>${sel("sizeSel", [["kucuk", "Küçük"], ["orta", "Orta"], ["buyuk", "Büyük"]], u.size)}</div>
+      <div class="toggle"><span>Yoğunluk</span>${sel("densitySel", [["rahat", "Rahat"], ["kompakt", "Kompakt"]], u.density)}</div>
+      <div class="toggle"><span>Köşe yuvarlaklığı</span>${sel("radiusSel", [["keskin", "Keskin"], ["yuvarlak", "Yuvarlak"], ["cokyuvarlak", "Çok yuvarlak"]], u.radius)}</div>
+      <div class="toggle"><span>Sekme geçişi</span>${sel("motionSel", [["kayma", "Kayma"], ["solma", "Solma"], ["yok", "Yok"]], u.motion)}</div>
+      <div class="toggle"><span>Hareketi azalt</span><input type="checkbox" id="reduceChk" ${u.reduce ? "checked" : ""}></div>
+    </div>
+    <div class="card">
+      <strong>Önizleme</strong>
+      <div class="word">abundant</div>
+      <p class="muted">bol, bereketli · örnek: “The valley has abundant wildlife.”</p>
+      <button class="primary">Örnek düğme</button>
+    </div>`;
+  const save2 = (k, v) => { state.ui[k] = v; save(); applyUi(); renderLook(); };
+  el.querySelectorAll("[data-theme]").forEach(b => b.onclick = () => save2("theme", b.dataset.theme));
+  el.querySelectorAll("[data-accent]").forEach(b => b.onclick = () => save2("accent", b.dataset.accent));
+  $("fontSel").onchange = e => save2("font", e.target.value);
+  $("sizeSel").onchange = e => save2("size", e.target.value);
+  $("densitySel").onchange = e => save2("density", e.target.value);
+  $("radiusSel").onchange = e => save2("radius", e.target.value);
+  $("motionSel").onchange = e => save2("motion", e.target.value);
+  $("reduceChk").onchange = e => save2("reduce", e.target.checked);
+}
+
+// ---------- İstatistik ----------
+function calibGap() {
+  const expect = { 1: 0.3, 2: 0.6, 3: 0.9 };
+  let n = 0, gap = 0;
+  for (const k of [1, 2, 3]) {
+    const x = state.totals.calib[k];
+    if (x.n) { n += x.n; gap += x.n * (expect[k] - x.c / x.n); }
+  }
+  return n ? gap / n : null;
+}
+
+const bt = t => state.totals.byType[t] || { n: 0, c: 0 };
+
+function calibText() {
+  const g = calibGap();
+  if (g === null) return "Henüz yeterli veri yok. Ayarlar'dan güven sorusunu açarak başlayabilirsin.";
+  if (g > 0.1) return "Aşırı güven eğilimi: cevaplarında kendine güvenin doğruluğunun önüne geçiyor. Emin olmadığın anlarda durup düşünmek işe yarar.";
+  if (g < -0.1) return "Temkinlilik: bildiklerini olduğundan az değerlendiriyorsun. Doğru cevapların güvenini artırmak için kendi cümleni kurmayı dene.";
+  return "Dengeli: güven ve doğruluk birbiriyle uyumlu. Bu, öz-değerlendirme gücünün iyi olduğunu gösterir.";
+}
+
+function renderStats() {
+  const el = $("tab-stats");
+  const t = state.totals;
+  const words = state.words;
+  const acc = t.answers ? Math.round(t.correct / t.answers * 100) : 0;
+  const avg = t.msCount ? Math.round(t.ms / t.msCount / 100) / 10 : null;
+  const fastest = t.fastestMs != null ? (t.fastestMs / 1000).toFixed(1) : null;
+  const morphs = learnedMorphs();
+  const counts = { pre: 0, root: 0, suf: 0 };
+  morphs.forEach(p => counts[p.type]++);
+  const cats = {};
+  words.forEach(w => cats[w.cat] = (cats[w.cat] || 0) + 1);
+  const buckets = [0, 0, 0, 0];
+  words.filter(w => w.last).forEach(w => buckets[Math.min(3, Math.floor(strengthOf(w) / 25))]++);
+  const bucketMax = Math.max(1, ...buckets);
+  const reflections = Object.values(state.history).filter(h => h.reflection).length;
+  const counters = [
+    ["Toplam XP", state.xp], ["Seviye", levelInfo().L], ["Güncel seri", effectiveStreak()], ["En uzun seri", state.longest],
+    ["Dondurucu", state.freezes], ["Oturum", t.sessions], ["Mükemmel", t.perfect], ["Tur", t.rounds],
+    ["Cevap", t.answers], ["Doğruluk", "%" + acc], ["Ort. süre", avg == null ? "—" : avg + " sn"], ["En hızlı doğru", fastest == null ? "—" : fastest + " sn"],
+    ["Ustalaşılan", masteredCount()], ["Öğrenilen", learnedWords()], ["Zor", words.filter(isHard).length], ["Bugün tekrar", dueWords().length],
+    ["Toplam kelime", words.length], ["Web'den", words.filter(w => w.source === "web").length], ["Detay açılan", t.lookups], ["Rozet", `${state.badges.length}/${BADGES.length}`],
+    ["Önek", counts.pre], ["Kök", counts.root], ["Ek", counts.suf], ["Sentez", t.synth], ["Yansıtma günü", reflections],
+    ["Yolda basamak", `${stationsUnlocked()}/${STATIONS.length}`], ["Alıntı", state.quotes.length]
+  ];
+  const types = ["meaning", "morph", "cloze", "listen", "produce", "dictation", "match"];
+  const typeNames = { meaning: "Anlam", morph: "Kök", cloze: "Cümle", listen: "Dinleme", produce: "Yazma", dictation: "Dikte", match: "Eşleştirme" };
+  const typeRows = types.filter(k => bt(k).n).map(k => {
+    const x = bt(k);
+    return `<div class="row"><span>${typeNames[k]}</span><span class="muted">${x.c}/${x.n} · %${Math.round(x.c / x.n * 100)}</span></div>`;
+  }).join("") || `<p class="muted">Henüz veri yok.</p>`;
+  const levelBars = LEVELS.map(l => {
+    const ws = words.filter(w => w.level === l);
+    const m = ws.filter(w => w.mastered).length;
+    const pct = ws.length ? Math.round(m / ws.length * 100) : 0;
+    return `<div style="margin:10px 0">
+      <div class="row" style="border:0;padding:0"><span>${l}</span><span class="muted">${m}/${ws.length}</span></div>
+      <div class="progress"><div style="width:${pct}%"></div></div></div>`;
+  }).join("");
+  const week = lastDays(7);
+  const weekMax = Math.max(1, ...week.map(d => d.answers));
+  el.innerHTML = `
+    <div class="grid">${counters.map(([k, v]) => `<div class="card"><div class="muted">${esc(k)}</div><div class="stat">${esc(v)}</div></div>`).join("")}</div>
+    <div class="card"><strong>Öz-değerlendirme (metabiliş)</strong>
+      <p>${esc(calibText())}</p>
+      <p class="muted">Beklenen doğruluk oranları (%30, %60, %90) bir varsayımdır. Gerçek sonuçlar bu varsayımla karşılaştırılır.</p>
+      ${[1, 2, 3].map(k => { const x = state.totals.calib[k]; return `<div class="row"><span>${["Emin değilim", "Kısmen", "Eminim"][k - 1]}</span><span class="muted">${x.c}/${x.n}${x.n ? " · %" + Math.round(x.c / x.n * 100) : ""}</span></div>`; }).join("")}
+    </div>
+    <div class="card"><strong>Türe göre doğruluk</strong>${typeRows}</div>
+    <div class="card"><strong>Son 7 gün</strong>
+      <div class="bars">${week.map(d => `<div class="bar-col"><div class="bar" style="height:${Math.round(d.answers / weekMax * 100)}%"></div><small>${esc(d.label)}</small></div>`).join("")}</div>
+    </div>
+    <div class="card"><strong>Güç dağılımı</strong>
+      <div class="bars">${buckets.map((b, i) => `<div class="bar-col"><div class="bar" style="height:${Math.round(b / bucketMax * 100)}%"></div><small>${["0-24", "25-49", "50-74", "75-100"][i]}</small></div>`).join("")}</div>
+    </div>
+    <div class="card"><strong>Rozetler</strong>
+      <div class="badges">${BADGES.map(b => `<span class="badge ${state.badges.includes(b.id) ? "on" : ""}">${state.badges.includes(b.id) ? "🏅" : "🔒"} ${esc(b.name)}</span>`).join("")}</div>
+    </div>
+    <div class="card"><strong>Seviyelere göre ilerleme</strong>${levelBars}
+      <p class="muted">Seviyeler tahminidir. Web'den çekilen kelimeler yaygınlığa göre atanır.</p></div>
+    <div class="card"><strong>Kategoriler</strong>
+      ${Object.entries(cats).sort((a, b) => b[1] - a[1]).map(([k, v]) => `<div class="row"><span>${esc(k)}</span><span class="muted">${v}</span></div>`).join("")}
+    </div>
+    <div class="card"><strong>En zayıf 5 kelime</strong>
+      ${words.filter(w => w.last).sort((a, b) => strengthOf(a) - strengthOf(b)).slice(0, 5)
+        .map(w => `<div class="row"><span>${esc(w.en)}</span><span class="muted">%${strengthOf(w)} · ✓${w.correct} ✗${w.wrong}</span></div>`).join("") || `<p class="muted">Henüz veri yok.</p>`}
+    </div>`;
+}
+
+// ---------- Rozetler (genişletilmiş) ----------
+const BADGES = [
+  { id: "first", name: "İlk doğru cevap", ok: () => state.totals.correct >= 1 },
+  { id: "ten", name: "10 kelime öğrendin", ok: () => learnedWords() >= 10 },
+  { id: "streak7", name: "7 günlük seri", ok: () => state.longest >= 7 },
+  { id: "perfect", name: "Mükemmel oturum", ok: () => state.totals.perfect >= 1 },
+  { id: "xp500", name: "500 XP", ok: () => state.xp >= 500 },
+  { id: "master3", name: "3 kelime ustalaştı", ok: () => masteredCount() >= 3 },
+  { id: "morph5", name: "Kök avcısı", ok: () => learnedMorphs().length >= 5 },
+  { id: "fast", name: "Şimşek", ok: () => state.totals.fastestMs != null && state.totals.fastestMs < 2000 },
+  { id: "curious", name: "Meraklı", ok: () => state.totals.lookups >= 10 },
+  { id: "explorer", name: "Keşifçi", ok: () => state.totals.fetched >= 5 },
+  { id: "writer", name: "Yazar (10 doğru kendi cümle)", ok: () => bt("produce").c >= 10 },
+  { id: "listener", name: "Kulak (10 doğru dikte)", ok: () => bt("dictation").c >= 10 },
+  { id: "dialectic", name: "Diyalektik (5 sentez)", ok: () => state.totals.synth >= 5 },
+  { id: "calibrated", name: "Ölçülü (dengeli öz-değerlendirme)", ok: () => { const g = calibGap(); return g !== null && Math.abs(g) <= 0.1 && totalCalibN() >= 20; } },
+  { id: "reflector", name: "Yansıtıcı (5 günlük yansıtma)", ok: () => Object.values(state.history).filter(h => h.reflection).length >= 5 },
+  { id: "station3", name: "Yolda: Anlama basamağı", ok: () => stationsUnlocked() >= 3 },
+  { id: "philo", name: "Alıntıcı (3 alıntı)", ok: () => state.quotes.length >= 3 }
+];
+
+// ---------- Ayarlar ----------
+function renderSettings() {
+  const el = $("tab-settings");
+  const s = state.settings;
+  const sourceRows = Object.keys(SOURCE_LABEL).map(src => {
+    const h = healthOf(src);
+    const down = h.until > Date.now();
+    return `<div class="row"><span>${esc(SOURCE_LABEL[src])}</span>
+      <span class="muted">${down ? "geçici kapalı" : esc(h.status)} · ✓${h.ok} ✗${h.fail} · önbellek ${h.hits}${h.lastMs ? " · " + h.lastMs + " ms" : ""}</span></div>`;
+  }).join("");
+  const opt = (arr, v) => arr.map(n => `<option ${n === v ? "selected" : ""}>${n}</option>`).join("");
+  const chk = (id, v) => `<input type="checkbox" id="${id}" ${v ? "checked" : ""}>`;
+  el.innerHTML = `
+    <div class="card">
+      <strong>Öğrenme</strong>
+      <div class="toggle"><span>Eşleştirme çifti sayısı</span><select id="pairs">${opt([3, 4, 5, 6], s.pairs)}</select></div>
+      <div class="toggle"><span>Oturum soru sayısı</span><select id="sessionLen">${opt([5, 10, 15], s.sessionLen)}</select></div>
+      <div class="toggle"><span>Günlük hedef (cevap)</span><select id="goal">${opt([5, 10, 20, 30], s.goal)}</select></div>
+      <div class="toggle"><span>Can sistemi (oturumda 3 can)</span>${chk("hearts", s.hearts)}</div>
+      <div class="toggle"><span>Cevaplamadan önce güven sor</span>${chk("confidence", s.confidence)}</div>
+      <div class="toggle"><span>Cevapta kelimeyi seslendir</span>${chk("speak", s.speak)}</div>
+    </div>
+    <div class="card">
+      <strong>Açıklamalar ve klavye</strong>
+      <div class="toggle"><span>Açıklamaları varsayılan olarak aç</span>${chk("explain", s.explain)}</div>
+      <div class="toggle"><span>Klavye kısayolları (1–4, 1–3, Enter)</span>${chk("keys", s.keys)}</div>
+    </div>
+    <div class="card"><strong>Bağlantı kaynakları</strong>
+      ${sourceRows}
+      <p class="muted">Önbellek: ${Object.keys(cache).length} kayıt. Yanıtlar 7 gün saklanır; bağlantı yoksa önbellekten çalışır.</p>
+      <button class="ghost" id="clearCache">Önbelleği temizle</button>
+    </div>
+    <div class="card"><strong>Veri yedeği</strong>
+      <p class="muted">İlerlemeni JSON dosyası olarak indirebilir ya da geri yükleyebilirsin.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="ghost" id="exportBtn">Yedeği indir</button>
+        <label class="ghost" style="display:inline-flex;align-items:center;padding:8px 14px;border-radius:10px;cursor:pointer">
+          Yedekten yükle <input type="file" id="importFile" accept="application/json" class="hidden"></label>
+      </div>
+    </div>
+    <div class="card">
+      <button class="ghost" id="reset">İlerlemeyi sıfırla</button>
+      <p class="muted">Tüm ilerleme, rozetler, notlar, alıntılar ve web'den eklenen kelimeler silinir.</p>
+    </div>`;
+  $("pairs").onchange = e => { s.pairs = +e.target.value; save(); matchRound = null; };
+  $("sessionLen").onchange = e => { s.sessionLen = +e.target.value; save(); };
+  $("goal").onchange = e => { s.goal = +e.target.value; save(); };
+  $("hearts").onchange = e => { s.hearts = e.target.checked; save(); };
+  $("confidence").onchange = e => { s.confidence = e.target.checked; save(); };
+  $("speak").onchange = e => { s.speak = e.target.checked; save(); };
+  $("explain").onchange = e => { s.explain = e.target.checked; save(); };
+  $("keys").onchange = e => { s.keys = e.target.checked; save(); };
+  $("clearCache").onclick = () => {
+    cache = {};
+    saveCache();
+    Object.values(health).forEach(h => { h.until = 0; h.fail = 0; });
+    renderSettings();
+    toast("Önbellek temizlendi");
+  };
+  $("exportBtn").onclick = exportData;
+  $("importFile").onchange = importData;
+  $("reset").onclick = () => {
+    if (!confirm("Tüm ilerleme, notlar ve web'den eklenen kelimeler silinsin mi?")) return;
+    try { KEYS.forEach(k => localStorage.removeItem(k)); } catch (e) {}
+    state = load();
+    matchRound = null;
+    session = null;
+    renderSettings();
+    updateStreakBadge();
+    toast("İlerleme sıfırlandı");
+  };
+}
+
+// ---------- Başlatma ----------
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => showTab(b.dataset.tab));
+applyUi();
+updateStreakBadge();
+showTab("today");
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').then(reg => {
+        console.log('Service Worker başarıyla kaydedildi!', reg);
+      }).catch(err => {
+        console.log('Service Worker kaydedilemedi:', err);
+      });
+    });
+  }
+</script>
+</body>
+</html>

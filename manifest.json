@@ -1,0 +1,16 @@
+{
+  "name": "Lexora 2.0",
+  "short_name": "Lexora",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f0d1f",
+  "theme_color": "#6d28d9",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PHBhdGggZD0iTTIwIDgwIEw1MCA5MCBMODAgODAgTDgwIDIwIEw1MCAzMCBMMjAgMjAgWiIgZmlsbD0iIzZkMjhkOSIgb3BhY2l0eT0iMC4yIi8+PHBhdGggZD0iTTUwIDc1IEw1MCAzMCBNNTAgNDAgTDM1IDI1IE01MCA1MCBMNjUgMzAgTTUwIDYwIEwzMCA1MCBNNTAgNTUgTDcwIDUwIiBzdHJva2U9IiM2ZDI4ZDkiIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBmaWxsPSJub25lIi8+PGNpcmNsZSBjeD0iMzUiIGN5PSIyNSIgcj0iOCIgZmlsbD0iIzIyZDNlZSIvPjxjaXJjbGUgY3g9IjY1IiBjeT0iMzAiIHI9IjgiIGZpbGw9IiMyMmQzZWUiLz48Y2lyY2xlIGN4PSIzMCIgY3k9IjUwIiByPSI4IiBmaWxsPSIjMjJkM2VlIi8+PGNpcmNsZSBjeD0iNzAiIGN5PSI1MCIgcj0iOCIgZmlsbD0iIzIyZDNlZSIvPjxjaXJjbGUgY3g9IjUwIiBjeT0iMjAiIHI9IjEwIiBmaWxsPSIjNmQyOGQ5Ii8+PC9zdmc+",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
