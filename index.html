@@ -1238,53 +1238,87 @@ function renderDetail() {
   const a = analyze(w);
   const s = w.last ? strengthOf(w) : null;
   const ex = w.examples?.length ? w.examples : (w.example ? [w.example] : []);
-  const bodies = {
-    summary: `
-      <p style="font-size:18px;margin:8px 0"><strong>${esc(w.tr)}</strong></p>
-      <p>${esc(w.def || "Tanım yok")}</p>
-      ${w.defs?.length > 1 ? `<ul class="muted">${w.defs.slice(1, 4).map(d => `<li>${esc(d.def)}</li>`).join("")}</ul>` : ""}
-      <p class="muted">Tür: ${esc(w.pos)} · Seviye: ${esc(w.level)} · Kategori: ${esc(w.cat)}</p>`,
-    origin: `
-      ${chipsHtml(a.parts)}
-      ${a.auto ? `<p class="muted">Bu bölme otomatiktir, tahmini olabilir.</p>` : a.note ? `<p class="muted">${esc(a.note)}</p>` : ""}
-      ${w.origin ? `<p><strong>Köken (sözlük):</strong> ${esc(w.origin)}</p>` : ""}
-      ${hookOf(w) ? `<p class="hook">💡 ${esc(hookOf(w))}</p>` : ""}`,
-    examples: ex.length
-      ? ex.map(e => `<p class="sentence">“${esc(e)}”</p>`).join("")
-      : `<p class="muted">Örnek cümle bulunamadı.</p>`,
-    relations: `
-      ${w.syn?.length ? `<p><strong>Eş anlamlılar:</strong> ${w.syn.map(esc).join(", ")}</p>` : `<p class="muted">Eş anlamlı yok.</p>`}
-      ${w.ant?.length ? `<p><strong>Zıt anlamlılar:</strong> ${w.ant.map(esc).join(", ")}</p>` : `<p class="muted">Zıt anlamlı yok.</p>`}
-      ${familyLineHtml(w)}`,
-    history: `
-      <div class="row"><span>Güç</span><span>${s == null ? "henüz çalışılmadı" : `%${s}`}</span></div>
-      <div class="row"><span>Doğru / yanlış</span><span>✓${w.correct} ✗${w.wrong}</span></div>
-      <div class="row"><span>Sonraki tekrar</span><span>${w.mastered ? "ustalaşıldı" : w.next > Date.now() ? new Date(w.next).toLocaleString("tr-TR") : "şimdi"}</span></div>
-      <div class="row"><span>Durum</span><span>${w.mastered ? "✓ ustalaşıldı" : isHard(w) ? "⚠ zor" : "öğreniliyor"}</span></div>`
-  };
+  
+  // LoremFlickr ile ücretsiz ve anahtarsız görsel çekme
+  const imgUrl = `https://loremflickr.com/600/400/${encodeURIComponent(w.en)}?random=${w.id}`;
+
   $("detailBody").innerHTML = `
-    <div style="padding:16px">
-      <div class="row" style="border:0;padding:0">
-        <div><div class="word" id="detailTitle">${esc(w.en)}</div>
-          <div class="muted">${esc(w.phonetic || "")} ${w.phonetic ? "·" : ""} ${esc(w.pos)} · ${esc(w.level)}</div></div>
-        <button class="icon" id="dPlay" aria-label="${esc(w.en)} kelimesini dinle">🔊</button>
+    <div class="dw-image-wrap">
+      <img src="${imgUrl}" class="dw-image" alt="${esc(w.en)} görseli" onerror="this.src='https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=600&q=80'; this.onerror=null;">
+      <button class="dw-close" id="dClose" aria-label="Kapat">✕</button>
+    </div>
+    
+    <div class="dw-content">
+      <div class="dw-header">
+        <div>
+          <h2 class="dw-word">${esc(w.en)}</h2>
+          <div class="dw-sub">
+            <span class="pos">${esc(w.pos)}</span>
+            <span class="muted">${esc(w.level)}</span>
+            ${w.phonetic ? `<span class="muted">${esc(w.phonetic)}</span>` : ""}
+          </div>
+        </div>
+        <button class="icon" id="dPlay" aria-label="Dinle" style="font-size:24px; background:var(--primary); color:#fff; border:none; border-radius:50%; width:48px; height:48px; box-shadow: 0 4px 12px rgba(109,40,217,0.3);">🔊</button>
       </div>
-      <div class="dtabs" role="tablist">
-        ${DETAIL_TABS.map(([k, l]) => `<button role="tab" aria-selected="${k === detailTab}" class="${k === detailTab ? "active" : ""}" data-dtab="${k}">${l}</button>`).join("")}
+
+      <div class="dw-sec">
+        <div class="dw-tr">${esc(w.tr)}</div>
+        <p class="dw-def">${esc(w.def || "Tanım bulunamadı.")}</p>
       </div>
-      ${bodies[detailTab]}
-      <p class="links" style="margin-top:12px">
-        <a href="https://en.wiktionary.org/wiki/${encodeURIComponent(w.en)}" target="_blank" rel="noopener">Wiktionary</a> ·
+
+      <div class="dw-sec">
+        <div class="dw-sec-title">🌿 Kök ve Yapı</div>
+        ${chipsHtml(a.parts)}
+        ${a.auto ? `<p class="muted" style="font-size:12px;margin-top:8px">* Bu bölme otomatiktir.</p>` : a.note ? `<p class="muted" style="font-size:13px;margin-top:8px">${esc(a.note)}</p>` : ""}
+        ${hookOf(w) ? `<p class="hook" style="margin-top:10px">💡 ${esc(hookOf(w))}</p>` : ""}
+      </div>
+
+      ${ex.length ? `
+      <div class="dw-sec">
+        <div class="dw-sec-title">📖 Örnek Cümleler</div>
+        ${ex.map(e => `<p class="sentence" style="font-size:16px; margin-bottom:8px">“${esc(e)}”</p>`).join("")}
+      </div>` : ""}
+
+      <div class="dw-sec">
+        <div class="dw-sec-title">🔗 İlişkili Kelimeler</div>
+        ${w.syn?.length ? `<p style="margin-bottom:6px"><strong>Eş Anlamlı:</strong> <span class="muted">${w.syn.map(esc).join(", ")}</span></p>` : ""}
+        ${w.ant?.length ? `<p><strong>Zıt Anlamlı:</strong> <span class="muted">${w.ant.map(esc).join(", ")}</span></p>` : ""}
+        ${familyLineHtml(w)}
+      </div>
+
+      <div class="dw-sec">
+        <div class="dw-sec-title">📊 Durum ve İstatistik</div>
+        <div class="dw-stat-row">
+          <div class="dw-stat-box">
+            <div class="dw-stat-val">%${s == null ? "0" : s}</div>
+            <div class="dw-stat-lbl">Hafıza Gücü</div>
+          </div>
+          <div class="dw-stat-box">
+            <div class="dw-stat-val" style="color:var(--ok)">${w.correct}</div>
+            <div class="dw-stat-lbl">Doğru</div>
+          </div>
+          <div class="dw-stat-box">
+            <div class="dw-stat-val" style="color:var(--bad)">${w.wrong}</div>
+            <div class="dw-stat-lbl">Yanlış</div>
+          </div>
+        </div>
+        <p class="muted" style="font-size:12px; margin-top:12px; text-align:center;">
+          Sonraki Tekrar: ${w.mastered ? "Ustalaşıldı ✓" : w.next > Date.now() ? new Date(w.next).toLocaleDateString("tr-TR") : "Şimdi"}
+        </p>
+      </div>
+      
+      <p class="links" style="margin-top:20px; font-size:13px; text-align:center;">
+        <a href="https://en.wiktionary.org/wiki/${encodeURIComponent(w.en)}" target="_blank" rel="noopener">Wiktionary</a> · 
         <a href="https://www.merriam-webster.com/dictionary/${encodeURIComponent(w.en)}" target="_blank" rel="noopener">Merriam-Webster</a>
       </p>
-      <button class="primary" id="dClose" style="margin-top:12px">Kapat</button>
     </div>`;
-  $("detailBody").querySelectorAll("[data-dtab]").forEach(b => b.onclick = () => { detailTab = b.dataset.dtab; renderDetail(); });
+
+  // Buton Dinleyicileri
+  $("dClose").onclick = () => $("detail").close();
   $("dPlay").onclick = () => {
     if (w.audio) new Audio(w.audio).play().catch(() => speak(w.en));
     else speak(w.en);
   };
-  $("dClose").onclick = () => $("detail").close();
 }
 
 function familyLineHtml(w) {
