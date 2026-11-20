@@ -762,10 +762,17 @@ function speak(text) {
   speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
   u.lang = "en-US";
-  u.rate = 0.9;
+  u.rate = 0.85; // Biraz daha yavaş, anlaşılır bir hız
+  
+  // Cihazdaki en iyi İngilizce sesi bul
+  const voices = speechSynthesis.getVoices();
+  const bestVoice = voices.find(v => v.lang.includes("en-US") && v.name.includes("Google")) || 
+                    voices.find(v => v.lang.includes("en-US")) || 
+                    voices.find(v => v.lang.includes("en"));
+  if (bestVoice) u.voice = bestVoice;
+  
   speechSynthesis.speak(u);
 }
-
 // ===================== Ağ katmanı: önbellek, zaman aşımı, yeniden deneme, devre kesici =====================
 const health = {};
 function healthOf(src) {
