@@ -2050,126 +2050,165 @@ const CONCEPTS = [
   { t: "Ussal (Vernunft)", b: "Hegel'de akıl yalnızca hesap yapan akıl değildir; kavramların kendi içinde gelişmesini izleyen ve bütünü kavrayan akıldır. Burada 'ussal' bu anlamda kullanılır." }
 ];
 
+// --- FELSEFE VE İNGİLİZCE ATÖLYESİ VERİSİ ---
+const FELSEFI_TERIMLER = [
+  { en: "sublation", tr: "kaldırma", def: "Bir çelişkinin hem yok edilip hem de daha üst bir düzeyde korunması.", context: "The dialectical sublation of the contradiction reveals a higher truth." },
+  { en: "spirit", tr: "tin", def: "Mutlak bilinç düzeyi, toplumsal ve tarihsel ruh.", context: "The Spirit manifests itself through the course of history." },
+  { en: "consciousness", tr: "bilinç", def: "Öznenin nesneyle kurduğu ilişki, farkındalık hali.", context: "Human consciousness is always intentional; it is conscious of something." },
+  { en: "unfolding", tr: "açınım", def: "Bir kavramın içindeki potansiyelin açığa çıkması.", context: "The unfolding of the absolute idea is a necessary process." },
+  { en: "determination", tr: "belirlenim", def: "Bir şeyin sınırlarının ve niteliklerinin belirlenmesi.", context: "Every existence has a specific determination that makes it what it is." },
+  { en: "existence", tr: "varoluş", def: "Varlığın belirli bir biçimde ortaya çıkışı.", context: "Pure being and pure nothingness are identical in their abstract existence." },
+  { en: "being", tr: "varlık", def: "En genel, en soyut kavram; var olan her şey.", context: "Being is the most immediate and indeterminate concept." },
+  { en: "nothingness", tr: "hiçlik", def: "Varlığın karşıtı, ama onunla aynı soyutlukta olan kavram.", context: "To think of nothingness is to think of something." },
+  { en: "becoming", tr: "oluş", def: "Varlık ve hiçliğin birliği; sürekli hareket ve değişim.", context: "Becoming is the truth of being and nothingness." },
+  { en: "notion", tr: "kavram", def: "Gerçekliğin mantıksal yapısı; düşüncenin kendisi.", context: "The notion contains the truth of the object within itself." },
+  { en: "idea", tr: "idea", def: "Kavramın nesnesiyle birliği; en yüksek gerçeklik.", context: "The absolute idea is the unity of the subjective and objective." },
+  { en: "dialectic", tr: "diyalektik", def: "Tez-antitez-sentez süreci; çelişkiler aracılığıyla ilerleme.", context: "Dialectic is the driving force of historical progress." },
+  { en: "manifestation", tr: "beliriş", def: "Özün görünüşe çıkması, kendini göstermesi.", context: "The manifestation of the divine in the material world." },
+  { en: "affirmation", tr: "olumlama", def: "Bir şeyi olumlu olarak ortaya koyma, kabul etme.", context: "Every negation contains an implicit affirmation." },
+  { en: "negation", tr: "yadsıma", def: "Bir şeyi olumsuzlama, reddetme, inkar etme.", context: "The negation of the negation is the path to true affirmation." },
+  { en: "actual", tr: "edimsel", def: "Sadece potansiyel değil, gerçekleşmiş, eyleme dökülmüş olan.", context: "The actual is the rational; what is real is what acts." },
+  { en: "subjective", tr: "öznel", def: "Özneye, kişinin kendi iç dünyasına ait olan.", context: "Subjective experience differs from objective reality." },
+  { en: "objective", tr: "nesnel", def: "Nesneye ait olan, dış dünyada herkes için geçerli olan.", context: "Science seeks objective truth independent of personal bias." },
+  { en: "absolute", tr: "mutlak", def: "Koşulsuz, sınırsız, kendisine bağlı olan.", context: "The absolute is not relative to anything else." },
+  { en: "intuition", tr: "sezgi", def: "Duyusal algı, doğrudan ve aracısız kavrayış.", context: "Kant distinguished between intuition and concepts." }
+];
+
+let philoMode = "match"; // "match", "reading", "write"
+
 function renderPhilo() {
   const el = $("tab-philo");
-  const q = pickQuote();
+  
+  // Rastgele 4 terim seç
+  const shuffled = [...FELSEFI_TERIMLER].sort(() => 0.5 - Math.random());
+  const quizTerms = shuffled.slice(0, 4);
+  const correctTerm = quizTerms[0];
+  const options = shuffle([...quizTerms]);
+  
+  // Rastgele bir okuma parçası
+  const readingTerm = FELSEFI_TERIMLER[Math.floor(Math.random() * FELSEFI_TERIMLER.length)];
+  // Rastgele yazma konusu
+  const writeTerm = FELSEFI_TERIMLER[Math.floor(Math.random() * FELSEFI_TERIMLER.length)];
+
   el.innerHTML = `
-    <div class="card">
-      <strong>Günün alıntısı</strong>
-      <blockquote class="quote">“${esc(q.text)}”</blockquote>
-      <p class="muted">— ${esc(q.author)}${q.source ? ", " + esc(q.source) : ""}</p>
+    <div class="card" style="background: linear-gradient(135deg, var(--surface) 0%, var(--bg) 100%);">
+      <h2 style="margin-top:0; color:var(--primary); font-size:22px;">📜 İngilizce Felsefe Atölyesi</h2>
+      <p class="muted">İleri seviye İngilizce felsefi terimleri oyunlaştırılmış yöntemlerle öğren.</p>
+      <div class="chips2" style="margin-top:12px;">
+        <button class="mode ${philoMode === 'match' ? 'on' : ''}" data-pmode="match" style="font-size:13px; padding:6px 12px;">🧩 Eşleştirme</button>
+        <button class="mode ${philoMode === 'reading' ? 'on' : ''}" data-pmode="reading" style="font-size:13px; padding:6px 12px;">📖 Bağlamda Oku</button>
+        <button class="mode ${philoMode === 'write' ? 'on' : ''}" data-pmode="write" style="font-size:13px; padding:6px 12px;">✍️ Cümle Kur</button>
+      </div>
     </div>
+
+    ${philoMode === 'match' ? `
+      <div class="card" style="border: 2px solid var(--primary);">
+        <div class="dw-sec-title" style="color:var(--primary)">🧩 Eşleştirme Oyunu</div>
+        <p style="font-size:18px; margin-bottom:12px; font-weight:600;">
+          İngilizce <strong>"${correctTerm.en}"</strong> kelimesinin Türkçe karşılığı hangisidir?
+        </p>
+        <div class="col" id="quizOptions">
+          ${options.map(o => `
+            <button class="tile" data-quiz="${o.tr}" style="text-align:left; padding:12px; font-size:16px;">${esc(o.tr)}</button>
+          `).join("")}
+        </div>
+        <div id="quizResult" class="muted" style="margin-top:12px; font-weight:600; text-align:center;"></div>
+      </div>
+    ` : ''}
+
+    ${philoMode === 'reading' ? `
+      <div class="card" style="border-left: 4px solid var(--primary);">
+        <div class="dw-sec-title" style="color:var(--primary)">📖 Bağlam İçinde Oku</div>
+        <p style="font-size:14px; color:var(--muted); margin-bottom:8px;">Aşağıdaki cümlede geçen <strong>${readingTerm.en}</strong> kelimesinin anlamını bağlamdan çıkarmaya çalış.</p>
+        <div style="background: var(--bg); padding: 16px; border-radius: 8px; font-size: 16px; font-style: italic; margin-bottom: 12px;">
+          "${esc(readingTerm.context)}"
+        </div>
+        <details class="expl" style="margin-top:12px;">
+          <summary>Cevabı Gör ve İncele</summary>
+          <div style="margin-top:8px;">
+            <p><strong>${esc(readingTerm.en)}</strong> → ${esc(readingTerm.tr)}</p>
+            <p class="muted" style="font-size:13px;">${esc(readingTerm.def)}</p>
+          </div>
+        </details>
+      </div>
+    ` : ''}
+
+    ${philoMode === 'write' ? `
+      <div class="card" style="border-left: 4px solid var(--ok);">
+        <div class="dw-sec-title" style="color:var(--ok)">✍️ Kendi Cümleni Kur</div>
+        <p style="font-size:14px; margin-bottom:8px;">Aşağıdaki felsefi İngilizce kelimeyi kullanarak kendi cümleni yaz. (En az 5 kelime)</p>
+        <div style="background: var(--primary); color: white; display: inline-block; padding: 6px 12px; border-radius: 8px; font-weight: bold; font-size: 18px; margin-bottom: 12px;">
+          ${esc(writeTerm.en)}
+        </div>
+        <p class="muted" style="font-size:13px; margin-bottom:8px;">İpucu: ${esc(writeTerm.tr)} - ${esc(writeTerm.def)}</p>
+        <textarea id="philoWriteInput" placeholder="Write your sentence here..." style="width:100%; min-height:80px;"></textarea>
+        <button class="primary" id="philoWriteBtn" style="margin-top:8px;">Cümleyi Kontrol Et</button>
+        <div id="philoWriteResult" style="margin-top:8px; font-weight:600;"></div>
+      </div>
+    ` : ''}
+
     <div class="card">
-      <strong>Ussal ilke</strong>
-      <p>Hegel'in en çok tartışılan cümlelerinden biri, 'wirklich' sözcüğünü kullanır. Bu sözcük yalnızca var olanı değil, özü gerçekleşmiş olanı da anlatabilir. Bu yüzden cümle, bilgiyi yalnızca ezberlemekle değil, onun içsel mantığını kavramakla ilgili bir ilke olarak okunabilir.</p>
-      <details class="expl" ${state.settings.explain ? "open" : ""}><summary>Orijinal Almanca</summary><p class="muted">Was vernünftig ist, das ist wirklich; und was wirklich ist, das ist vernünftig.</p></details>
+      <div class="dw-sec-title">📚 Tüm Felsefi Terimler Sözlüğü</div>
+      ${FELSEFI_TERIMLER.map(t => `
+        <details class="expl">
+          <summary>
+            <strong style="color:var(--primary); font-size:16px;">${esc(t.en)}</strong> 
+            <span class="muted">→ ${esc(t.tr)}</span>
+          </summary>
+          <p style="font-size:14px; margin-top:6px;">${esc(t.def)}</p>
+        </details>
+      `).join("")}
     </div>
-    <div class="card">
-      <strong>Bilinç yolculuğu</strong>
-      <p class="muted">Yol sekmesindeki altı basamak, Tinin Görüngübilimi'nin bilinç biçimlerinden esinlenmiştir: duyusal kesinlik, algı, anlama, öz-bilinç, akıl ve ruh.</p>
-      <button class="ghost" data-go="path">Yol'a git</button>
-    </div>
-    <div class="card">
-      <strong>Yardımlı'nın çevirileri ve kaynakça</strong>
-      <p class="muted">Aziz Yardımlı, Hegel, Descartes ve Copleston'ın eserlerini Türkçeye çevirmiştir. Aşağıdaki kayıtlar kütüphane kataloglarından ve ders kaynaklarından alınmıştır. İçerikleri bu uygulama tarafından doğrulanmamıştır. Alıntı için kendi nüshanı kullan.</p>
-      ${YARDIMLI_BIB.map(([a, t, s]) => `<div class="row"><span><strong>${esc(t)}</strong><br><span class="muted">${esc(a)}</span></span><span class="muted" style="text-align:right">${esc(s)}</span></div>`).join("")}
-    </div>
-    <div class="card">
-      <strong>Alıntı kütüphanesi</strong>
-      <p class="muted">Kendi okuduğun cümleleri ekle. Günün alıntısı arasında bunlar da çıkar.</p>
-      <input type="text" id="qAuthor" placeholder="Yazar" aria-label="Yazar" style="width:100%;margin-bottom:6px">
-      <input type="text" id="qSource" placeholder="Eser ve yıl" aria-label="Eser" style="width:100%;margin-bottom:6px">
-      <textarea id="qText" placeholder="Alıntı metni (en fazla 600 karakter)" aria-label="Alıntı metni" maxlength="600"></textarea>
-      <button class="primary" id="addQuote" style="margin-top:6px">Alıntıyı ekle</button>
-      <div style="margin-top:8px">${state.quotes.length ? state.quotes.map((x, i) => `<div class="row"><span>“${esc(x.text)}”<br><span class="muted">${esc(x.author)}${x.source ? ", " + esc(x.source) : ""}</span></span><button class="icon" data-delq="${i}" aria-label="Alıntıyı sil">🗑️</button></div>`).join("") : `<p class="muted">Henüz alıntı yok.</p>`}</div>
-    </div>
-    <div class="card">
-      <strong>Kavram kütüphanesi</strong>
-      <p class="muted">Her kavramı aç, kapat. Açıklamalar ayarlardaki 'açıklamaları varsayılan aç' seçeneğine göre başlar.</p>
-      ${CONCEPTS.map(c => `<details class="expl" ${state.settings.explain ? "open" : ""}><summary><strong>${esc(c.t)}</strong></summary><p>${esc(c.b)}</p></details>`).join("")}
-    </div>`;
-  el.querySelectorAll("[data-go]").forEach(b => b.onclick = () => showTab(b.dataset.go));
-  $("addQuote").onclick = () => {
-    const text = $("qText").value.trim();
-    const author = $("qAuthor").value.trim() || "Bilinmiyor";
-    if (!text) { toast("Alıntı metni boş olamaz"); return; }
-    state.quotes.push({ text: text.slice(0, 600), author: author.slice(0, 80), source: $("qSource").value.trim().slice(0, 120) });
-    save();
-    toast("Alıntı eklendi");
-    renderPhilo();
-  };
-  el.querySelectorAll("[data-delq]").forEach(b => b.onclick = () => {
-    state.quotes.splice(+b.dataset.delq, 1);
-    save();
-    renderPhilo();
+  `;
+
+  // Mod Değiştiriciler
+  el.querySelectorAll("[data-pmode]").forEach(b => {
+    b.onclick = () => { philoMode = b.dataset.pmode; renderPhilo(); };
   });
-}
 
-// ---------- Görünüm ----------
-function renderLook() {
-  const el = $("tab-look");
-  const u = state.ui;
-  const sel = (id, opts, val) => `<select id="${id}" aria-label="${id}">${opts.map(([v, l]) => `<option value="${v}" ${v === val ? "selected" : ""}>${l}</option>`).join("")}</select>`;
-  el.innerHTML = `
-    <div class="card">
-      <strong>Tema</strong>
-      <div class="themes">
-        ${Object.entries(THEMES).map(([k, t]) => `<button class="theme ${u.theme === k ? "on" : ""}" data-theme="${k}" style="background:${t.bg};color:${t.text}"><span style="color:${t.primary}">●</span> ${esc(t.name)}</button>`).join("")}
-        <button class="theme ${u.theme === "sistem" ? "on" : ""}" data-theme="sistem">Sistem</button>
-      </div>
-    </div>
-    <div class="card">
-      <strong>Vurgu rengi</strong>
-      <div class="swatches">
-        ${ACCENTS.map(c => `<button class="swatch ${u.accent === c ? "on" : ""}" data-accent="${c}" aria-label="${c || "tema varsayılanı"}" style="background:${c || "var(--primary)"}"></button>`).join("")}
-      </div>
-    </div>
-    <div class="card">
-      <div class="toggle"><span>Yazı tipi</span>${sel("fontSel", [["sistem", "Sistem"], ["serif", "Serif"], ["yuvarlak", "Yuvarlak"], ["mono", "Monospace"]], u.font)}</div>
-      <div class="toggle"><span>Yazı boyutu</span>${sel("sizeSel", [["kucuk", "Küçük"], ["orta", "Orta"], ["buyuk", "Büyük"]], u.size)}</div>
-      <div class="toggle"><span>Yoğunluk</span>${sel("densitySel", [["rahat", "Rahat"], ["kompakt", "Kompakt"]], u.density)}</div>
-      <div class="toggle"><span>Köşe yuvarlaklığı</span>${sel("radiusSel", [["keskin", "Keskin"], ["yuvarlak", "Yuvarlak"], ["cokyuvarlak", "Çok yuvarlak"]], u.radius)}</div>
-      <div class="toggle"><span>Sekme geçişi</span>${sel("motionSel", [["kayma", "Kayma"], ["solma", "Solma"], ["yok", "Yok"]], u.motion)}</div>
-      <div class="toggle"><span>Hareketi azalt</span><input type="checkbox" id="reduceChk" ${u.reduce ? "checked" : ""}></div>
-    </div>
-    <div class="card">
-      <strong>Önizleme</strong>
-      <div class="word">abundant</div>
-      <p class="muted">bol, bereketli · örnek: “The valley has abundant wildlife.”</p>
-      <button class="primary">Örnek düğme</button>
-    </div>`;
-  const save2 = (k, v) => { state.ui[k] = v; save(); applyUi(); renderLook(); };
-  el.querySelectorAll("[data-theme]").forEach(b => b.onclick = () => save2("theme", b.dataset.theme));
-  el.querySelectorAll("[data-accent]").forEach(b => b.onclick = () => save2("accent", b.dataset.accent));
-  $("fontSel").onchange = e => save2("font", e.target.value);
-  $("sizeSel").onchange = e => save2("size", e.target.value);
-  $("densitySel").onchange = e => save2("density", e.target.value);
-  $("radiusSel").onchange = e => save2("radius", e.target.value);
-  $("motionSel").onchange = e => save2("motion", e.target.value);
-  $("reduceChk").onchange = e => save2("reduce", e.target.checked);
-}
-
-// ---------- İstatistik ----------
-function calibGap() {
-  const expect = { 1: 0.3, 2: 0.6, 3: 0.9 };
-  let n = 0, gap = 0;
-  for (const k of [1, 2, 3]) {
-    const x = state.totals.calib[k];
-    if (x.n) { n += x.n; gap += x.n * (expect[k] - x.c / x.n); }
+  // Eşleştirme Oyunu Mantığı
+  if (philoMode === 'match') {
+    el.querySelectorAll("[data-quiz]").forEach(btn => {
+      btn.onclick = () => {
+        const selected = btn.dataset.quiz;
+        const resultEl = $("quizResult");
+        if (selected === correctTerm.tr) {
+          btn.classList.add("ok");
+          resultEl.innerHTML = `<span style="color:var(--ok)">Mükemmel! Doğru cevap: ${esc(correctTerm.tr)}</span>`;
+          state.xp += 5; save(); updateStreakBadge();
+        } else {
+          btn.classList.add("bad");
+          resultEl.innerHTML = `<span style="color:var(--bad)">Yanlış. Doğrusu: ${esc(correctTerm.tr)}</span>`;
+        }
+        el.querySelectorAll("[data-quiz]").forEach(b => {
+          b.disabled = true;
+          if (b.dataset.quiz === correctTerm.tr) b.classList.add("ok");
+        });
+      };
+    });
   }
-  return n ? gap / n : null;
+
+  // Yazma Alıştırması Mantığı
+  if (philoMode === 'write') {
+    $("philoWriteBtn").onclick = () => {
+      const text = $("philoWriteInput").value.trim();
+      const res = $("philoWriteResult");
+      if (text.split(" ").length < 5) {
+        res.innerHTML = `<span style="color:var(--bad)">Lütfen en az 5 kelimelik bir cümle yazın.</span>`;
+        return;
+      }
+      if (text.toLowerCase().includes(writeTerm.en.toLowerCase())) {
+        res.innerHTML = `<span style="color:var(--ok)">Harika! Cümleniz kaydedildi ve +10 XP kazandınız.</span>`;
+        state.xp += 10; save(); updateStreakBadge();
+        $("philoWriteBtn").disabled = true;
+        $("philoWriteInput").disabled = true;
+      } else {
+        res.innerHTML = `<span style="color:var(--bad)">Cümlenizde "${writeTerm.en}" kelimesini kullanmalısınız.</span>`;
+      }
+    };
+  }
 }
-
-const bt = t => state.totals.byType[t] || { n: 0, c: 0 };
-
-function calibText() {
-  const g = calibGap();
-  if (g === null) return "Henüz yeterli veri yok. Ayarlar'dan güven sorusunu açarak başlayabilirsin.";
-  if (g > 0.1) return "Aşırı güven eğilimi: cevaplarında kendine güvenin doğruluğunun önüne geçiyor. Emin olmadığın anlarda durup düşünmek işe yarar.";
-  if (g < -0.1) return "Temkinlilik: bildiklerini olduğundan az değerlendiriyorsun. Doğru cevapların güvenini artırmak için kendi cümleni kurmayı dene.";
-  return "Dengeli: güven ve doğruluk birbiriyle uyumlu. Bu, öz-değerlendirme gücünün iyi olduğunu gösterir.";
-}
-
+    
 function renderStats() {
   const el = $("tab-stats");
   const t = state.totals;
