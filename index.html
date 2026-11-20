@@ -206,6 +206,50 @@
 <dialog id="detail" aria-labelledby="detailTitle">
   <div id="detailBody"></div>
 </dialog>
+<dialog id="addWordDialog">
+  <div style="padding:20px;">
+    <h2 style="margin-top:0;">Yeni Kelime Ekle</h2>
+    <div style="display:grid; gap:12px;">
+      <div>
+        <label class="muted">İngilizce kelime *</label>
+        <input type="text" id="newEn" placeholder="örnek: resilient" style="width:100%;">
+      </div>
+      <div>
+        <label class="muted">Türkçe anlamı *</label>
+        <input type="text" id="newTr" placeholder="örnek: dayanıklı" style="width:100%;">
+      </div>
+      <div>
+        <label class="muted">Örnek cümle (isteğe bağlı)</label>
+        <input type="text" id="newExample" placeholder="Children are often resilient." style="width:100%;">
+      </div>
+      <div>
+        <label class="muted">Kategori</label>
+        <select id="newCat" style="width:100%;">
+          <option value="Genel">Genel</option>
+          <option value="Duygu">Duygu</option>
+          <option value="Karakter">Karakter</option>
+          <option value="Toplum">Toplum</option>
+          <option value="Doğa">Doğa</option>
+          <option value="Felsefe">Felsefe</option>
+          <option value="Akademik">Akademik</option>
+        </select>
+      </div>
+      <div>
+        <label class="muted">Seviye</label>
+        <select id="newLevel" style="width:100%;">
+          <option value="B1">B1</option>
+          <option value="B2" selected>B2</option>
+          <option value="C1">C1</option>
+          <option value="A2">A2</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:flex; gap:10px; margin-top:20px;">
+      <button class="primary" id="saveNewWordBtn" style="flex:1;">Kaydet</button>
+      <button class="ghost" id="cancelAddWord">İptal</button>
+    </div>
+  </div>
+</dialog>    
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <script>
 
@@ -982,6 +1026,55 @@ function nextId() {
   return Math.max(0, ...state.words.map(w => w.id)) + 1;
 }
 
+// ===================== Kelime Ekleme =====================
+function openAddWord() {
+  $("newEn").value = "";
+  $("newTr").value = "";
+  $("newExample").value = "";
+  $("newCat").value = "Genel";
+  $("newLevel").value = "B2";
+  $("addWordDialog").showModal();
+  setTimeout(() => $("newEn").focus(), 50);
+}
+
+function saveNewWord() {
+  const en = $("newEn").value.trim().toLowerCase();
+  const tr = $("newTr").value.trim();
+  const example = $("newExample").value.trim();
+  const cat = $("newCat").value;
+  const level = $("newLevel").value;
+
+  if (!en || !tr) {
+    toast("İngilizce kelime ve Türkçe anlam zorunlu");
+    return;
+  }
+  if (state.words.some(w => w.en === en)) {
+    toast("Bu kelime zaten var");
+    return;
+  }
+
+  const newWord = normalize({
+    en,
+    tr,
+    example: example || "",
+    cat,
+    level,
+    pos: "diğer",
+    source: "user",
+    def: "",
+    syn: [],
+    hook: ""
+  });
+
+  state.words.push(newWord);
+  save();
+  checkBadges();
+  $("addWordDialog").close();
+  toast(`"${en}" eklendi`);
+  
+  if (currentTab === "library") renderLibrary();
+  if (currentTab === "today") renderToday();
+}    
 // ===================== Sekme yönetimi =====================
 
 // ===================== Bugün =====================
@@ -1190,6 +1283,13 @@ function renderLibrary(note = "") {
         <button class="ghost" id="libHard">${lib.hard ? "Tümünü göster" : "Sadece zorlar"}</button>
       </div>
     </div>
+    <div class="card" style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+  <div>
+    <strong>Kendi kelimeni ekle</strong>
+    <p class="muted" style="margin:4px 0 0;">Manuel olarak istediğin kelimeyi ekleyebilirsin</p>
+  </div>
+  <button class="primary" id="openAddWord">+ Ekle</button>
+</div>
     <div class="card">
       <strong>Yeni kelime çek</strong>
       <div class="filters">
@@ -1479,6 +1579,8 @@ function renderToday() {
   const max = Math.max(1, ...week.map(d => d.answers));
   const gotw = wordOfDay();
   const stations = stationsUnlocked();
+  const due = dueWords().length;
+
   el.innerHTML = `
     <div class="card" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
       <svg width="120" height="120" viewBox="0 0 120 120" role="img" aria-label="Günlük hedef yüzde ${pct}">
@@ -1495,24 +1597,35 @@ function renderToday() {
         <div class="muted">Sonraki seviyeye ${li.next - state.xp} XP · Yolda ${stations}/${STATIONS.length} basamak</div>
       </div>
     </div>
+
+    <div class="card" style="text-align:center; padding:20px;">
+      <div style="font-size:15px; margin-bottom:14px; color:var(--muted);">
+        ${due > 0 ? `Bugün <strong style="color:var(--primary)">${due} kelime</strong> tekrar bekliyor` : "Bugün tekrar bekleyen kelime yok 🎉"}
+      </div>
+      <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+        <button class="primary" id="startSes" style="min-width:160px; font-size:16px; padding:14px 20px;">
+          ${due > 0 ? "Şimdi Tekrar Et" : "Karışık Oturum Başlat"}
+        </button>
+        <button class="ghost" id="startHard">Zorlar</button>
+        <button class="ghost" id="startMatch">Eşleştirme</button>
+      </div>
+      <div style="margin-top:14px;">
+        <button class="ghost" id="openAddWord" style="font-size:13px;">+ Kendi kelimeni ekle</button>
+      </div>
+    </div>
+
     <div class="grid">
       <div class="card"><div class="muted">Seri</div><div class="stat">🔥 ${effectiveStreak()}</div><div class="muted">Dondurucu: ❄️ ${state.freezes}</div></div>
-      <div class="card"><div class="muted">Bugün tekrar bekleyen</div><div class="stat">${dueWords().length}</div><div class="muted">kelime</div></div>
+      <div class="card"><div class="muted">Bugün tekrar bekleyen</div><div class="stat">${due}</div><div class="muted">kelime</div></div>
     </div>
+
     <div class="card">
       <strong>Son 7 gün</strong>
       <div class="bars" role="img" aria-label="Son yedi günde yapılan cevaplar">
         ${week.map(d => `<div class="bar-col"><div class="bar" style="height:${Math.round(d.answers / max * 100)}%"></div><small>${esc(d.label)}</small></div>`).join("")}
       </div>
     </div>
-    <div class="card">
-      <strong>Hızlı başla</strong>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
-        <button class="primary" id="startSes">Karışık oturum (${state.settings.sessionLen})</button>
-        <button class="ghost" id="startHard">Zorlar oturumu</button>
-        <button class="ghost" id="startMatch">Eşleştirme turu</button>
-      </div>
-    </div>
+
     ${gotw ? `
     <div class="card">
       <div class="muted">Günün kelimesi</div>
@@ -1521,6 +1634,7 @@ function renderToday() {
       ${hookOf(gotw) ? `<p class="hook" style="margin-top:8px">💡 ${esc(hookOf(gotw))}</p>` : ""}
       <button class="ghost" id="wotd" style="margin-top:10px">Detayları gör</button>
     </div>` : ""}`;
+
   $("startSes").onclick = () => startSession();
   $("startHard").onclick = () => startSession({ onlyHard: true });
   $("startMatch").onclick = () => { learnFocus = "match"; showTab("learn"); };
@@ -2374,6 +2488,12 @@ function renderSettings() {
 
 // ---------- Başlatma ----------
 document.querySelectorAll("nav button").forEach(b => b.onclick = () => showTab(b.dataset.tab));
+// Kelime ekleme butonları
+document.addEventListener("click", e => {
+  if (e.target.id === "openAddWord" || e.target.closest("#openAddWord")) openAddWord();
+});
+$("saveNewWordBtn")?.addEventListener("click", saveNewWord);
+$("cancelAddWord")?.addEventListener("click", () => $("addWordDialog").close());    
 applyUi();
 updateStreakBadge();
 showTab("today");
