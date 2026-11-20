@@ -808,11 +808,32 @@ async function lookupDict(word) {
 }
 
 async function translateTr(word) {
+  // 1. MOTOR: Google Translate (Resmi olmayan ücretsiz uç nokta)
+  try {
+    const gUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=tr&dt=t&q=${encodeURIComponent(word)}`;
+    const res = await fetch(gUrl);
+    if (res.ok) {
+      const data = await res.json();
+      let t = data[0]?.[0]?.[0];
+      if (t) {
+        t = t.toLowerCase().trim();
+        if (t !== word.toLowerCase() && t.length < 50) {
+          return { value: t };
+        }
+      }
+    }
+  } catch (e) {
+    console.warn("Google Translate başarısız, MyMemory'ye geçiliyor...", e);
+  }
+
+  // 2. MOTOR: MyMemory (Yedek)
   const r = await net("mymemory", `https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|tr`, 30 * DAY,
     d => !/mymemory|quota|warning/i.test(String(d?.responseData?.translatedText || "")));
+  
   if (!r.ok) return { error: r.reason };
+  
   const t = String(r.data?.responseData?.translatedText || "").trim().toLowerCase();
-  if (!t || t === word || t.length > 40 || /mymemory|quota|warning/i.test(t)) return { value: null };
+  if (!t || t === word || t.length > 50 || /mymemory|quota|warning/i.test(t)) return { value: null };
   return { value: t };
 }
 
