@@ -8011,7 +8011,270 @@ fetchWordDetailsFromWeb = async function (word) {
     }
   } catch (e) {}
   return { en: clean, tr: "", cat: "Genel", ex: "" };
-};    
+};   
+// ===== Soru-cevap tamiri =====
+function realTr(w) {
+  const t = String(w && w.tr || "").trim();
+  if (t.length < 2) return "";
+  if (/yazılacak|çeviri bekliyor|anlam yok|anlamı yaz/i.test(t)) return "";
+  if (t.toLowerCase() === String(w.en || "").trim().toLowerCase()) return "";
+  return t;
+}
+function realEn(w) {
+  const e = String(w && w.en || "").trim().toLowerCase();
+  return /^[a-z][a-z-]{1,24}$/.test(e) ? e : "";
+}
+function usableWord(w) { return !!(realEn(w) && realTr(w)); }
+function usablePool() { return (state.words || []).filter(usableWord); }
+function normTr(s) {
+  return String(s || "").toLocaleLowerCase("tr").replace(/[^\p{L}\p{N}\s]/gu, " ").replace(/\s+/g, " ").trim();
+}
+function trMatch(typed, want) {
+  const a = normTr(typed), b = normTr(want);
+  if (!a || !b) return false;
+  if (a === b) return true;
+  const parts = b.split(/[,;/]| veya | ya da /).map(x => x.trim()).filter(x => x.length >= 2);
+  return parts.some(p => p === a || (a.length >= 3 && (p.includes(a) || a.includes(p))));
+}
+function expectedLabel(q) {
+  if (!q) return "";
+  if (q.type === "meaning" || q.type === "morph" || q.type === "produce") return realTr(q.w);
+  return q.w.en;
+}
+
+pickDistractors = function (word, key, n = 3) {
+  const pool = usablePool().filter(x => x.id !== word.id);
+  const seen = new Set([String(word[key] || "").toLowerCase()]);
+  const out = [];
+  for (const x of shuffle(pool)) {
+    if (out.length >= n) break;
+    const v = String(x[key] || "").trim();
+    if (!v || seen.has(v.toLowerCase())) continue;
+    if (key === "tr" && !realTr(x)) continue;
+    if (key === "en" && !realEn(x)) continue;
+    seen.add(v.toLowerCase());
+    out.push(x);
+  }
+  return out;
+};
+
+availableTypes = function (w) {
+  const types = ["meaning", "produce"];
+  if (analyze(w).parts.some(p => p.info)) types.push("morph");
+  if (w.example && wordRe(w).test(w.example) && w.example.trim().split(/\s+/).length >= 3) types.push("cloze");
+  if (speechOK()) { types.push("listen"); types.push("dictation"); }
+  return types;
+};
+
+function makeOptions(w, type) {
+  if (type === "meaning" || type === "morph") return shuffle([w, ...pickDistractors(w, "tr", 3)]);
+  if (type === "cloze") return shuffle([w, ...pickDistractors(w, "en", 3)]);
+  if (type === "listen") {
+    const near = pickSimilar(w, 3).filter(realEn);
+    const typo = typoOf(w);
+    const bag = [w, ...near];
+    if (typo && !bag.some(x => x.en === typo.en)) bag.push(typo);
+    const seen = new Set();
+    return shuffle(bag.filter(x => {
+      const e = String(x.en || "").toLowerCase();
+      if (!e || seen.has(e)) return false;
+      seen.add(e);
+      return true;
+    })).slice(0, 4);
+  }
+  return [];
+}
+
+buildQuestion = function (w, prevType, focus) {
+  if (!usableWord(w)) return null;
+  let types = availableTypes(w);
+  if (focus && focus !== "karisik" && types.includes(focus)) types = [focus];
+  else {
+    const alt = types.filter(t => t !== prevType);
+    if (alt.length) types = alt;
+  }
+  let type = types[Math.floor(Math.random() * types.length)];
+  let opts = makeOptions(w, type);
+  if ((type === "meaning" || type === "morph" || type === "cloze" || type === "listen") && opts.length < 4) {
+    type = "meaning";
+    opts = makeOptions(w, "meaning");
+  }
+  if ((type === "meaning" || type === "morph" || type === "cloze" || type === "listen") && opts.length < 2) {
+    type = "produce";
+    opts = [];
+  }
+  return { w, type, opts, spoken: false, conf: null };
+};
+
+pickSessionWords = function (len, onlyHard) {
+  let pool = usablePool().filter(w => !w.mastered || isDue(w));
+  if (onlyHard) pool = pool.filter(isHard);
+  if (!onlyHard && pool.length < len) {
+    const extra = usablePool().filter(w => w.mastered && !isDue(w)).sort((a, b) => strengthOf(a) - strengthOf(b));
+    pool = [...pool, ...extra.slice(0, len - pool.length)];
+  }
+  const scored = pool.map(w => ({
+    w,
+    score: (isDue(w) ? 100 : 0) + (100 - strengthOf(w)) + (isHard(w) ? 30 : 0) + Math.random() * 10
+  }));
+  scored.sort((a, b) => b.score - a.score);
+  return scored.slice(0, len).map(s => s.w);
+};
+
+startSession = function (opts = {}) {
+  sprint = null;
+  const len = opts.len || state.settings.sessionLen || 10;
+  let words;
+  const pool = usablePool();
+  if (opts.onlyFavorite) words = pool.filter(w => w.favorite).slice(0, len);
+  else if (opts.onlyWeak) words = pool.filter(w => w.last && (w.wrong > w.correct || strengthOf(w) < 40)).slice(0, len);
+  else if (opts.onlyLeech && typeof isLeech === "function") words = pool.filter(isLeech).slice(0, len);
+  else if (opts.onlyBlind && typeof isBlindSpot === "function") words = shuffle(pool.filter(isBlindSpot)).slice(0, len);
+  else words = pickSessionWords(len, !!opts.onlyHard);
+  if (words.length < 2) {
+    toast("Soru için Türkçesi yazılmış en az 2 kelime gerek. Anlamı boş olanları karttan doldur.");
+    return;
+  }
+  const focus = opts.focus || "karisik";
+  const queue = [];
+  let prev = null;
+  for (const w of words) {
+    const q = buildQuestion(w, prev, focus);
+    if (!q) continue;
+    queue.push(q);
+    prev = q.type;
+  }
+  if (queue.length < 2) { toast("Bu tur için uygun soru kurulamadı"); return; }
+  session = {
+    queue, i: 0, correct: 0, wrong: 0,
+    hearts: state.settings.hearts ? 3 : Infinity,
+    started: Date.now(), t0: Date.now(), xp0: state.xp, mastered0: masteredCount(),
+    answered: null, done: false, early: false, focus,
+    wrongItems: [],
+    phase: state.settings.confidence ? "confidence" : "answer"
+  };
+  state.totals.sessions++;
+  save();
+  showTab("session");
+};
+
+beginWords = function (words, focus) {
+  const list = [...new Map((words || []).filter(usableWord).map(w => [w.id, w])).values()].slice(0, state.settings.sessionLen || 10);
+  if (list.length < 2) { toast("Bu tur için Türkçesi yazılmış en az 2 kelime gerek"); return; }
+  const queue = [];
+  let prev = null;
+  for (const w of list) {
+    const q = buildQuestion(w, prev, focus || "karisik");
+    if (!q) continue;
+    queue.push(q);
+    prev = q.type;
+  }
+  if (queue.length < 2) { toast("Bu tur için uygun soru kurulamadı"); return; }
+  session = {
+    queue, i: 0, correct: 0, wrong: 0,
+    hearts: state.settings.hearts ? 3 : Infinity,
+    started: Date.now(), t0: Date.now(), xp0: state.xp, mastered0: masteredCount(),
+    answered: null, done: false, early: false, focus: focus || "karisik",
+    wrongItems: [],
+    phase: state.settings.confidence ? "confidence" : "answer"
+  };
+  state.totals.sessions++;
+  save();
+  showTab("session");
+};
+
+fourPairs = function (prefer) {
+  let pool = usablePool();
+  if (prefer) { const hit = pool.filter(prefer); if (hit.length >= 4) pool = hit; }
+  return shuffle(pool).slice(0, 4).map(w => ({ a: w.en, b: realTr(w) }));
+};
+
+newRound = function () {
+  const due = usablePool().filter(isDue);
+  const pool = due.length >= state.settings.pairs ? due : usablePool().filter(w => !w.mastered);
+  const picked = shuffle(pool.length ? pool : usablePool()).slice(0, state.settings.pairs);
+  if (picked.length < 2) { matchRound = null; return; }
+  matchRound = {
+    words: picked,
+    left: shuffle(picked.map(w => w.id)),
+    right: shuffle(picked.map(w => w.id)),
+    selLeft: null, done: new Set(), flash: null, showHint: false,
+    wrongCount: 0, counted: false, t0: Date.now()
+  };
+};
+
+nextSprintQuestion = function () {
+  if (!sprint || sprint.done) return;
+  const pool = usablePool();
+  if (pool.length < 4) { finishReflexSprint(); return; }
+  const w = pool[Math.floor(Math.random() * pool.length)];
+  const opts = shuffle([w, ...pickDistractors(w, "tr", 3)]);
+  if (opts.length < 2) { finishReflexSprint(); return; }
+  sprint.current = { w, opts };
+  renderSprint();
+};
+
+questionHtml = function (q) {
+  const w = q.w;
+  const ans = session.answered;
+  if (session.phase === "confidence" && !ans) {
+    return `<p class="muted">Bu soruyu ne kadar emin cevaplayabileceğini tahmin et.</p>
+      <div class="col" style="margin-top:12px">
+        <button class="tile" data-conf="1">1 · Emin değilim</button>
+        <button class="tile" data-conf="2">2 · Kısmen biliyorum</button>
+        <button class="tile" data-conf="3">3 · Eminim</button>
+      </div>`;
+  }
+  const useTr = q.type === "meaning" || q.type === "morph";
+  let head = "";
+  let isOpt = true;
+  if (q.type === "meaning") head = `<p class="muted">Bu kelimenin Türkçe anlamı hangisi?</p><div class="word">\( {esc(w.en)}</div><span class="pos"> \){esc(w.pos || "")}</span>`;
+  else if (q.type === "morph") head = `<p class="muted">Parçalara bak. Türkçe anlamı hangisi?</p><div class="word">\( {esc(w.en)}</div> \){chipsHtml(analyze(w).parts)}`;
+  else if (q.type === "cloze") head = `<p class="muted">Boşluğa uygun İngilizce kelimeyi seç.</p><p class="sentence">${ans ? highlightOf(w) : blankOf(w)}</p>`;
+  else if (q.type === "listen") head = `<p class="muted">Dinle. Duyduğun İngilizce kelimeyi seç.</p><button class="primary" id="playBtn">🔊 Dinle</button>`;
+  else {
+    isOpt = false;
+    if (q.type === "dictation") {
+      head = `<p class="muted">Dinle ve duyduğun İngilizce kelimeyi yaz.</p><button class="primary" id="playBtn">🔊 Dinle</button>${ans ? "" : inputHtml("İngilizce kelime")}`;
+    } else {
+      head = `<p class="muted">Bu kelimenin Türkçe karşılığını yaz.</p><div class="word">${esc(w.en)}</div>
+        ${ans ? "" : inputHtml("Türkçe anlam")}`;
+    }
+  }
+  if (!isOpt) return head;
+  const optHtml = q.opts.map(o => {
+    const label = useTr ? realTr(o) : (o.en || "");
+    if (!label) return "";
+    let cls = "tile";
+    if (ans) {
+      if (o.id === w.id) cls += " ok";
+      else if (o.id === ans.picked) cls += " bad";
+    }
+    return `<button class="\( {cls}" data-opt=" \){o.id}" \( {ans ? "disabled" : ""}> \){esc(label)}</button>`;
+  }).filter(Boolean).join("");
+  return `\( {head}<div class="col" style="margin-top:12px"> \){optHtml}</div>`;
+};
+
+answerText = function (value) {
+  const q = sessionQ();
+  if (!q || session.answered || session.phase !== "answer") return;
+  const ok = q.type === "produce" ? trMatch(value, q.w.tr) : normEn(value) === normEn(q.w.en);
+  resolveAnswer(q, ok, null, value);
+};
+
+feedbackHtml = function (q) {
+  const w = q.w;
+  const ans = session.answered;
+  const correctLabel = expectedLabel(q);
+  const isLast = session.i + 1 >= session.queue.length;
+  return `<div class="card">
+    <p>\( {ans.ok ? "Doğru." : `Yanlış. Doğru cevap: <strong> \){esc(correctLabel)}</strong>`}</p>
+    <p class="muted"><strong>${esc(w.en)}</strong> = \( {esc(realTr(w))} \){w.def ? " · " + esc(w.def) : ""}</p>
+    \( {w.example ? `<p class="muted">Örnek: “ \){esc(w.example)}”</p>` : ""}
+    ${hookOf(w) ? `<p class="hook">💡 ${esc(hookOf(w))}</p>` : ""}
+    <button class="primary" id="nextQ" style="margin-top:8px">${isLast ? "Sonucu gör" : "Devam"}</button>
+  </div>`;
+};
 </script>
 </body>
 </html>
