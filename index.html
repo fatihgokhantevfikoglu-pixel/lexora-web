@@ -174,6 +174,18 @@
   .actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
   .actions .primary, .actions .ghost { min-height: 46px; }
   .iconrow { display: flex; gap: 8px; align-items: center; }    
+  .lib-split { display: grid; grid-template-columns: 1fr; gap: 12px; align-items: start; }
+  @media (min-width: 860px) {
+    body:has(#tab-library:not(.hidden)) main { max-width: 980px; }
+    .lib-split { grid-template-columns: minmax(0, 1fr) minmax(300px, 1fr); }
+  }
+  .lib-pane { min-height: 160px; position: sticky; top: 72px; }
+  .lib-pane .dw-image-wrap { height: 150px; border-radius: 14px; }
+  .lib-pane .dw-content { max-height: none; padding: 14px 0 0; overflow: visible; }
+  .lib-pane .dw-close { top: 8px; right: 8px; }
+  #webHits { margin: 8px 0 12px; }
+  #webHits .row { gap: 10px; }
+  #webHits .ghost { flex: 0 0 auto; } 
 </style>
 </head>
 <body>
@@ -830,22 +842,31 @@ function pickSessionWords(len, onlyHard) {
 let session = null;
 
 // ===================== Ses =====================
-function speak(text) {
-  if (!speechOK()) return;
-  speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = "en-US";
-  u.rate = 0.85; // Biraz daha yavaş, anlaşılır bir hız
-  
-  // Cihazdaki en iyi İngilizce sesi bul
-  const voices = speechSynthesis.getVoices();
-  const bestVoice = voices.find(v => v.lang.includes("en-US") && v.name.includes("Google")) || 
-                    voices.find(v => v.lang.includes("en-US")) || 
-                    voices.find(v => v.lang.includes("en"));
-  if (bestVoice) u.voice = bestVoice;
-  
-  speechSynthesis.speak(u);
+function speak(text, lang = "en-US", rate = 0.85) {
+  if (!speechOK() || !text) return Promise.resolve();
+  return new Promise(resolve => {
+    const u = new SpeechSynthesisUtterance(String(text));
+    u.lang = lang;
+    u.rate = rate;
+    const voices = speechSynthesis.getVoices();
+    const voice = voices.find(v => v.lang === lang) || voices.find(v => v.lang.startsWith(lang.slice(0, 2)));
+    if (voice) u.voice = voice;
+    u.onend = resolve;
+    u.onerror = resolve;
+    speechSynthesis.speak(u);
+  });
 }
+
+async function speakCard(w, slow) {
+  if (!speechOK()) { toast("Bu tarayıcı sesli okumayı desteklemiyor"); return; }
+  speechSynthesis.cancel();
+  const rate = slow ? 0.65 : 0.9;
+  await speak(w.en, "en-US", rate);
+  if (w.tr) await speak(w.tr, "tr-TR", rate);
+  if (w.example) await speak(w.example, "en-US", rate);
+}
+
+if (speechOK()) speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
 // ===================== Ağ katmanı: önbellek, zaman aşımı, yeniden deneme, devre kesici =====================
 const health = {};
 function healthOf(src) {
@@ -1051,6 +1072,66 @@ async function enrichWord(w) {
   return true;
 }
 
+let searchTimer = null;
+
+async function searchWeb(q) {
+  const box = $("webHits");
+  if (!box) return;
+  const query = String(q || "").trim().toLowerCase();
+  if (query.length < 2) { box.innerHTML = ""; return; }
+  box.innerHTML = `<p class="muted">İnternette aranıyor…</p>`;
+  const sug = await net("datamuse", `https://api.datamuse.com/sug?s=${encodeURIComponent(query)}&max=6`);
+  const words = [];
+  if (/^[a-z][a-z '\-]{1,40}$/.test(query)) words.push(query);
+  if (sug.ok && Array.isArray(sug.data)) {
+    sug.data.forEach(x => {
+      const w = String(x.word || "").toLowerCase();
+      if (/^[a-z][a-z '\-]{1,40}$/.test(w)) words.push(w);
+    });
+  }
+  const unique = [...new Set(words)].slice(0, 6);
+  if (!unique.length) { box.innerHTML = `<p class="muted">İnternette öneri yok.</p>`; return; }
+  box.innerHTML = `<p class="muted">İnternet</p>` + unique.map(w => {
+    const have = state.words.some(x => x.en === w);
+    return `<div class="row"><span><strong>${esc(w)}</strong>${have ? ' <span class="muted">sözlükte</span>' : ""}</span>
+      ${have ? `<button class="ghost" data-openen="${esc(w)}">Aç</button>` : `<button class="ghost" data-addweb="${esc(w)}">Ekle</button>`}</div>`;
+  }).join("");
+  box.querySelectorAll("[data-addweb]").forEach(b => b.onclick = () => addFromWeb(b.dataset.addweb));
+  box.querySelectorAll("[data-openen]").forEach(b => b.onclick = () => {
+    const found = state.words.find(x => x.en === b.dataset.openen);
+    if (found) openDetail(found.id);
+  });
+}
+
+async function addFromWeb(en) {
+  const existing = state.words.find(w => w.en === en);
+  if (existing) { openDetail(existing.id); return; }
+  toast("Sözlük ve çeviri alınıyor…");
+  const d = await lookupDict(en);
+  const tr = await translateTr(en);
+  if ((!d || d.error || !d.def) && !tr.value) { toast("Bu kelime bulunamadı"); return; }
+  state.words.push(normalize({
+    id: nextId(), en, tr: tr.value || "",
+    def: d && !d.error ? d.def : "",
+    pos: d && !d.error ? (d.pos || "diğer") : "diğer",
+    cat: "Genel", level: "B2",
+    example: d && !d.error ? (d.examples?.[0] || "") : "",
+    examples: d && !d.error ? (d.examples || []) : [],
+    syn: d && !d.error ? (d.syn || []) : [],
+    ant: d && !d.error ? (d.ant || []) : [],
+    phonetic: d && !d.error ? (d.phonetic || "") : "",
+    audio: d && !d.error ? (d.audio || "") : "",
+    origin: d && !d.error ? (d.origin || "") : "",
+    source: "web"
+  }));
+  save();
+  lib.q = "";
+  renderLibrary();
+  const saved = state.words.find(w => w.en === en);
+  if (saved) openDetail(saved.id);
+  toast(`"${en}" sözlüğe eklendi`);
+}    
+    
 function nextId() {
   return Math.max(0, ...state.words.map(w => w.id)) + 1;
 }
@@ -1342,7 +1423,7 @@ function renderLibrary(note = "") {
     `<option value="${esc(v)}" ${v === val ? "selected" : ""}>${esc(l)}</option>`).join("")}</select>`;
   el.innerHTML = `
     <div class="card">
-      <input type="search" id="libQ" placeholder="Kelime veya anlam ara" value="${esc(lib.q)}" aria-label="Kelime ara">
+      <input type="search" id="libQ" placeholder="İngilizce veya Türkçe ara" value="${esc(lib.q)}" aria-label="Kelime ara">
       <div class="filters">
         ${sel("libPos", [["hepsi", "Tüm türler"], ...POS_LIST.map(p => [p, p])], lib.pos)}
         ${sel("libCat", [["hepsi", "Tüm kategoriler"], ...cats.map(c => [c, c])], lib.cat)}
@@ -1369,9 +1450,23 @@ function renderLibrary(note = "") {
       <p class="muted" id="fetchMsg">${esc(note)}</p>
       <p class="muted">Kaynak durumu: ${esc(sourceSummary())}</p>
     </div>
-    <div class="card"><div class="muted" id="libCount"></div><div id="libList"></div></div>`;
+<div class="lib-split">
+  <div class="card lib-list">
+    <div class="muted" id="libCount"></div>
+    <div id="webHits"></div>
+    <div id="libList"></div>
+  </div>
+  <div class="card lib-pane" id="libPane">
+    <p class="muted">Bir kelime seç. Anlam, kök ve sesli okuma burada açılır.</p>
+  </div>
+</div>
 
-  $("libQ").oninput = e => { lib.q = e.target.value; drawList(); };
+  $("libQ").oninput = e => {
+    lib.q = e.target.value;
+    drawList();
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => searchWeb(lib.q), 400);
+  };
   $("libPos").onchange = e => { lib.pos = e.target.value; drawList(); };
   $("libCat").onchange = e => { lib.cat = e.target.value; drawList(); };
   $("libLevel").onchange = e => { lib.level = e.target.value; drawList(); };
@@ -1382,6 +1477,8 @@ function renderLibrary(note = "") {
   $("fTopic").onchange = e => { lib.topic = e.target.value; };
   $("fetchBtn").onclick = () => fetchWords(lib.mode, lib.topic);
   drawList();
+  searchWeb(lib.q);
+  if (detailId) renderDetail();  
 }
 
 // ===================== Detay penceresi =====================
@@ -1398,7 +1495,7 @@ async function openDetail(id) {
   save();
   checkBadges();
   renderDetail();
-  $("detail").showModal();
+  if (!(currentTab === "library" && $("libPane"))) $("detail").showModal();
   if (await enrichWord(w)) renderDetail();
 }
 
@@ -1412,7 +1509,9 @@ function renderDetail() {
   // LoremFlickr ile ücretsiz ve anahtarsız görsel çekme
   const imgUrl = `https://loremflickr.com/600/400/${encodeURIComponent(w.en)}?random=${w.id}`;
 
-  $("detailBody").innerHTML = `
+  const inline = currentTab === "library" && $("libPane");
+  const host = inline ? $("libPane") : $("detailBody");
+  host.innerHTML = `
     <div class="dw-image-wrap">
       <img src="${imgUrl}" class="dw-image" alt="${esc(w.en)} görseli" onerror="this.src='https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=600&q=80'; this.onerror=null;">
       <button class="dw-close" id="dClose" aria-label="Kapat">✕</button>
@@ -1432,8 +1531,12 @@ function renderDetail() {
           <button class="icon" id="dFav" aria-label="Favori">${w.favorite ? "⭐" : "☆"}</button>
           <button class="icon" id="dEdit" aria-label="Düzenle">✎</button>
           <button class="icon" id="dDel" aria-label="Sil">🗑</button>
+        <div class="iconrow">
+          <button class="icon" id="dRead" aria-label="Hepsini oku">▶</button>
+          <button class="icon" id="dSlow" aria-label="Yavaş oku">🐢</button>
           <button class="icon" id="dPlay" aria-label="Dinle" style="font-size:24px; background:var(--primary); color:#fff; border:none; border-radius:50%; width:48px; height:48px;">🔊</button>
         </div>
+      </div>
 
       <div class="dw-sec">
         <div class="dw-tr">${esc(w.tr)}</div>
@@ -1488,7 +1591,12 @@ function renderDetail() {
     </div>`;
 
   // Buton Dinleyicileri
-  $("dClose").onclick = () => $("detail").close();
+  $("dClose").onclick = () => {
+    if (inline) {
+      detailId = null;
+      $("libPane").innerHTML = `<p class="muted">Bir kelime seç.</p>`;
+    } else $("detail").close();
+  };
   $("dPlay").onclick = () => {
     if (w.audio) new Audio(w.audio).play().catch(() => speak(w.en));
     else speak(w.en);
@@ -1502,6 +1610,8 @@ function renderDetail() {
   $("dEdit").onclick = () => openEditWord(w);
   $("dDel").onclick = () => deleteWord(w);      
   };
+  $("dRead").onclick = () => speakCard(w, false);
+  $("dSlow").onclick = () => speakCard(w, true);    
 }
 
 function familyLineHtml(w) {
