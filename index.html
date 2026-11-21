@@ -2,15 +2,16 @@
 <html lang="tr">
 <head>
     <!-- PWA Ayarları -->
-    <link rel="manifest" href="manifest.json">
+    <!-- PWA manifest and service worker require hosted files; no broken local resource requested. -->
     <meta name="theme-color" content="#6d28d9">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="icon.png">
+    
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>İngilizce</title>    
+<title>LEXORA Studio 7 · İngilizce Sözcük & Okuma</title>
+<meta name="description" content="LEXORA Studio: kişisel İngilizce sözcük öğrenme, bağlamsal okuma, anlama çalışmaları ve veri taşınabilirliği.">    
 <style>
   :root {
     --bg:#f5f3ff; --surface:#ffffff; --text:#1e1b4b; --muted:#6b7280; --primary:#6d28d9;
@@ -963,12 +964,249 @@ dialog { overflow: auto; }
     font-size: 13px !important;
   }
 }    
+  /* =====================================================================
+     LX6 · SİSTEM KATMANI — düzen, yönlendirme, mobil uyum
+     ===================================================================== */
+  main section { overflow-wrap: anywhere; }
+  main img, main canvas, main svg, main video, main select, main input, main textarea { max-width: 100%; }
+  main table { display: block; max-width: 100%; overflow-x: auto; }
+  main .row { flex-wrap: wrap; min-width: 0; }
+  main pre { white-space: pre-wrap; word-break: break-word; }
+
+  nav.lx-nav { display: flex; gap: 6px; padding: 0 10px 10px; overflow: visible; position: sticky; top: env(safe-area-inset-top, 0px); background: var(--bg); z-index: 20; }
+  nav.lx-nav > button[data-tab] { flex: 1 1 0; min-width: 0; min-height: 46px; padding: 6px 4px; font-size: 13px; line-height: 1.15; white-space: normal; text-align: center; }
+  nav.lx-nav > button[data-tab] span { margin-right: 4px; }
+  .lx-menu-wrap { flex: 0 0 auto; position: relative; }
+  .lx-menu-btn { min-height: 46px; min-width: 60px; max-width: 150px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font: inherit; font-size: 12px; line-height: 1.15; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lx-menu-btn[aria-expanded="true"], .lx-menu-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .lx-menu { position: fixed; left: 8px; right: 8px; max-height: calc(100vh - 130px); overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 10px; box-shadow: 0 16px 40px rgba(0, 0, 0, .25); z-index: 40; }
+  .lx-group { margin-bottom: 4px; }
+  .lx-group-title { margin: 8px 6px 2px; font-size: 12px; color: var(--muted); font-weight: 600; }
+  .lx-mi { display: flex; gap: 10px; align-items: flex-start; width: 100%; min-height: 48px; padding: 8px 10px; border: 0; border-radius: 10px; background: transparent; color: var(--text); font: inherit; text-align: left; cursor: pointer; }
+  .lx-mi:hover, .lx-mi.active { background: color-mix(in srgb, var(--primary) 14%, transparent); }
+  .lx-mi-ico { width: 22px; text-align: center; flex: 0 0 auto; }
+  .lx-mi-txt small { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
+  .lx-reco { border: 1px solid var(--primary); border-radius: 12px; padding: 10px; margin-bottom: 8px; background: color-mix(in srgb, var(--primary) 8%, var(--surface)); }
+  .lx-reco-h { margin: 0 0 2px; font-weight: 700; font-size: 13px; }
+  .lx-reco p { margin: 0 0 8px; font-size: 13px; }
+  .lx-reco button { width: 100%; }
+
+  .lx-head { margin: 0 0 10px; }
+  .lx-head-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
+  .lx-head-title { margin: 0; font-size: 17px; font-weight: 700; }
+  .lx-head-purpose { margin: 2px 0 0; font-size: 13px; color: var(--muted); }
+  .lx-head.lx-collapsed .lx-head-purpose { display: none; }
+  .lx-head-acts { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .lx-mini { min-height: 34px; padding: 4px 10px; font: inherit; font-size: 12px; border-radius: 999px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; }
+  .lx-smart { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 8px 12px; margin-bottom: 12px; }
+  .lx-smart > summary { cursor: pointer; min-height: 40px; display: flex; align-items: center; font-weight: 600; }
+  .lx-cards { display: grid; gap: 8px; padding: 4px 0 6px; }
+  @media (min-width: 620px) { .lx-cards { grid-template-columns: 1fr 1fr; } }
+  .lx-card { border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; background: color-mix(in srgb, var(--primary) 6%, var(--surface)); min-width: 0; }
+  .lx-card h3 { margin: 0 0 4px; font-size: 14px; }
+  .lx-body { font-size: 13px; line-height: 1.5; }
+  .lx-body p { margin: 0; }
+  .lx-acts { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .lx-acts button { min-height: 38px; }
+  .lx-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 6px 0; border-bottom: 1px solid var(--border); }
+  .lx-row:last-child { border-bottom: 0; }
+  .lx-row > span:first-child { min-width: 90px; }
+  .lx-row .lx-bar { flex: 1 1 120px; margin: 0; }
+  .lx-bar { height: 8px; border-radius: 999px; background: var(--border); overflow: hidden; margin: 6px 0; }
+  .lx-bar span { display: block; height: 100%; background: var(--primary); border-radius: 999px; }
+  .lx-search { width: 100%; min-height: 42px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); color: var(--text); padding: 8px 10px; font: inherit; margin-top: 6px; }
+  .lx-next { margin-top: 16px; padding-top: 10px; border-top: 1px dashed var(--border); }
+  .lx-next > p { margin: 0 0 6px; font-size: 12px; }
+  .lx-next-btn { width: 100%; min-height: 52px; text-align: left; display: flex; flex-direction: column; gap: 2px; padding: 8px 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font: inherit; font-weight: 600; cursor: pointer; }
+  .lx-next-btn small { font-weight: 400; color: var(--muted); font-size: 12px; }
+  .lx-err { border-color: var(--bad); }
+  .lx-tip { font-size: 13px; margin: 6px 0 0; }
+
+  .lx-univ-card { padding: 12px; }
+  .lx-univ-tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .lx-univ-tools select, .lx-univ-tools input { min-height: 42px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); color: var(--text); padding: 6px 10px; font: inherit; }
+  .lx-univ-tools select { flex: 1 1 150px; min-width: 0; }
+  .lx-univ-tools input { flex: 1 1 130px; min-width: 0; }
+  .lx-univ-count { margin: 6px 0 2px; font-size: 13px; }
+  .lx-legend { display: flex; gap: 6px; overflow-x: auto; padding: 4px 0 8px; -webkit-overflow-scrolling: touch; }
+  .lx-galaxy { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; min-height: 38px; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font: inherit; font-size: 13px; cursor: pointer; }
+  .lx-galaxy i { width: 10px; height: 10px; border-radius: 50%; background: var(--gc); display: inline-block; }
+  .lx-galaxy small { color: var(--muted); font-size: 11px; }
+  .lx-galaxy.on { border-color: var(--primary); box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 30%, transparent); }
+  .universe-wrap { position: relative; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); background: radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--primary) 14%, var(--bg)), var(--bg) 78%); }
+  #wordUniverseCanvas { display: block; width: 100%; height: clamp(300px, 58vh, 560px); touch-action: pan-y; cursor: grab; outline: none; border-radius: 16px; user-select: none; -webkit-user-select: none; }
+  #wordUniverseCanvas:active { cursor: grabbing; }
+  #wordUniverseCanvas:focus-visible { box-shadow: inset 0 0 0 3px var(--primary); }
+  .lx-univ-hint { font-size: 12px; margin: 8px 2px 6px; }
+  .lx-univ-panel { min-height: 60px; border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; background: var(--surface); margin-top: 10px; }
+  .lx-univ-panel p { margin: 0; }
+  .lx-sel-h { font-size: 16px; }
+  .lx-chiplist { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px 0; }
+  .lx-chip { min-height: 36px; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font: inherit; font-size: 13px; cursor: pointer; }
+  .lx-viewbar { margin-bottom: 10px; }
+  body.lx-univ-active #quickFloatFab, body.lx-univ-active .gift-float-btn, body.lx-univ-active #zenFloatBtn { display: none !important; }
+
+  body.lx-big-touch button, body.lx-big-touch select, body.lx-big-touch input { min-height: 48px; }
+  body.lx-big-touch nav.lx-nav > button[data-tab] { min-height: 52px; }
+  body.lx-contrast { --muted: var(--text); }
+  body.lx-contrast .card, body.lx-contrast .lx-card, body.lx-contrast .lx-smart, body.lx-contrast .universe-wrap { border-width: 2px; border-color: var(--text); }
+  @media (max-width: 380px) { nav.lx-nav > button[data-tab] { font-size: 12px; } }
+  main .grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  main .grid > * { min-width: 0; }
+  @media (max-width: 380px) { main .grid { grid-template-columns: minmax(0, 1fr); } }
+  #quickFloatFab.pos-br { right: 12px !important; bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important; }
+  .gift-float-btn { right: 12px !important; bottom: calc(68px + env(safe-area-inset-bottom, 0px)) !important; width: 46px; height: 46px; }
+  body.lx-menu-open #quickFloatFab, body.lx-menu-open .gift-float-btn, body.lx-menu-open .hourly-gift-dock, body.lx-menu-open #zenFloatBtn { display: none !important; }
+  @media (min-width: 640px) { .lx-menu { left: 50%; right: auto; width: min(560px, calc(100vw - 16px)); transform: translateX(-50%); } }
+  @media (min-width: 700px) { nav.lx-nav { max-width: 680px; margin: 0 auto; } }
+
+
+/* ================= LEXORA STUDIO 7 ================= */
+:root { --st-ink: var(--text); --st-accent:var(--primary); --st-sub:var(--muted); --st-outline:var(--border); }
+body:has(#tab-reading:not(.hidden)) main,
+body:has(#tab-account:not(.hidden)) main { max-width:1160px; }
+body:has(#tab-reading:not(.hidden)) #quickFloatFab,
+body:has(#tab-reading:not(.hidden)) .hourly-gift-dock,
+body:has(#tab-account:not(.hidden)) #quickFloatFab,
+body:has(#tab-account:not(.hidden)) .hourly-gift-dock { display:none!important; }
+#tab-reading, #tab-account { text-align:left; padding-bottom:35px; }
+#tab-reading *, #tab-account * { box-sizing:border-box; }
+.st-hero { padding:clamp(22px,4vw,36px); display:flex; align-items:center; justify-content:space-between; gap:20px; border-radius:24px; background:linear-gradient(115deg, color-mix(in srgb,var(--primary) 92%, #151a2b),color-mix(in srgb,var(--primary) 46%,#18223b)); color:white; box-shadow:0 16px 44px rgba(31,24,65,.17); margin-bottom:15px; }
+.st-hero h2 { margin:8px 0 10px; line-height:1.17; font-size:clamp(22px,3.3vw,36px); letter-spacing:-.025em; font-weight:800; max-width:640px; }
+.st-hero p { opacity:.89; margin:0; font-size:14px; line-height:1.65; max-width:600px; }
+.st-eyebrow { text-transform:uppercase; font-size:11px; letter-spacing:.18em; opacity:.78; font-weight:800; }
+.st-hero-stats { display:grid; grid-template-columns:75px; gap:3px; text-align:center; flex:0 0 108px; border-radius:16px; background:rgba(255,255,255,.13); padding:12px; border:1px solid rgba(255,255,255,.23); }
+.st-hero-stats strong { font-size:33px; line-height:1.1; }
+.st-hero-stats span { font-size:11px; opacity:.82; margin-bottom:8px; }
+.st-quickline { display:flex; gap:10px; flex-wrap:wrap; align-items:center; padding:12px 16px; background:var(--surface); border:1px solid var(--border); border-radius:16px; margin-bottom:16px; }
+.st-quickline span { font-size:12px; color:var(--muted); font-weight:650; }
+.st-dual { display:grid; grid-template-columns:minmax(275px,.72fr) minmax(0,1.6fr); gap:16px; align-items:start; }
+.st-import-side, .st-reader-side { display:grid; gap:16px; min-width:0; }
+.st-panel { min-width:0; background:var(--surface); color:var(--text); border:1px solid var(--border); border-radius:20px; padding:18px; margin-bottom:15px; box-shadow:0 7px 28px rgba(32,31,64,.045); }
+.st-panel h3 { font-size:17px; margin:0 0 13px; font-weight:800; letter-spacing:-.01em; }
+.st-panel p { line-height:1.6; }
+.st-panel:has(.st-reading-text) { padding:0; overflow:hidden; }
+.st-segments { display:flex; flex-wrap:wrap; gap:4px; padding:4px; background:var(--bg); border-radius:12px; margin-bottom:14px; }
+.st-segment { background:transparent; border:1px solid transparent; border-radius:9px; color:var(--text); padding:10px 8px; font:inherit; font-size:12px; cursor:pointer; flex:1; }
+.st-segment.active { background:var(--surface); border-color:var(--border); box-shadow:0 2px 6px rgba(0,0,0,.06); font-weight:800; color:var(--primary); }
+.st-sample { width:100%; display:flex; gap:11px; align-items:center; text-align:left; border:1px solid var(--border); padding:11px; border-radius:11px; background:var(--surface); color:var(--text); font:inherit; cursor:pointer; margin:6px 0; }
+.st-sample:hover, .st-doc:hover, .st-recommend:hover { border-color:var(--primary); background:color-mix(in srgb,var(--primary) 5%,var(--surface)); }
+.st-sample > span:nth-child(2) { min-width:0; flex:1; }
+.st-sample strong { font-size:13px; line-height:1.35; display:block; }
+.st-sample small, .st-doc small, .st-result small { display:block; font-size:11px; line-height:1.45; color:var(--muted); margin-top:3px; }
+.st-level { display:grid; place-items:center; background:color-mix(in srgb,var(--primary) 10%,var(--surface)); border:1px solid color-mix(in srgb,var(--primary) 27%,var(--border)); color:var(--primary); border-radius:8px; padding:7px 8px; font-size:11px; font-weight:800; }
+.st-list-title { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px; }
+.st-list-title span { color:var(--muted); font-size:12px; }
+#stFilter { width:100%; margin-bottom:9px; }
+.st-doc-list { max-height:290px; overflow:auto; display:grid; gap:5px; }
+.st-doc { padding:10px 11px; text-align:left; background:var(--surface); border:1px solid transparent; border-radius:10px; color:var(--text); font:inherit; cursor:pointer; width:100%; }
+.st-doc strong { display:block; font-size:13px; line-height:1.4; }
+.st-doc.active { background:color-mix(in srgb,var(--primary) 9%,var(--surface)); border-color:var(--primary); }
+.st-doc[hidden] { display:none; }
+.st-empty { min-height:400px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:38px; }
+.st-empty-icon { width:90px; height:90px; border-radius:25px; background:color-mix(in srgb,var(--primary) 11%,var(--surface)); font-size:42px; display:grid; place-items:center; margin-bottom:18px; }
+.st-empty strong { font-size:20px; }.st-empty p { max-width:360px; color:var(--muted); font-size:14px; }
+.st-paper { padding:23px; }
+.st-paper-head { display:flex; justify-content:space-between; align-items:start; flex-wrap:wrap; gap:10px; margin-bottom:16px; }
+.st-paper h3 { font-family:Georgia,"Times New Roman",serif; font-size:clamp(22px,2.6vw,31px); line-height:1.22; font-weight:700; margin:4px 0 0; }
+.st-kicker { font-size:10px; font-weight:850; letter-spacing:.1em; color:var(--primary); text-transform:uppercase; }
+.st-metric-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin:12px 0; }
+.st-metric-grid > div { padding:12px 6px; background:var(--bg); border:1px solid var(--border); border-radius:11px; text-align:center; }
+.st-metric-grid strong { display:block; font-size:20px; line-height:1.2; font-weight:800; font-variant-numeric:tabular-nums; }
+.st-metric-grid span { display:block; color:var(--muted); font-size:10px; margin-top:5px; }
+.st-meter { height:7px; border-radius:20px; background:var(--border); overflow:hidden; margin:9px 0 17px; }
+.st-meter i { display:block; height:100%; background:linear-gradient(90deg,var(--primary),color-mix(in srgb,var(--primary) 70%,#16a34a)); border-radius:inherit; transition:width .3s; }
+.st-toolbar { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:12px 0; }
+.st-toolbar button { border-radius:10px; font-size:12px; padding:8px 12px; min-height:38px; }
+.st-toolbar a { color:var(--primary); font-size:12px; }
+.st-reading-text { font-family:Georgia,"Times New Roman",serif; font-size:clamp(17px,1.7vw,20px); line-height:1.98; letter-spacing:.003em; color:var(--text); background:color-mix(in srgb,var(--surface) 96%,#f5e8d1); padding:22px 4px; margin:10px 0 8px; border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+.st-reading-text p { margin:0 0 1.5em; line-height:inherit; }
+.st-reading-text p:last-child { margin-bottom:0; }
+.st-token { border:0; border-radius:3px; background:transparent; padding:0; color:inherit; cursor:pointer; font:inherit; line-height:inherit; display:inline; }
+.st-token:hover, .st-token:focus-visible { background:color-mix(in srgb,var(--primary) 17%,transparent); outline:2px solid color-mix(in srgb,var(--primary) 30%,transparent); }
+.st-token.st-familiar { text-decoration:underline; text-decoration-color:color-mix(in srgb,var(--ok) 60%,transparent); text-decoration-thickness:1.5px; text-underline-offset:5px; }
+.st-token.st-new { text-decoration:none; }
+.st-pager { display:flex; justify-content:space-between; gap:10px; align-items:center; padding:14px 0; font-size:12px; color:var(--muted); }
+.st-pager button { font-size:13px; }
+.st-word-panel { border:1px solid color-mix(in srgb,var(--primary) 48%,var(--border)); border-radius:14px; padding:18px; background:color-mix(in srgb,var(--primary) 5%,var(--surface)); margin:13px 0; animation:inF .2s ease; }
+.st-word-header { display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; }.st-word-header strong { font-size:23px; }
+.st-word-panel p { margin:8px 0; font-size:14px; overflow-wrap:anywhere; }
+.st-word-panel details { font-size:13px; }.st-online-entry { border-top:1px solid var(--border); margin-top:10px; padding:12px 0; }
+.st-writing { border-top:1px dashed var(--border); margin-top:13px; padding-top:16px; }
+.st-writing strong { font-size:16px; }.st-writing textarea { min-height:118px; resize:vertical; }
+.st-field { display:flex; flex-direction:column; gap:5px; margin:12px 0; font-size:12px; font-weight:700; }
+.st-field input, .st-field textarea, .st-field select { width:100%; background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:10px; padding:11px 12px; font:inherit; font-size:14px; font-weight:400; min-height:43px; }
+.st-file-btn { display:inline-flex; align-items:center; padding:10px 12px; border-radius:10px; border:1px solid var(--primary); color:var(--primary); font-size:12px; font-weight:750; cursor:pointer; }
+.st-file-btn input { width:0; height:0; opacity:0; position:absolute; }
+.st-file-btn:focus-within { outline:2px solid var(--primary); outline-offset:2px; }
+.st-result-list { display:grid; gap:8px; margin-top:10px; }.st-result { padding:11px; border:1px solid var(--border); border-radius:10px; }
+.st-result strong { font-size:13px; }.st-result small { overflow-wrap:anywhere; }
+.st-safety-note { font-size:13px; padding:11px; background:var(--bg); border-radius:10px; }
+.st-attribution { font-size:11px; color:var(--muted); overflow-wrap:anywhere; padding-top:9px; }.st-attribution a { color:var(--primary); }
+.st-recommend-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; }
+.st-recommend { background:var(--bg); border:1px solid var(--border); border-radius:12px; padding:15px; text-align:left; font:inherit; color:var(--text); cursor:pointer; }
+.st-recommend strong { display:block; font-size:14px; line-height:1.4; }.st-recommend small { display:block; color:var(--muted); font-size:12px; line-height:1.5; margin-top:5px; }
+.st-inline-status { margin:10px 0; font-size:13px; color:var(--muted); line-height:1.55; min-height:20px; }
+.st-inline-status[data-kind="error"],.st-error { color:var(--bad); }
+.st-inline-status[data-kind="ok"] { color:var(--ok); }
+.st-diagnostics { display:grid; gap:4px; }.st-diagnostics > div { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; border-bottom:1px solid var(--border); padding:8px 3px; font-size:13px; }
+.st-diagnostics small { font-size:11px; color:var(--muted); }.st-busy { opacity:.6; cursor:progress!important; }
+.st-quiz-overlay { padding:24px; background:var(--surface); border:1px solid var(--primary); border-radius:15px; margin-bottom:20px; box-shadow:0 10px 30px rgba(0,0,0,.06); }
+.st-quiz-head { display:flex; align-items:start; justify-content:space-between; gap:12px; flex-wrap:wrap; }.st-quiz-head h3 { font-family:inherit; font-size:21px; margin:4px 0 10px; }
+.st-question { font-weight:750; font-size:16px; line-height:1.55; }
+.st-question-context { padding:15px; border-left:3px solid var(--primary); margin:15px 0; border-radius:0 10px 10px 0; background:var(--bg); font-family:Georgia,serif; font-size:16px; line-height:1.8; }
+.st-options { display:grid; gap:8px; }
+.st-option { text-align:left; display:flex; gap:9px; align-items:flex-start; padding:12px 14px; border:1px solid var(--border); border-radius:10px; background:var(--surface); color:var(--text); font:inherit; font-size:13px; line-height:1.45; cursor:pointer; }
+.st-option span { display:grid; place-items:center; flex:0 0 26px; height:26px; border-radius:7px; background:var(--bg); font-weight:800; }
+.st-option:not(:disabled):hover { border-color:var(--primary); }
+.st-option.correct { border-color:var(--ok); background:var(--okbg); }.st-option.incorrect { border-color:var(--bad); background:var(--badbg); }
+.st-quiz-feedback,.st-quiz-review { padding:14px; border-radius:12px; background:var(--bg); border:1px solid var(--border); margin:14px 0 0; font-size:13px; line-height:1.55; }
+.st-quiz-feedback p { margin:7px 0; }.st-quiz-review summary { cursor:pointer; font-weight:700; }.st-evidence { font-style:italic; }
+.st-account-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; align-items:start; margin-bottom:12px; }
+.st-account-grid .st-panel { margin-bottom:0; min-height:160px; }
+.st-account-status { flex:0 0 230px; padding:19px; border-radius:15px; border:1px solid rgba(255,255,255,.25); background:rgba(255,255,255,.1); text-align:center; font-size:15px; font-weight:750; }
+.st-account-status small { display:block; margin-top:8px; font-size:11px; font-weight:400; overflow-wrap:anywhere; opacity:.85; }
+.st-plan { display:flex; justify-content:space-between; gap:10px; align-items:center; flex-wrap:wrap; padding:12px; border:1px solid var(--border); border-radius:12px; margin:8px 0; }
+.st-plan strong { display:block; }.st-plan small { display:block; font-size:12px; margin-top:4px; color:var(--muted); }
+.st-checklist { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }.st-checklist > div { padding:13px; border:1px solid var(--border); border-radius:11px; background:var(--bg); }
+.st-checklist strong { display:block; font-size:13px; }.st-checklist small { color:var(--muted); font-size:12px; display:block; line-height:1.55; margin-top:5px; }
+.st-legal-check { display:flex; align-items:flex-start; gap:9px; font-size:12px; line-height:1.5; margin:15px 0; cursor:pointer; }.st-legal-check input { margin-top:2px; }
+.st-today-bridge { border-left:4px solid var(--primary)!important; }
+.st-bridge-head { display:flex; justify-content:space-between; align-items:center; gap:12px; }.st-bridge-head h3 { margin:5px 0; font-size:19px; }.st-bridge-head p { margin:0; }.st-bridge-icon { font-size:38px; }
+.st-compact-bridge { border-left:4px solid var(--ok)!important; }
+nav.lx-nav > button[data-tab="reading"] { border-color:color-mix(in srgb,var(--primary) 32%,var(--border)); font-weight:800; }
+#tab-reading a, #tab-account a { text-underline-offset:3px; }
+@media (max-width:880px){ .st-dual { grid-template-columns: minmax(235px,.8fr) minmax(0,1.2fr); }.st-recommend-grid { grid-template-columns:1fr; } }
+@media (max-width:700px){
+  .st-dual,.st-account-grid,.st-checklist { grid-template-columns:1fr; }
+  .st-panel { padding:14px; border-radius:16px; }
+  .st-hero { align-items:flex-start; padding:21px; border-radius:17px; }
+  .st-paper { padding:13px; }
+  .st-reading-text { padding:17px 3px; font-size:18px; }
+  .st-hero-stats { flex:0 0 90px; }
+  .st-hero h2 { font-size:23px; }
+  .st-hero-stats strong { font-size:27px; }
+  .st-quickline { gap:6px 14px; }
+  .st-metric-grid strong { font-size:18px; }
+  .st-metric-grid span { font-size:9px; }
+  nav.lx-nav > button[data-tab] { font-size:11px; padding:5px 3px; }
+}
+@media (max-width:430px){
+  .st-hero { flex-direction:column; }.st-hero-stats { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; width:100%; flex:auto; }.st-hero-stats strong { font-size:23px; }.st-hero-stats span { margin:4px 0; }
+  .st-metric-grid { gap:4px; }.st-metric-grid > div { padding:9px 2px; }
+  .st-toolbar button { flex:1 1 auto; }
+  .st-quiz-overlay { padding:12px; }
+  nav.lx-nav > button[data-tab] { font-size:10px; }
+  nav.lx-nav > button[data-tab] span { display:block; margin:0 0 2px; font-size:16px; }
+}
+@media (prefers-reduced-motion:reduce){ .st-token, .st-panel, .st-hero { animation:none!important; transition:none!important; } }
+
 </style>
 </head>
 <body>
 <canvas id="fxCanvas"></canvas>
 <header>
-  <span>İngilizce</span>
+  <span>LEXORA</span>
   <button class="header-pill" id="profilePill" title="Profili Düzenle"></button>
   <span class="streak-badge" id="streakBadge"></span>
   <button class="header-pill" id="ambientBtn" title="Odak Ambiyansı (Kahverengi Gürültü)">🎧 Odak</button>
@@ -1006,7 +1244,9 @@ dialog { overflow: auto; }
   <section id="tab-room" class="hidden"></section>
   <section id="tab-world" class="hidden"></section>
   <section id="tab-focus" class="hidden"></section>
-  <section id="tab-profile" class="hidden"></section>  
+  <section id="tab-profile" class="hidden"></section>
+  <section id="tab-reading" class="hidden"></section>
+  <section id="tab-account" class="hidden"></section>  
 </main>
 <dialog id="detail" aria-labelledby="detailTitle">
   <div id="detailBody"></div>
@@ -1541,7 +1781,7 @@ function saveCache() {
 }
 
 // ===================== SRS ve güç =====================
-const isDue = w => !w.mastered && w.next <= Date.now();
+const isDue = w => Number(w.next || 0) <= Date.now();
 const isHard = w => w.wrong >= 3 && w.wrong > w.correct;
 const dueWords = () => state.words.filter(isDue);
 const masteredCount = () => state.words.filter(w => w.mastered).length;
@@ -1804,7 +2044,7 @@ async function translateTr(word) {
   // 1. MOTOR: Google Translate (Resmi olmayan ücretsiz uç nokta)
   try {
     const gUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=tr&dt=t&q=${encodeURIComponent(word)}`;
-    const res = await fetch(gUrl);
+    const res = await fetch(gUrl, { signal: AbortSignal.timeout(4500) });
     if (res.ok) {
       const data = await res.json();
       let t = data[0]?.[0]?.[0];
@@ -2668,7 +2908,7 @@ function renderToday() {
         <button class="ghost" id="startMatch">Eşleştirme</button>
       </div>
       <div style="margin-top:14px;">
-        <button class="ghost" id="openAddWord" style="font-size:13px;">+ Kendi kelimeni ekle</button>
+        <button class="ghost" id="openAddWordLearn" style="font-size:13px;">+ Kendi kelimeni ekle</button>
       </div>
     </div>
 
@@ -4737,12 +4977,13 @@ function renderSprint() {
 
 // 7. ÖZEL KELİME LİSTESİYLE OTURUM BAŞLATICI (KÖPRÜ FONKSİYON)
 function startCustomWordSession(wordList, label = "Özel Oturum") {
-  const unique = [...new Map(wordList.map(w => [w.id, w])).values()];
-  if (unique.length < 2) { toast("Oturum için en az 2 kelime gerekli"); return; }
+  const unique = [...new Map(wordList.map(w => [w.id, w])).values()].filter(usableWord);
+  if (unique.length < 2) { toast("Bu seçimde soru kurulabilecek en az 2 kelime yok. Anlamı boş kelimeleri Sözlük'ten düzenleyebilirsin."); return; }
   const queue = [];
   let prev = null;
   for (const w of unique) {
     const q = buildQuestion(w, prev, "karisik");
+    if (!q) continue;
     queue.push(q);
     prev = q.type;
   }
@@ -5441,7 +5682,7 @@ renderSettings = function() {
 document.querySelectorAll("nav button").forEach(b => b.onclick = () => showTab(b.dataset.tab));
 // Kelime ekleme butonları
 document.addEventListener("click", e => {
-  if (e.target.id === "openAddWord" || e.target.closest("#openAddWord")) openAddWord();
+  if (e.target.id === "openAddWord" || e.target.closest("#openAddWord") || e.target.closest("#openAddWordLearn")) openAddWord();
 });
 $("saveNewWordBtn")?.addEventListener("click", saveNewWord);
 $("cancelAddWord")?.addEventListener("click", () => $("addWordDialog").close());    
@@ -8295,6 +8536,2080 @@ renderPhilo = function () {
     b.dataset.qi = String(i);
   });
 };
+
+/* ================================================================
+   LEXORA STUDIO 7 • ADDITIVE LEARNING & READING ENGINE
+   Designed to keep all original study modes functional.
+   Content is locally stored; remote requests are opt-in.
+   ================================================================ */
+const ST = {
+  doc:null, docs:[], page:0, selected:null, quiz:null, sourceHits:[],
+  searchHits:[], searchMode:'simple', pending:false, libraryFilter:'',
+  diag:[], account:null, plans:[], lastStatus:'', recentSource:'',
+  examples:[
+    {title:'A2 · The Value of a Daily Walk',level:'A2',text:`A short walk can make an ordinary day feel different. When we walk outside, we notice things that we often miss. We may see the color of the sky, hear birds, or meet a neighbor. These simple experiences help us feel connected to the world.\n\nWalking does not require special equipment. Comfortable shoes and a safe route are usually enough. Some people prefer to walk in the morning because the streets are quiet. Others choose the evening to rest after work.\n\nA daily walk can also create a useful habit. We can begin with ten minutes and slowly increase the time. The most important step is not to walk very far on the first day. It is to return and walk again tomorrow.\n\nWhen we make time for small habits, we learn something about patience. Progress can be gradual, but it is still progress. A quiet walk gives us an opportunity to think and to observe.`},
+    {title:'B1 · How We Learn New Words',level:'B1',text:`Learning a new word is not the same as remembering it. When we first encounter an unfamiliar expression, we may understand its meaning for a few seconds. However, this knowledge can disappear unless we use it again.\n\nOne effective strategy is to connect the new word to a familiar idea. For example, a learner might associate the word "resilient" with a tree that bends in the wind but does not break. The image provides a useful clue when the learner tries to recall the meaning later.\n\nReading also matters because words change their meaning according to context. A dictionary can list several definitions, but a sentence shows which definition is relevant. As learners read different texts, they gradually become more sensitive to these distinctions.\n\nFinally, it is helpful to test memory without immediately looking at the answer. This practice is called retrieval. Although retrieving an answer requires effort, that effort can strengthen future recall. Successful study therefore combines meaningful examples, repeated encounters, and active practice.`},
+    {title:'B2 · Scientific Claims and Evidence',level:'B2',text:`A scientific claim becomes persuasive not merely because it sounds reasonable, but because it can be examined against evidence. Researchers formulate questions, collect observations, and consider whether the results support their explanations. The process is rarely as simple as a single experiment proving an idea beyond all doubt.\n\nOne difficulty is the distinction between correlation and causation. Two events may occur together without one producing the other. For instance, people might buy more cold drinks during periods when outdoor temperatures rise. The relationship does not imply that purchasing drinks causes the weather to become warmer.\n\nAnother challenge concerns the quality of the sample. If an investigation includes only a narrow group of participants, its findings may not apply to a wider population. Researchers therefore explain how their evidence was obtained and what limitations remain.\n\nCritical reading requires attention to these qualifications. Instead of accepting or rejecting a claim immediately, a careful reader asks how the conclusion follows from the evidence. This habit is valuable not only in science but also when evaluating reports, advertisements, and public discussions.`},
+    {title:'C1 · Understanding Concepts Through Context',level:'C1',text:`A concept acquires intellectual significance through the distinctions it enables us to make. To recognize a term in isolation is not necessarily to comprehend its role within an argument. Genuine understanding requires the reader to determine what problem a distinction addresses and why the author considers that distinction necessary.\n\nConsider the difference between an assumption and a conclusion. An assumption supplies a premise that has not yet been established within the argument, whereas a conclusion is presented as following from other claims. If a passage treats an unsupported assumption as though it were a demonstrated conclusion, the reasoning becomes vulnerable to criticism.\n\nThe interpretation of philosophical texts consequently demands more than the memorization of specialized vocabulary. The reader must trace the relations among propositions, identify qualifications, and attend to changes in the meaning of familiar expressions. A small difference in terminology may indicate a substantial difference in the author's position.\n\nThis does not mean that every interpretation is equally justified. An adequate interpretation must account for the relevant textual evidence and explain the structure of the argument. Reading becomes an active inquiry in which precision, patience, and conceptual organization reinforce one another.`}
+  ]
+};
+// Authored meaning/inference questions: unlike automatic cloze tasks, these test actual understanding.
+ST.semantic = {
+'A2': [
+ {prompt:'Yazarın düzenli yürüyüş alışkanlığı için en önemli bulduğu şey nedir?',options:['Her gün yeniden yürümek','İlk gün çok uzun yürümek','Özel spor ekipmanı satın almak','Yalnızca sabahları yürümek'],answer:0,evidence:'It is to return and walk again tomorrow.',explanation:'Metnin ana düşüncesi tek seferlik yoğunluk değil, sürdürülebilir bir alışkanlıktır.'},
+ {prompt:'Metinde yürüyüşün düşünmeye nasıl yardımcı olduğu anlatılıyor?',options:['Çevreyi gözlemlemeye fırsat vererek','İnsanları sürekli çalışmaya zorlayarak','Yeni bir cihaz gerektirerek','Öğrenmeyi engelleyerek'],answer:0,evidence:'A quiet walk gives us an opportunity to think and to observe.',explanation:'Yürüyüş çevreyi gözlemleme ve düşünme olanağıyla ilişkilendiriliyor.'}
+],
+'B1': [
+ {prompt:'Yazarın yaptığı temel ayrım hangisidir?',options:['Sözcüğü ilk kez anlamak ile onu hatırlamak arasındaki ayrım','Yalnızca konuşmak ile yazmak arasındaki ayrım','Çalışma saati ile uyku süresi arasındaki ayrım','Çeviri ile sesli okuma arasındaki ayrım'],answer:0,evidence:'Learning a new word is not the same as remembering it.',explanation:'İlk anlama kalıcı hatırlama anlamına gelmez.'},
+ {prompt:'Resilient sözcüğüne ilişkin ağaç örneği ne işe yarar?',options:['Anlam ile hatırlatıcı bir imge arasında bağlantı kurar','Sözcüğün yalnızca bir bitki adı olduğunu kanıtlar','Metindeki bütün tanımları değiştirir','Tekrar çalışmanın gereksiz olduğunu gösterir'],answer:0,evidence:'The image provides a useful clue when the learner tries to recall the meaning later.',explanation:'Bağ kurulan görsel ipucu sonraki hatırlamayı destekler.'}
+],
+'B2': [
+ {prompt:'Soğuk içecek satışlarıyla sıcaklık örneği hangi düşünceyi açıklıyor?',options:['Birlikte değişen olaylar arasında zorunlu nedensellik bulunmadığını','İçecek satışlarının her zaman hava sıcaklığını artırdığını','Korelasyonun bilimsel olarak anlamsız olduğunu','Her araştırmanın tek deneye dayanması gerektiğini'],answer:0,evidence:'Two events may occur together without one producing the other.',explanation:'Korelasyon ile nedensellik ayrı değerlendirilmelidir.'},
+ {prompt:'Bir araştırmanın dar bir örnekleme dayanmasının temel sorunu nedir?',options:['Sonuçların daha geniş bir topluma genellenemeyebilmesi','Bütün verilerin otomatik olarak yanlış olması','Hipotez kurmanın yasak olması','Deney yapmadan sonuca ulaşılabilmesi'],answer:0,evidence:'If an investigation includes only a narrow group of participants, its findings may not apply to a wider population.',explanation:'Örneklemin temsil gücü sonuçların kapsamını belirler.'}
+],
+'C1': [
+ {prompt:'Metinde varsayım ile sonuç arasındaki temel ayrım nasıl kuruluyor?',options:['Varsayım henüz temellendirilmemiş öncüldür; sonuç başka savlardan çıkarılır','Varsayım her zaman sonuçtan daha doğrudur','Sonuç hiçbir öncül gerektirmez','İki terim bütünüyle aynı anlama gelir'],answer:0,evidence:'An assumption supplies a premise that has not yet been established within the argument, whereas a conclusion is presented as following from other claims.',explanation:'Ayrım, savın akıl yürütmedeki işlevine ilişkindir.'},
+ {prompt:'Yazara göre bir felsefi yorum nasıl gerekçelendirilmelidir?',options:['İlgili metinsel kanıtları ve argümanın yapısını açıklayarak','Yalnızca terim listesi ezberleyerek','Bütün yorumları eşit sayarak','Yazarın ifadelerinden bağımsız hareket ederek'],answer:0,evidence:'An adequate interpretation must account for the relevant textual evidence and explain the structure of the argument.',explanation:'Yorumun yeterliliği metinsel dayanak ve kavramsal ilişkilerle sınanır.'}
+]
+};
+// Additional source-grounded interpretation questions across the native CEFR reading samples.
+ST.semantic.A2.push(
+ {prompt:'Sabah yürümeyi seçenlerle akşam yürümeyi seçenlerin gerekçeleri hangi bakımdan ayrılıyor?',options:['Sabah sessiz sokaklar, akşam işten sonra dinlenme','Sabah özel ekipman, akşam spor salonu','Sabah uzun koşu, akşam toplu ulaşım','Sabah kitap okuma, akşam sınav çözme'],answer:0,evidence:'Some people prefer to walk in the morning because the streets are quiet. Others choose the evening to rest after work.',explanation:'Yazar aynı alışkanlığın farklı insanlar için farklı gündelik amaçlara hizmet edebileceğini gösterir.'},
+ {prompt:'Yazarın ilerleme anlayışı için metinden hangi sonuç çıkarılabilir?',options:['İlerleme yavaş gerçekleşse de değerlidir','İlerleme yalnızca ilk gün ölçülmelidir','Süre artırılmadan hiçbir gelişme olmaz','Küçük alışkanlıklar her zaman faydasızdır'],answer:0,evidence:'Progress can be gradual, but it is still progress.',explanation:'Yazar ilerlemeyi hızla özdeşleştirmez; sürekliliğin değerini vurgular.'}
+);
+ST.semantic.B1.push(
+ {prompt:'Sözlüğün tek başına yetersiz görülmesinin gerekçesi nedir?',options:['Cümle, tanımlardan hangisinin o bağlamda geçerli olduğunu gösterir','Sözlükler hiçbir tanım içermez','Bütün sözcüklerin bir tek anlamı vardır','Cümleleri okumak anlamı mutlaka yok eder'],answer:0,evidence:'A dictionary can list several definitions, but a sentence shows which definition is relevant.',explanation:'Bir sözcüğün sözlükteki olası anlamları bağlama göre ayrılır.'},
+ {prompt:'Yazara göre yanıtı hemen görmeden hatırlamaya çalışmanın yararı nedir?',options:['Çaba gerektiren geri çağırma, sonraki hatırlamayı güçlendirebilir','Yanıtlara hiçbir zaman bakılmamalıdır','Yeni sözcük görmek kesin olarak engellenmelidir','Sözcükleri örnek olmadan ezberlemek yeterlidir'],answer:0,evidence:'Although retrieving an answer requires effort, that effort can strengthen future recall.',explanation:'Geri getirme alıştırmasının sağladığı çaba kalıcılığa katkıda bulunur.'}
+);
+ST.semantic.B2.push(
+ {prompt:'Yazarın bir bilimsel iddiayı değerlendirirken önerdiği temel ölçüt nedir?',options:['Sonucun kanıttan nasıl çıktığını sorgulamak','İddianın ilk bakışta ikna edici görünmesi','Araştırmacının ününü tek ölçüt kabul etmek','Her iddiayı araştırmadan reddetmek'],answer:0,evidence:'Instead of accepting or rejecting a claim immediately, a careful reader asks how the conclusion follows from the evidence.',explanation:'Eleştirel değerlendirme, akıl yürütmeyle kanıt arasındaki bağı sınar.'},
+ {prompt:'Metne göre tek bir deneyin bütün kuşkuları ortadan kaldırdığı düşüncesi neden sorunludur?',options:['Araştırma süreci çoğu zaman karmaşıktır ve iddialar kanıtla sınanır','Bilimsel çalışmalar hiçbir gözlem içermez','Bütün hipotezler aynı anda doğrudur','Deneyler yalnızca hava durumunda yapılır'],answer:0,evidence:'The process is rarely as simple as a single experiment proving an idea beyond all doubt.',explanation:'Yazar bilimsel çıkarımlarda tek deneyin sınırsız ve kesin kanıt sayılmasını reddeder.'}
+);
+ST.semantic.C1.push(
+ {prompt:'Metne göre yalnızca bir terimi tanımak neden yeterli değildir?',options:['Terimin akıl yürütme içinde hangi problemi çözdüğünü anlamak gerekir','Terimlerin anlamı her zaman yazıldığı harf sayısına bağlıdır','Yazarın açıklamaları her durumda gereksizdir','Kavramlar arasında hiçbir ilişki bulunmaz'],answer:0,evidence:'Genuine understanding requires the reader to determine what problem a distinction addresses and why the author considers that distinction necessary.',explanation:'Kavramsal anlama, terimin bağıntılarını ve argümandaki yerini belirlemeyi gerektirir.'},
+ {prompt:'Felsefi metinde küçük bir terminoloji farkı niçin önem taşıyabilir?',options:['Yazarın konumunda büyük bir düşünsel ayrımı gösterebilir','Anlamı her zaman kesinlikle değiştirmez','Tüm sözcüklerin eşanlamlı olduğunu kanıtlar','Metnin kanıt yapısını tamamen gereksiz kılar'],answer:0,evidence:"A small difference in terminology may indicate a substantial difference in the author's position.",explanation:'Yazar, küçük bir terminoloji değişikliğinin kavramsal önemi olabileceğini söyler.'}
+);
+const stEsc = s => esc(String(s ?? ''));
+const stClean = s => String(s ?? '').replace(/\r\n?/g,'\n').replace(/\u0000/g,'').trim();
+const stWord = s => String(s||'').normalize('NFKC').toLowerCase().replace(/^[^a-z]+|[^a-z]+$/g,'');
+const stTokens = s => String(s||'').match(/[A-Za-z]+(?:['’][A-Za-z]+)?|\d+|[^A-Za-z\d]+/g) || [];
+const stWords = s => (String(s||'').match(/\b[A-Za-z]{2,}(?:['’][A-Za-z]+)?\b/g)||[]).map(stWord);
+const stUnique = a => [...new Set(a)];
+const stParagraphs = s => stClean(s).split(/\n\s*\n+/).flatMap(p => p.length>1300 ? (p.match(/.{1,1250}(?:\s|$)/g)||[p]) : [p]).map(x=>x.trim()).filter(Boolean);
+const stSentences = p => (p.match(/[^.!?\n]+(?:[.!?]+|$)/g)||[]).map(s=>s.trim()).filter(s=>s.length>=35 && s.length<=330);
+const stQuality = w => w && w.tr && !/(anlamı yazılacak|çeviri bekliyor|mymemory|quota)/i.test(w.tr);
+const stWordMap = () => new Map(state.words.map(w => [stWord(w.en),w]));
+const stNow = () => new Date().toLocaleString('tr-TR');
+const stId = () => 'r_' + (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36)+'_'+Math.random().toString(36).slice(2));
+function stNotice(message,kind='info') { ST.lastStatus=message; const e=$('stStatus'); if(e) { e.textContent=message; e.dataset.kind=kind; } else toast(message); }
+function stDownload(name,text,type='text/plain;charset=utf-8'){
+  const blob=new Blob([text],{type}); const url=URL.createObjectURL(blob); const a=document.createElement('a');
+  a.href=url; a.download=name; document.body.append(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),3000);
+}
+function stCSV(row){return row.map(x=>'"'+String(x??'').replace(/"/g,'""')+'"').join(',');}
+function stParseSeparated(src,sep){
+  const rows=[];let row=[],cell='',quoted=false;
+  for(let i=0;i<src.length;i++){const c=src[i];
+    if(quoted){if(c==='"'&&src[i+1]==='"'){cell+='"';i++;}else if(c==='"')quoted=false;else cell+=c;}
+    else if(c==='"')quoted=true;else if(c===sep){row.push(cell);cell='';}
+    else if(c==='\n'){row.push(cell);if(row.some(x=>x.trim()))rows.push(row);row=[];cell='';}
+    else if(c!=='\r')cell+=c;
+  }row.push(cell);if(row.some(x=>x.trim()))rows.push(row);return rows;
+}
+function stDB(){
+  return new Promise((resolve,reject)=>{
+    if(!('indexedDB' in window))return reject(new Error('IndexedDB desteklenmiyor'));
+    const r=indexedDB.open('lexora_studio_reading_v1',1);
+    r.onupgradeneeded=()=>{let db=r.result;if(!db.objectStoreNames.contains('documents'))db.createObjectStore('documents',{keyPath:'id'});};
+    r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);
+  });
+}
+async function stDocsGet(){
+  try{const db=await stDB();return await new Promise((ok,fail)=>{const tx=db.transaction('documents','readonly'),q=tx.objectStore('documents').getAll();q.onsuccess=()=>{db.close();ok(q.result||[]);};q.onerror=()=>{db.close();fail(q.error);};});}
+  catch(e){try{return JSON.parse(localStorage.getItem('lexora_studio_docs_fallback')||'[]');}catch{return [];}}
+}
+async function stDocsPut(doc){
+  doc.updatedAt=Date.now();
+  try{const db=await stDB();await new Promise((ok,fail)=>{const tx=db.transaction('documents','readwrite');tx.objectStore('documents').put(doc);tx.oncomplete=ok;tx.onerror=()=>fail(tx.error);});db.close();}
+  catch(e){const all=await stDocsGet();const i=all.findIndex(x=>x.id===doc.id);if(i>=0)all[i]=doc;else all.push(doc);
+    const str=JSON.stringify(all);if(str.length>1100000)throw new Error('Tarayıcı depolaması dolu. Önce dışa aktar.');
+    localStorage.setItem('lexora_studio_docs_fallback',str);
+  }
+}
+async function stDocsDelete(id){
+  try{const db=await stDB();await new Promise((ok,fail)=>{const tx=db.transaction('documents','readwrite');tx.objectStore('documents').delete(id);tx.oncomplete=ok;tx.onerror=()=>fail(tx.error);});db.close();}
+  catch(e){const all=await stDocsGet();localStorage.setItem('lexora_studio_docs_fallback',JSON.stringify(all.filter(d=>d.id!==id)));}
+}
+async function stDocsRefresh(){ ST.docs=(await stDocsGet()).sort((a,b)=>b.updatedAt-a.updatedAt);return ST.docs; }
+function stCreateDoc(title,text,opts={}){
+  const cleaned=stClean(text).slice(0,220000);
+  if(cleaned.length<80)throw new Error('Metin en az 80 karakter olmalı.');
+  return {id:stId(),title:stClean(title).slice(0,120)||'Başlıksız metin',text:cleaned,level:opts.level||'B1',
+    source:opts.source||'Kullanıcı tarafından eklendi',sourceUrl:opts.sourceUrl||'',license:opts.license||'',
+    createdAt:Date.now(),updatedAt:Date.now(),page:0,notes:'',finished:false,quizResults:[],lookupHistory:[],minutes:0};
+}
+async function stSaveNewDoc(title,text,opts={}){
+  const doc=stCreateDoc(title,text,opts);await stDocsPut(doc);await stDocsRefresh();ST.doc=doc;ST.page=0;ST.selected=null;ST.quiz=null;
+  renderReading();stNotice('Metin kütüphanene kaydedildi. Sözcüklere dokunarak inceleyebilirsin.','ok');return doc;
+}
+function stPageCount(doc){return Math.max(1,Math.ceil(stParagraphs(doc?.text||'').length/3));}
+function stPageText(doc,page){return stParagraphs(doc?.text||'').slice(page*3,page*3+3).join('\n\n');}
+function stReadMetrics(doc){
+  const total=stWords(doc?.text||''); const unique=stUnique(total);const dict=stWordMap();let known=0,unseen=0,found=[];
+  unique.forEach(t=>{const w=dict.get(t);if(w&&stQuality(w)){known++;found.push(w);}else unseen++;});
+  return {total:total.length,unique:unique.length,known,unseen,pct:unique.length?Math.round(100*known/unique.length):0,found};
+}
+function stReadHighlights(text){const map=stWordMap();return stTokens(text).map((tok,i)=>{
+  const word=stWord(tok);if(!word||!/^[a-z]{2,}$/.test(word))return stEsc(tok);
+  const known=map.get(word), cls=known&&stQuality(known)?' st-familiar':' st-new';
+  return `<button type="button" class="st-token${cls}" data-st="word" data-word="${stEsc(word)}" aria-label="${stEsc(word)} sözcüğünü incele">${stEsc(tok)}</button>`;
+}).join('');}
+function stReadingBody(){const doc=ST.doc;if(!doc)return `<div class="st-empty"><div class="st-empty-icon">📖</div><strong>Bir metin seçerek başla</strong><p>Hazır metin, kendi dosyan, Wikipedia makalesi veya Gutenberg kitabı. Sözcükler ve okumalar birbirine bağlanacak.</p></div>`;
+  const parts=stParagraphs(doc.text);const n=stPageCount(doc);ST.page=Math.min(Math.max(0,ST.page),n-1);const m=stReadMetrics(doc);const quiz=doc.quizResults||[];
+  return `<div class="st-paper">
+    <div class="st-paper-head"><div><div class="st-kicker">${stEsc(doc.level)} · ${stEsc(doc.source)}</div><h3>${stEsc(doc.title)}</h3></div><button class="ghost" data-st="finish">${doc.finished?'✓ Okundu':'Okumayı tamamla'}</button></div>
+    <div class="st-metric-grid"><div><strong>${m.total}</strong><span>Toplam sözcük</span></div><div><strong>${m.unique}</strong><span>Farklı sözcük</span></div><div><strong>${m.pct}%</strong><span>Sözlük kapsamı</span></div><div><strong>${quiz.length?Math.round(quiz.reduce((s,x)=>s+x.score,0)/quiz.length):'—'}</strong><span>Quiz ortalaması</span></div></div>
+    <div class="st-meter"><i style="width:${m.pct}%"></i></div>
+    <div class="st-toolbar"><button data-st="read-aloud" class="ghost">🔊 Sayfayı dinle</button><button data-st="practice-doc" class="ghost">🧠 Bu metnin kelimeleri</button><button data-st="start-quiz" class="primary">✓ Anlama sınavı</button><button data-st="export-doc" class="ghost">Dışa aktar</button></div>
+    <p class="muted" style="margin:0 0 12px">Altı çizili sözcükler sözlükte. Diğer sözcüklere de dokunup anlamını araştırabilir, bağlamıyla kaydedebilirsin.</p>
+    <article class="st-reading-text" lang="en">${parts.slice(ST.page*3,ST.page*3+3).map((p,i)=>`<p data-para="${i}">${stReadHighlights(p)}</p>`).join('')}</article>
+    <div id="stWordPanel" aria-live="polite"></div>
+    <div class="st-pager"><button class="ghost" data-st="page-prev" ${ST.page<=0?'disabled':''}>← Önceki</button><span>Sayfa ${ST.page+1} / ${n}</span><button class="primary" data-st="page-next" ${ST.page>=n-1?'disabled':''}>Sonraki →</button></div>
+    <div class="st-writing"><strong>Okuduğunu kendi sözlerinle anlat</strong><p class="muted">Ana düşünce, yazarın gerekçesi ve metindeki kanıt nedir? Yanıtların yerel olarak saklanır; otomatik olarak doğru sayılmaz.</p><textarea id="stDocNote" rows="4" placeholder="1. Metnin ana düşüncesi...&#10;2. Metinden bir gerekçe...">${stEsc(doc.notes||'')}</textarea><div class="st-toolbar"><button class="ghost" data-st="save-note">Notu kaydet</button><button class="ghost" data-st="quote-export">Notları indir</button></div></div>
+    ${doc.sourceUrl?`<p class="st-attribution">Kaynak: <a target="_blank" rel="noopener noreferrer" href="${stEsc(doc.sourceUrl)}">${stEsc(doc.sourceUrl)}</a>${doc.license?' · '+stEsc(doc.license):''}</p>`:''}
+  </div>`;}
+function stReaderList(){const filtered=ST.docs.filter(d=>d.title.toLocaleLowerCase('tr').includes(ST.libraryFilter.toLocaleLowerCase('tr')));
+  return `<div class="st-list-title"><strong>Okuma kütüphanesi</strong><span>${ST.docs.length} metin</span></div><input type="search" id="stFilter" placeholder="Metinlerimde ara..." value="${stEsc(ST.libraryFilter)}" aria-label="Okuma kütüphanesinde ara">
+    <div class="st-doc-list">${filtered.length?filtered.map(d=>`<button class="st-doc ${ST.doc?.id===d.id?'active':''}" data-st="open-doc" data-id="${stEsc(d.id)}"><strong>${stEsc(d.title)}</strong><small>${stEsc(d.level)} · ${Math.round(stWords(d.text).length)} sözcük · ${d.finished?'Tamamlandı':'Devam ediyor'}</small></button>`).join(''):'<p class="muted">Henüz kayıtlı metin yok.</p>'}</div>`;}
+function renderReading(){const el=$('tab-reading');if(!el)return;
+  const n=state.words.length, due=dueWords().filter(stQuality).length;
+  el.innerHTML=`<div class="st-hero"><div><div class="st-eyebrow">LEXORA · READING STUDIO</div><h2>Oku. Anla. Sözcüğü bağlamında öğren.</h2><p>Metinleri biriktir, sözcükleri incele, anlama testleri çöz ve güçlü bir okuma alışkanlığı oluştur.</p></div><div class="st-hero-stats"><strong>${ST.docs.length}</strong><span>Okuma metni</span><strong>${due}</strong><span>Tekrar bekleyen</span></div></div>
+    <div class="st-quickline"><span>🎯 Günün odağı: ${due>0?due+' kelimenin tekrarı':'Yeni metinden 5 kelime'}</span><span>📚 ${n} kelimelik sözlük</span><span>🔐 Metinlerin tarayıcıda kalır</span></div>
+    <div class="st-dual"><div class="st-import-side"><div class="st-panel"><h3>Metin edin</h3><div class="st-segments"><button class="st-segment active" data-st="source-mode" data-mode="samples">Hazır metin</button><button class="st-segment" data-st="source-mode" data-mode="paste">Yapıştır / dosya</button><button class="st-segment" data-st="source-mode" data-mode="online">Ücretsiz kaynaklar</button></div><div id="stSourceArea">${stSourceHtml('samples')}</div></div><div class="st-panel" id="stListPanel">${stReaderList()}</div></div>
+    <div class="st-reader-side"><div class="st-panel st-reader-host" id="stReadHost">${stReadingBody()}</div></div></div>
+    <div class="st-panel"><h3>Çalışmanın sonraki adımı</h3><div class="st-recommend-grid"><button class="st-recommend" data-st="smart-words"><strong>🧠 Zayıf sözcükleri güçlendir</strong><small>Vadesi gelmiş, yanlış yapılan ve okumada rastlanan sözcüklerle kişisel tur</small></button><button class="st-recommend" data-st="network"><strong>🌐 Kaynak bağlantı testi</strong><small>Ücretsiz sözlük, kelime bulma, Wikipedia ve kitap kaynağı</small></button><button class="st-recommend" data-st="export-all"><strong>📦 Çalışma arşivini indir</strong><small>Sözcüklerin, metinlerin, notların ve testlerin</small></button></div><div id="stNetworkResults"></div></div>
+    <div class="st-inline-status" id="stStatus" role="status">${stEsc(ST.lastStatus)}</div>`;
+  if(ST.quiz&&ST.doc?.id===ST.quiz.docId)stQuizRender();
+}
+function stSourceHtml(mode){
+  if(mode==='samples')return `<p class="muted">Düzeye göre yazılmış özgün metinler. İstediğini kütüphanene ekle.</p>${ST.examples.map((e,i)=>`<button class="st-sample" data-st="sample" data-id="${i}"><span class="st-level">${e.level}</span><span><strong>${stEsc(e.title.replace(/^\w+ · /,''))}</strong><small>${stWords(e.text).length} sözcük · Okuma ve sınava hazırlık</small></span><span>＋</span></button>`).join('')}`;
+  if(mode==='paste')return `<label class="st-field">Metnin başlığı<input id="stTitleInput" type="text" maxlength="120" placeholder="Örn. 2026 YDS - Bilim pasajı"></label><label class="st-field">Düzey<select id="stLevelInput"><option>A2</option><option selected>B1</option><option>B2</option><option>C1</option><option>C2</option></select></label><label class="st-field">İngilizce metin<textarea id="stPasteInput" rows="6" maxlength="220000" placeholder="İngilizce metni buraya yapıştır..."></textarea></label><div class="st-toolbar"><button class="primary" data-st="save-paste">Metni kaydet ve oku</button><label class="st-file-btn">📂 TXT / MD / HTML / CSV / JSON<input type="file" id="stTextFile" accept=".txt,.md,.html,.htm,.csv,.tsv,.json,text/plain,text/html,application/json" multiple></label></div><p class="muted">Dosyalar sadece bu cihazda çözülür; izin verilmeden sunucuya yüklenmez. CSV/JSON için sözcük verisi de içe aktarılabilir.</p>`;
+  return `<p class="muted">Açık erişimli kaynaklarda ara. Wikipedia metinleri kaynak bağlantısıyla saklanır. Bazı kitap sunucuları tarayıcıdan indirmeyi engelleyebilir.</p><label class="st-field">Arama terimi<input id="stOnlineQuery" type="search" placeholder="Örn. scientific method, philosophy, memory" autocomplete="off"></label><div class="st-toolbar"><button class="primary" data-st="wiki-search" data-mode="simple">Basit İngilizce Wikipedia</button><button class="ghost" data-st="wiki-search" data-mode="en">İngilizce Wikipedia</button><button class="ghost" data-st="guten-search">Gutenberg kitapları</button></div><div id="stOnlineHits" class="st-result-list"></div><details class="st-safety-note"><summary>Başka bir sayfanın adresinden metin al</summary><label class="st-field">Doğrudan metin URL'si<input id="stDirectUrl" type="url" placeholder="https://.../article.txt"></label><button class="ghost" data-st="url-import">URL'den dene</button><p class="muted">Yalnızca HTTPS ve herkese açık metin adresleri. CORS izni yoksa içerik yüklenemez; metni elle yapıştırabilirsin.</p></details><p class="st-attribution">Kaynaklar: <a href="https://simple.wikipedia.org" target="_blank" rel="noopener">Simple English Wikipedia</a> · <a href="https://www.wikipedia.org" target="_blank" rel="noopener">Wikipedia</a> · <a href="https://www.gutenberg.org" target="_blank" rel="noopener">Project Gutenberg</a></p>`;
+}
+/* ---- Reading interaction and context vocabulary ---- */
+function stContextFor(word){
+  const page=stPageText(ST.doc,ST.page);
+  const sent=stSentences(page.replace(/\n+/g,' ')).find(x=>new RegExp('\\b'+word+'\\b','i').test(x));
+  return sent||stSentences(ST.doc.text.replace(/\n+/g,' ')).find(x=>new RegExp('\\b'+word+'\\b','i').test(x))||'';
+}
+async function stShowWord(w){
+  if(!ST.doc)return;
+  ST.selected=w;
+  const host=$('stWordPanel');if(!host)return;
+  const known=stWordMap().get(w),context=stContextFor(w);
+  host.innerHTML=`<div class="st-word-panel"><div class="st-word-header"><div><div class="st-kicker">BAĞLAMDAN SÖZCÜĞE</div><strong>${stEsc(w)}</strong> ${known?`<span class="pos">${stEsc(known.pos||'')}</span>`:''}</div><button class="ghost" data-st="close-word">Kapat</button></div>
+  <p>${known?`<strong>${stEsc(known.tr)}</strong>`:'Bu sözcük henüz kişisel sözlüğünde değil.'}</p><p class="muted">Metin bağlamı: ${stEsc(context||'Bulunamadı')}</p>
+  ${known&&known.def?`<p class="muted">${stEsc(known.def)}</p>`:''}
+  ${known&&typeof analyze==='function'?`<details><summary>Yapı ve kök ipucu</summary>${chipsHtml(analyze(known).parts)}<p class="muted">Otomatik ayrımlar köken bilgisi yerine geçmez; şüpheli parçaları doğrula.</p></details>`:''}
+  <div class="st-toolbar"><button class="ghost" data-st="speak-word">🔊 Dinle</button><button class="ghost" data-st="word-online">🌐 Sözlüğü araştır</button>${known?`<button class="primary" data-st="word-detail">Kartı aç</button><button class="ghost" data-st="word-mark">${known.readSeen?'Tekrar çalışılacak':'Okumada gördüm'}</button>`:`<button class="primary" data-st="word-add">+ Bağlamıyla ekle</button>`}</div><div id="stWordOnline" class="muted"></div></div>`;
+  host.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'nearest'});
+}
+async function stAddWord(word){
+  if(!ST.doc)return;
+  if(stWordMap().has(word))return stShowWord(word);
+  stNotice('Sözlük ve çeviri aranıyor...');
+  let d=null,tr=null;
+  try{[d,tr]=await Promise.all([lookupDict(word),translateTr(word)]);}catch(e){}
+  const existing=stWordMap().get(word);if(existing)return stShowWord(word);
+  const context=stContextFor(word),meaning=tr?.value||'';
+  const item=normalize({id:nextId(),en:word,tr:meaning,def:d?.def||'',example:context,examples:context?[context]:[],
+    pos:d?.pos||'diğer',cat:'Okuma',level:ST.doc.level,source:'reader',needsTr:!meaning,
+    phonetic:d?.phonetic||'',audio:d?.audio||'',origin:d?.origin||'',syn:d?.syn||[],ant:d?.ant||[],
+    contextQuotes:context?[{text:context,date:dayKey(),source:ST.doc.title}]:[],autoTranslated:!!meaning,needsVerification:!!meaning});
+  state.words.push(item);save();ST.doc.lookupHistory=stUnique([...(ST.doc.lookupHistory||[]),word]);
+  await stDocsPut(ST.doc);await stShowWord(word);stNotice(meaning?`“${word}” eklendi. Otomatik Türkçe anlamı mutlaka doğrula.`:`“${word}” eklendi. Türkçe anlamı sözlük kartından doğrula ve tamamla.`,'ok');
+}
+async function stResearchWord(word){
+  const box=$('stWordOnline');if(!box)return;box.textContent='Kaynak inceleniyor...';
+  const d=await lookupDict(word).catch(()=>null);
+  if(ST.selected!==word||!box.isConnected)return;
+  if(!d||d.error){box.textContent='Sözlük erişilemedi. Bağlantı testi yap veya daha sonra dene.';return;}
+  box.innerHTML=`<div class="st-online-entry"><strong>${stEsc(d.phonetic||word)}</strong> · ${stEsc(d.pos||'')}<p>${stEsc(d.def||'')}</p>${(d.examples||[]).slice(0,2).map(t=>`<p class="muted">“${stEsc(t)}”</p>`).join('')}<p class="muted">Kaynak: Free Dictionary API · Tanım İngilizcedir.</p></div>`;
+}
+/* ---- Evidence-based, non-generative comprehension exercises ---- */
+function stQuizBuild(doc){
+  const paragraphs=stParagraphs(doc.text);
+  const questions=[];
+  const authored=doc.source==='Lexora özgün eğitim metni' ? (ST.semantic[doc.level]||[]).map(q=>{const options=shuffle([...q.options]);return {...q,options,answer:options.indexOf(q.options[q.answer]),type:'inference'};}) : [];
+  // Each location question has one exact source sentence in its target paragraph.
+  const sets=paragraphs.slice(0,16).map((p,i)=>({i,sent:stSentences(p).filter(s=>s.length<215)})).filter(p=>p.sent.length);
+  if(sets.length>=4){
+    for(const target of sets.slice(0,4)){
+      const correct=target.sent[Math.min(target.sent.length-1,Math.floor(target.sent.length/2))];
+      const others=sets.filter(s=>s.i!==target.i).map(s=>s.sent[0]).filter(Boolean).slice(0,6);
+      if(others.length<3)continue;
+      const options=shuffle([correct,...shuffle(others).slice(0,3)]);
+      questions.push({type:'evidence',prompt:`${target.i+1}. paragrafta hangi cümle yer alıyor?`,options,answer:options.indexOf(correct),evidence:correct,explanation:'Cümle ilgili paragraftan aynen alınmıştır. Diğerleri metnin farklı paragraflarında geçmektedir.'});
+    }
+  }
+  // Cloze questions are strictly anchored to sentences and source tokens.
+  const used=new Set();const whole=stWords(doc.text);const freq=new Map();whole.forEach(w=>freq.set(w,(freq.get(w)||0)+1));
+  const candidates=sets.flatMap(p=>p.sent.map(sent=>({sent,p:p.i}))).filter(x=>stWords(x.sent).length>=8 && stWords(x.sent).length<=36);
+  for(const c of shuffle(candidates)){
+    if(questions.length>=9)break;
+    const words=stUnique(stWords(c.sent));
+    const focus=words.filter(w=>w.length>=5&&w.length<=15&&(freq.get(w)||0)<=6&&!used.has(w)&&!['which','because','therefore','while','people','about','there'].includes(w));
+    if(!focus.length)continue;
+    const word=focus.sort((a,b)=>b.length-a.length)[0];
+    const available=stUnique(whole).filter(w=>w!==word&&w.length>=4&&w.length<=17&&!words.includes(w));
+    if(available.length<3)continue;
+    const near=available.sort((a,b)=>Math.abs(a.length-word.length)-Math.abs(b.length-word.length));
+    const decoys=shuffle(near.slice(0,16)).slice(0,3);
+    const options=shuffle([word,...decoys]);
+    const blank=c.sent.replace(new RegExp('\\b'+word+'\\b','i'),'________');
+    if(blank===c.sent)continue;
+    questions.push({type:'cloze',prompt:`Metinde geçen ${c.p+1}. paragraf cümlesindeki boşluğu tamamla:`,context:blank,options,answer:options.indexOf(word),evidence:c.sent,explanation:'Doğru sözcük, kaynak cümlenin birebir metninden alınmıştır.'});
+    used.add(word);
+  }
+  return shuffle([...authored,...shuffle(questions).slice(0,Math.max(0,8-authored.length))]);
+}
+function stQuizStart(){
+  if(!ST.doc)return stNotice('Önce bir metin aç.');
+  const qs=stQuizBuild(ST.doc);if(qs.length<2)return stNotice('Yeterli soru oluşturulamadı; daha uzun, noktalama işaretleri bulunan bir metin ekle.');
+  ST.quiz={docId:ST.doc.id,questions:qs,index:0,chosen:null,correct:0,answers:[],started:Date.now(),done:false};stQuizRender();
+}
+function stQuizRender(){const host=$('stReadHost');if(!host||!ST.quiz||ST.quiz.docId!==ST.doc?.id)return;
+  let old=$('stQuizOverlay');if(old)old.remove();const wrap=document.createElement('div');wrap.id='stQuizOverlay';wrap.className='st-quiz-overlay';const qz=ST.quiz;
+  if(qz.done){const score=Math.round(100*qz.correct/qz.questions.length);
+    wrap.innerHTML=`<div class="st-quiz-head"><div><div class="st-kicker">OKUDUĞUNU ANLAMA · OTURUM SONUCU</div><h3>${score}% · ${qz.correct}/${qz.questions.length} doğru</h3></div><button class="ghost" data-st="quiz-close">Okumaya dön</button></div><p class="muted">Bu puan metindeki cümleyi bulma ve sözcüğü bağlamında hatırlama performansını ölçer; tek başına genel okuduğunu anlama veya CEFR düzeyini belirlemez.</p>
+    ${qz.questions.map((q,i)=>`<details class="st-quiz-review" ${qz.answers[i]!==q.answer?'open':''}><summary>${qz.answers[i]===q.answer?'✓':'✗'} Soru ${i+1} · ${stEsc(q.prompt)}</summary><p>Senin yanıtın: ${stEsc(q.options[qz.answers[i]]||'Yanıt yok')}</p><p>Doğru yanıt: <strong>${stEsc(q.options[q.answer])}</strong></p><p class="st-evidence">Metinden kanıt: “${stEsc(q.evidence)}”</p></details>`).join('')}
+    <div class="st-toolbar"><button class="primary" data-st="quiz-again">Yeni sorularla tekrar</button><button class="ghost" data-st="export-doc">Bu metni dışa aktar</button></div>`;
+  }else{
+    const q=qz.questions[qz.index],picked=qz.chosen;
+    wrap.innerHTML=`<div class="st-quiz-head"><div><div class="st-kicker">METNE DAYALI ÖLÇME</div><h3>Soru ${qz.index+1} / ${qz.questions.length}</h3></div><button class="ghost" data-st="quiz-close">Çık</button></div><div class="st-meter"><i style="width:${Math.round(qz.index/qz.questions.length*100)}%"></i></div>
+    <p class="st-question">${stEsc(q.prompt)}</p>${q.context?`<blockquote class="st-question-context" lang="en">${stEsc(q.context)}</blockquote>`:''}
+    <div class="st-options">${q.options.map((o,i)=>`<button class="st-option ${picked!==null?(i===q.answer?'correct':i===picked?'incorrect':''):''}" data-st="quiz-choice" data-id="${i}" ${picked!==null?'disabled':''}><span>${String.fromCharCode(65+i)}</span>${stEsc(o)}</button>`).join('')}</div>
+    ${picked!==null?`<div class="st-quiz-feedback"><strong>${picked===q.answer?'Doğru!':'Yanlış. Doğru cevap: '+stEsc(q.options[q.answer])}</strong><p>${stEsc(q.explanation)}</p><p><em>Kanıt:</em> “${stEsc(q.evidence)}”</p><button class="primary" data-st="quiz-next">${qz.index===qz.questions.length-1?'Sonuçları göster':'Sonraki soru →'}</button></div>`:''}`;
+  }
+  host.prepend(wrap);wrap.scrollIntoView({behavior:'auto',block:'start'});
+}
+async function stQuizNext(){const qz=ST.quiz;if(!qz||qz.chosen===null)return;
+  qz.index++;qz.chosen=null;
+  if(qz.index>=qz.questions.length){qz.done=true;const score=Math.round(100*qz.correct/qz.questions.length);
+    ST.doc.quizResults=(ST.doc.quizResults||[]).concat({score,correct:qz.correct,n:qz.questions.length,at:Date.now(),durationMs:Date.now()-qz.started}).slice(-100);
+    await stDocsPut(ST.doc);await stDocsRefresh();stNotice(`Anlama alıştırması tamamlandı: ${score}%.`,'ok');
+  }stQuizRender();
+}
+function stQuizClose(){ST.quiz=null;renderReading();}
+/* ---- Public content fetching, no scraping proxy, clear CORS feedback ---- */
+async function stFetch(url,opts={}){
+  const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),opts.timeout||12000);
+  try{const u=new URL(url);if(u.protocol!=='https:'&&!(u.hostname==='localhost'&&u.protocol==='http:'))throw new Error('HTTPS adresi gerekli.');
+    const r=await fetch(u.href,{signal:ctl.signal,mode:'cors',credentials:'omit',headers:{'Accept':opts.accept||'application/json'}});
+    if(!r.ok)throw new Error('HTTP '+r.status);const len=Number(r.headers.get('content-length')||0);if(len>2000000)throw new Error('Dosya 2 MB sınırını aşıyor.');
+    return opts.text?await r.text():await r.json();
+  }finally{clearTimeout(timer);}
+}
+function stOnlineResults(html){const el=$('stOnlineHits');if(el)el.innerHTML=html;}
+async function stWikiSearch(mode){const q=$('stOnlineQuery')?.value.trim();if(!q)return stNotice('Aramak için konu yaz.');
+  ST.searchMode=mode;ST.sourceHits=[];stOnlineResults('<p class="muted">Wikipedia aranıyor...</p>');
+  try{const host=mode==='simple'?'simple.wikipedia.org':'en.wikipedia.org';const params=new URLSearchParams({action:'query',list:'search',srsearch:q,srlimit:'7',format:'json',origin:'*'});
+    const d=await stFetch(`https://${host}/w/api.php?${params}`);ST.sourceHits=(d.query?.search||[]).map(x=>({title:x.title,host,source:'Wikipedia'}));
+    stOnlineResults(ST.sourceHits.map((x,i)=>`<button class="st-sample" data-st="wiki-load" data-id="${i}"><span class="st-level">WIKI</span><span><strong>${stEsc(x.title)}</strong><small>${stEsc(host)}</small></span><span>Oku</span></button>`).join('')||'<p class="muted">Sonuç yok; farklı bir konu dene.</p>');
+  }catch(e){stOnlineResults(`<p class="st-error">Bağlantı veya CORS sorunu: ${stEsc(e.message)}. Kaynağı tarayıcıda açıp metni yapıştırabilirsin.</p>`);}
+}
+async function stWikiLoad(i){const hit=ST.sourceHits[i];if(!hit)return;stOnlineResults('<p class="muted">Makale içeriği alınıyor...</p>');
+  try{const p=new URLSearchParams({action:'query',prop:'extracts',explaintext:'1',exsectionformat:'plain',redirects:'1',titles:hit.title,format:'json',origin:'*'});
+    const d=await stFetch(`https://${hit.host}/w/api.php?${p}`);const page=Object.values(d.query?.pages||{})[0];const text=page?.extract||'';
+    if(text.length<100)throw new Error('Bu makalenin açık metni alınamadı.');
+    await stSaveNewDoc(hit.title,text,{level:hit.host.startsWith('simple')?'B1':'B2',source:'Wikipedia · '+hit.host,sourceUrl:`https://${hit.host}/wiki/${encodeURIComponent(hit.title.replace(/ /g,'_'))}`,license:'CC BY-SA; kaynak ve lisans koşullarını koru'});
+  }catch(e){stOnlineResults(`<p class="st-error">Makale alınamadı: ${stEsc(e.message)}</p>`);}
+}
+async function stGutenSearch(){const q=$('stOnlineQuery')?.value.trim();if(!q)return stNotice('Bir kitap adı veya yazar yaz.');
+  stOnlineResults('<p class="muted">Gutenberg kitapları taranıyor...</p>');
+  try{const data=await stFetch('https://gutendex.com/books/?search='+encodeURIComponent(q));
+    ST.sourceHits=(data.results||[]).filter(b=>b.languages?.includes('en') && b.copyright===false).slice(0,9).map(b=>({
+      title:b.title,author:b.authors?.[0]?.name||'',url:b.formats?.['text/plain; charset=utf-8']||b.formats?.['text/plain']||'',sourceUrl:'https://www.gutenberg.org/ebooks/'+b.id,source:'Project Gutenberg'}));
+    stOnlineResults(ST.sourceHits.map((x,i)=>`<div class="st-result"><strong>${stEsc(x.title)}</strong><small>${stEsc(x.author)} · ABD kamu malı katalog etiketi; diğer ülkelerde telif durumunu ayrıca kontrol et</small><div class="st-toolbar">${x.url?`<button class="ghost" data-st="guten-load" data-id="${i}">Metni almayı dene</button>`:''}<a href="${stEsc(x.sourceUrl)}" target="_blank" rel="noopener noreferrer">Kitap sayfasını aç</a></div></div>`).join('')||'<p class="muted">Kriterlere uyan İngilizce kamu malı kitap bulunamadı.</p>');
+  }catch(e){stOnlineResults(`<p class="st-error">Gutenberg kataloğuna erişilemedi: ${stEsc(e.message)}</p>`);}
+}
+async function stGutenLoad(i){const b=ST.sourceHits[i];if(!b?.url)return;stOnlineResults('<p class="muted">Kitap metni isteniyor...</p>');
+  try{const t=await stFetch(b.url.replace(/^http:/,'https:'),{text:true,accept:'text/plain',timeout:16000});if(t.length<100)throw new Error('Metin boş.');
+    const first=t.slice(0,220000);await stSaveNewDoc(b.title,first,{level:'C1',source:'Project Gutenberg · '+b.author,sourceUrl:b.sourceUrl,license:'Lisans ve ülke telif durumunu kitap sayfasından kontrol et'});
+    stNotice(t.length>220000?'Kitap ilk 220.000 karakterle sınırlı olarak alındı.':'Kitap metni kütüphaneye kaydedildi.','ok');
+  }catch(e){stOnlineResults(`<p class="st-error">Gutenberg metni tarayıcıda alınamadı (${stEsc(e.message)}). <a href="${stEsc(b.sourceUrl)}" target="_blank" rel="noopener">Kitap sayfasından indir</a> ve dosya yüklemeyi kullan.</p>`);}
+}
+async function stDirectImport(){const raw=$('stDirectUrl')?.value.trim();if(!raw)return;try{
+  const u=new URL(raw);if(u.protocol!=='https:')throw new Error('HTTPS adresi gerekli.');
+  if(!/\.txt(?:$|\?)|\.md(?:$|\?)|\.text(?:$|\?)/i.test(u.pathname+u.search))throw new Error('Yalnızca doğrudan .txt veya .md metin adreslerini kullan.');
+  const t=await stFetch(raw,{text:true,accept:'text/plain'});await stSaveNewDoc(u.pathname.split('/').pop()||'Harici metin',t.slice(0,220000),{source:u.hostname,sourceUrl:raw});
+ }catch(e){stNotice('URL içe aktarma başarısız: '+e.message+' · CORS izni yoksa metni yapıştır.','error');}
+}
+/* ---- File import/export and safe format conversion ---- */
+function stTxtFromHtml(html){const d=new DOMParser().parseFromString(html,'text/html');d.querySelectorAll('script,style,iframe,form,nav,header,footer,svg').forEach(n=>n.remove());
+  d.querySelectorAll('p,h1,h2,h3,h4,blockquote,li,br').forEach(n=>n.insertAdjacentText('afterend','\n\n'));
+  return stClean(d.body?.textContent||'');
+}
+async function stReadFiles(files){for(const f of [...files].slice(0,12)){
+    if(f.size>2*1024*1024){stNotice(f.name+': dosya 2 MB sınırını aşıyor.','error');continue;}
+    try{const t=await f.text();const ext=f.name.split('.').pop().toLowerCase();
+      if(['csv','tsv','json'].includes(ext)){
+        let asWords=false;
+        if(ext==='json'){try{const data=JSON.parse(t);if(Array.isArray(data)||Array.isArray(data.words)){asWords=true;await stImportWords(data);}}catch(e){if(!t.trim().startsWith('{'))throw e;}}
+        if(ext==='csv'||ext==='tsv'){const rows=stParseSeparated(t,ext==='tsv'?'\t':',');const heads=(rows[0]||[]).map(x=>x.trim().toLowerCase());
+          if(heads.some(x=>['en','english','word','ingilizce'].includes(x))&&heads.some(x=>['tr','meaning','turkish','anlam','türkçe'].includes(x))){asWords=true;await stImportWords(rows);}
+        }
+        if(asWords)continue;
+      }
+      const text=['htm','html'].includes(ext)?stTxtFromHtml(t):t;
+      if(stClean(text).length<80)throw new Error('Yeterli İngilizce metin yok.');
+      await stSaveNewDoc(f.name.replace(/\.[^.]+$/,''),text,{level:'B1',source:'Yerel dosya'});
+    }catch(e){stNotice(f.name+': '+e.message,'error');}
+  }
+}
+async function stImportWords(data){
+  let items=[];
+  if(Array.isArray(data)&&Array.isArray(data[0])){
+    const h=data[0].map(x=>String(x).trim().toLowerCase());
+    const col=(r,keys)=>{const i=h.findIndex(x=>keys.includes(x));return i>=0?String(r[i]||'').trim():'';};
+    items=data.slice(1).map(r=>({en:col(r,['en','english','word','ingilizce']),tr:col(r,['tr','meaning','turkish','anlam','türkçe']),example:col(r,['example','örnek']),level:col(r,['level','seviye']),pos:col(r,['pos','type','tür']),cat:col(r,['category','kategori'])}));
+  }else items=Array.isArray(data)?data:data.words||[];
+  if(!Array.isArray(items))throw new Error('Kelime dizisi bulunamadı.');
+  let added=0,skipped=0;
+  const existing=new Set(state.words.map(w=>stWord(w.en)));
+  for(const raw of items.slice(0,2500)){
+    const en=stWord(raw.en||raw.english||raw.word),tr=String(raw.tr||raw.meaning||raw.turkish||'').trim();
+    if(!/^[a-z][a-z-]{1,29}$/.test(en)||tr.length<2||existing.has(en)){skipped++;continue;}
+    const item=normalize({id:nextId(),en,tr:tr.slice(0,160),example:String(raw.example||'').slice(0,450),
+      level:['A1','A2','B1','B2','C1','C2'].includes(raw.level)?raw.level:'B1',
+      pos:String(raw.pos||'diğer').slice(0,40),cat:String(raw.cat||raw.category||'İçe Aktarılan').slice(0,50),source:'import'});
+    state.words.push(item);existing.add(en);added++;
+  }
+  if(added)save();stNotice(`Kelime içe aktarma: ${added} yeni, ${skipped} yinelenen/eksik kayıt.`,`ok`);
+  if(currentTab==='library')renderLibrary();
+}
+function stExportWords(format='csv'){
+  const fields=['en','tr','pos','level','cat','example','def','source','correct','wrong','interval','next'];
+  if(format==='json')return stDownload('lexora-kelimeler.json',JSON.stringify({version:7,exportedAt:new Date().toISOString(),words:state.words},null,2),'application/json');
+  const lines=[stCSV(fields),...state.words.map(w=>stCSV(fields.map(k=>w[k]??'')))];stDownload('lexora-kelimeler.csv','\ufeff'+lines.join('\r\n'),'text/csv;charset=utf-8');
+}
+function stExportAnki(){
+  const fields=['English','Turkish','Example','Part of speech','Level','Category'];
+  const rows=[fields.join('\t'),...state.words.filter(stQuality).map(w=>[w.en,w.tr,w.example||'',w.pos||'',w.level||'',w.cat||''].map(v=>String(v).replace(/[\r\n\t]+/g,' ')).join('\t'))];
+  stDownload('lexora-anki-aktarim.tsv','\ufeff'+rows.join('\n'),'text/tab-separated-values;charset=utf-8');
+  stNotice('Anki TSV oluşturuldu. Anki içe aktarmada alan ayırıcısı olarak sekmeyi seç.','ok');
+}
+async function stExportArchive(){await stDocsRefresh();
+  stDownload('lexora-okuma-arsivi.json',JSON.stringify({format:'Lexora Studio Archive',version:1,exportedAt:new Date().toISOString(),documents:ST.docs,words:state.words,stats:state.totals,settings:{goal:state.settings.goal}},null,2),'application/json');
+  stNotice('Metinler, sözcükler ve okuma sonuçları dışa aktarıldı. Özel bir yerde sakla.','ok');
+}
+async function stImportArchive(file){
+  if(file.size>8*1024*1024)throw new Error('Arşiv 8 MB sınırını aşıyor.');
+  const data=JSON.parse(await file.text());if(data.format!=='Lexora Studio Archive'||!Array.isArray(data.documents))throw new Error('Lexora Studio arşivi değil.');
+  await stImportWords(data.words||[]);let n=0;
+  for(const d of data.documents.slice(0,250)){
+    if(!d||typeof d.text!=='string'||d.text.length<80||d.text.length>220000)continue;
+    const v=stCreateDoc(String(d.title||'İçe aktarılan metin'),d.text,{level:d.level,source:d.source,sourceUrl:d.sourceUrl,license:d.license});
+    v.notes=String(d.notes||'').slice(0,30000);v.finished=!!d.finished;v.quizResults=Array.isArray(d.quizResults)?d.quizResults.slice(-100):[];
+    await stDocsPut(v);n++;
+  }await stDocsRefresh();ST.doc=ST.docs[0]||null;renderReading();stNotice(`${n} metin arşivden geri yüklendi.`,'ok');
+}
+function stExportDoc(){if(!ST.doc)return;const d=ST.doc;
+  const txt=`# ${d.title}\n\nDüzey: ${d.level}\nKaynak: ${d.source}\nURL: ${d.sourceUrl||'—'}\n\n${d.text}\n\n---\n# Okuma notları\n${d.notes||'Henüz not yok.'}\n\n# Anlama sonuçları\n${(d.quizResults||[]).map(q=>new Date(q.at).toLocaleDateString('tr-TR')+' · %'+q.score).join('\n')||'Yok'}`;
+  stDownload((d.title.replace(/[^a-z0-9ğüşöçı -]/gi,'').slice(0,45)||'lexora-metin')+'.md',txt,'text/markdown;charset=utf-8');
+}
+/* ---- Internet source health with explicit, browser-side tests ---- */
+async function stDiagnose(){const box=$('stNetworkResults')||$('stAccountDiag');if(!box)return;
+  const tests=[['Free Dictionary API','https://api.dictionaryapi.dev/api/v2/entries/en/learn','array'],
+    ['Datamuse','https://api.datamuse.com/words?ml=learning&max=1','array'],
+    ['Simple Wikipedia','https://simple.wikipedia.org/w/api.php?action=query&meta=siteinfo&format=json&origin=*','object'],
+    ['Gutendex','https://gutendex.com/books/?search=learning','object'],
+    ['MyMemory çeviri','https://api.mymemory.translated.net/get?q=hello&langpair=en%7Ctr','object']];
+  box.innerHTML='<h4>Bağlantı tanılama</h4><p class="muted">Tarayıcından gerçek test yapılıyor. API erişimi, CORS ve servis kotası sonucu etkileyebilir.</p>';
+  const rows=await Promise.all(tests.map(async ([label,url,type])=>{
+    const start=performance.now();try{const d=await stFetch(url,{timeout:6500});
+      if(type==='array'?!Array.isArray(d):!d||typeof d!=='object')throw new Error('Beklenmedik veri biçimi');
+      if(label==='MyMemory çeviri'&&(!d.responseData?.translatedText||/quota|warning/i.test(d.responseData.translatedText)))throw new Error('Kota/yanıt sorunu');
+      return {label,ok:true,ms:Math.round(performance.now()-start),error:''};
+    }catch(e){return {label,ok:false,ms:Math.round(performance.now()-start),error:e.message};}
+  }));ST.diag=rows;
+  box.innerHTML=`<div class="st-diagnostics">${rows.map(x=>`<div><span>${x.ok?'✓':'!'} ${stEsc(x.label)}</span><small>${x.ok?x.ms+' ms':'Erişim yok · '+stEsc(x.error)}</small></div>`).join('')}</div>
+    <p class="muted">${location.protocol==='file:'?'Bu sayfa file:// protokolünden açıldı. Bazı kaynaklar dosya kökeninden gelen istekleri reddeder; HTTPS üzerinde yayımlamak daha güvenilir olur.':'HTTPS üzerinde kullanım ağ güvenilirliği ve veri senkronizasyonu için önerilir.'} İnternet bağlantısı olsa bile uzak servis CORS/kota sınırı koyabilir.</p>`;
+}
+/* ---- Calibrated adaptive review: SM-2 inspired (not FSRS) ---- */
+review=function(word,correct){
+  const now=Date.now(),old=Math.max(0,Number(word.interval)||0),seen=Math.max(0,Number(word.correct)||0)+Math.max(0,Number(word.wrong)||0);
+  const confidence=session?.queue?.[session.i]?.conf||0;
+  const ms=session?.answered?.ms;
+  const fast=typeof ms==='number'&&ms<3500;
+  word.ease=Math.max(1.35,Math.min(3.1,Number(word.ease)||2.5));
+  word.repetitions=Math.max(0,Number(word.repetitions)||0);
+  if(correct){word.correct=(Number(word.correct)||0)+1;word.repetitions++;
+    const difficulty=confidence===1?0.85:confidence===3&&fast?1.12:1;
+    const step=word.repetitions===1?1:word.repetitions===2?3:Math.max(4,Math.round(Math.max(old,2)*word.ease*difficulty));
+    word.interval=Math.min(365,step);word.ease=Math.min(3.1,word.ease+(confidence===1?0.015:0.07));
+    word.lastResult='correct';
+  }else{word.wrong=(Number(word.wrong)||0)+1;word.repetitions=0;word.interval=0;
+    word.ease=Math.max(1.35,word.ease-0.22);word.lapses=(Number(word.lapses)||0)+1;word.lastResult='wrong';
+  }
+  word.last=now;word.next=now+(correct?word.interval*DAY:10*60*1000);word.mastered=correct&&word.interval>=21;
+  word.reviewLog=Array.isArray(word.reviewLog)?word.reviewLog:[];
+  word.reviewLog.push({at:now,correct:!!correct,interval:word.interval});if(word.reviewLog.length>70)word.reviewLog.shift();
+  if(seen>0)word.difficulty=Math.round(Math.min(100,Math.max(0,(Number(word.wrong)||0)/Math.max(1,seen+1)*100)));
+};
+// Previously, mastered words never returned as due. Keep lifelong reviews in the queue.
+/* The global isDue predicate is patched in the HTML source above this extension. */
+const _stOriginalPick=pickSessionWords;
+pickSessionWords=function(len,onlyHard){
+  const pool=usablePool().filter(w=>!onlyHard||isHard(w));
+  const score=w=>{
+    const due=isDue(w),elapsed=Math.max(0,Date.now()-(Number(w.next)||0));
+    const mistakes=Number(w.wrong)||0,correct=Number(w.correct)||0;
+    return (due?200+Math.min(80,elapsed/DAY*8):0)+(w.last?100-strengthOf(w):75)+Math.min(40,Math.max(0,mistakes-correct)*9)+(w.lapses||0)*5+(w.readSeen?7:0)+Math.random()*7;
+  };
+  return pool.map(w=>({w,n:score(w)})).sort((a,b)=>b.n-a.n).slice(0,Math.max(2,len||10)).map(x=>x.w);
+};
+/* Explicit source-of-truth quality: do not present generic seed filler as verified definitions. */
+for(const w of state.words){
+  if(w.def==='Felsefi bir terim.'){
+    w.def='';w.dataQuality='Kaynak tanımı eksik: İngilizce sözlükten doğrula';
+  }
+  if(/^The concept of .+ is crucial\.$/.test(w.example||'')){
+    w.example='';w.dataQuality='Bağlama uygun örnek henüz doğrulanmadı';
+  }
+}
+// No automatic write on boot: untouched data may be backed up and migrated on the next user action.
+/* ---- Commercial membership: real-backend integration interface, no secrets in HTML ---- */
+ST.legal=null;
+const ST_API_KEY='lexora_studio_api_url';
+const stApiOrigin=()=>{try{
+  const raw=(localStorage.getItem(ST_API_KEY)||'').trim();if(!raw)return '';
+  const u=new URL(raw);if(u.pathname!=='/'||u.search||u.hash||u.username||u.password)throw Error('Sadece alan adını gir.');
+  if(u.protocol!=='https:'&&!(u.hostname==='localhost'&&u.protocol==='http:'))throw Error('HTTPS adresi gerekli.');return u.origin;
+}catch{return '';}};
+function stAccountNotice(text){const el=$('stAccountStatus');if(el)el.textContent=text;stNotice(text);}
+async function stAPI(path,method='GET',data){const origin=stApiOrigin();if(!origin)throw new Error('Önce HTTPS sunucu adresini kaydetmelisin.');
+  const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),13000);
+  try{const url=origin+path;const headers={'Accept':'application/json'};
+    if(data!==undefined)headers['Content-Type']='application/json';
+    if(ST.csrfToken)headers['X-CSRF-Token']=ST.csrfToken;
+    const r=await fetch(url,{method,headers,credentials:'include',mode:'cors',signal:ctl.signal,body:data===undefined?undefined:JSON.stringify(data)});
+    const json=await r.json().catch(()=>({}));if(!r.ok)throw new Error((typeof json.error==='string'?json.error:json.message)||'HTTP '+r.status);
+    if(json.csrfToken)ST.csrfToken=json.csrfToken;return json;
+  }finally{clearTimeout(t);}
+}
+function stPlanLabel(p){
+  const price=Number(p.price);const iso=/^[A-Z]{3}$/.test(p.currency||'')?p.currency:'TRY';
+  const label=Number.isFinite(price)?new Intl.NumberFormat('tr-TR',{style:'currency',currency:iso}).format(price):'Fiyat sunucudan bekleniyor';
+  return `${label} / ${p.interval==='YEARLY'?'yıl':p.interval==='MONTHLY'?'ay':'dönem'}`;
+}
+function renderAccount(){const el=$('tab-account');if(!el)return;const origin=stApiOrigin();const acc=ST.account;
+  el.innerHTML=`<div class="st-hero st-hero-account"><div><div class="st-eyebrow">LEXORA · MEMBER CENTER</div><h2>Hesap, abonelik ve güvenli veri yönetimi</h2><p>iyzico ile ücretli üyelik için hazırlanmış gerçek sunucu bağlantı paneli. Öğrenme verilerin iznin olmadan başka bir yere gönderilmez.</p></div><div class="st-account-status">${origin&&acc?'Oturum bilgisi alındı':origin?'Sunucu tanımlı':'Yerel kullanım'}<small>${acc?stEsc(acc.email||''):origin?stEsc(origin):'Şu anda ödeme yapılmaz'}</small></div></div>
+  <div class="st-account-grid"><div class="st-panel"><h3>1 · Uygulama sunucusu</h3><p class="muted">Buraya kendi kontrolündeki HTTPS API alan adını yaz. Test veya gerçek iyzico gizli anahtarları yalnızca sunucuda kalmalıdır.</p><label class="st-field">Sunucu adresi<input id="stServerUrl" type="url" autocomplete="url" value="${stEsc(origin)}" placeholder="https://api.senin-uygulaman.com"></label><div class="st-toolbar"><button class="primary" data-st="server-save">Adresi kaydet</button><button class="ghost" data-st="server-check" ${!origin?'disabled':''}>Sunucuyu sorgula</button></div><div id="stAccountStatus" role="status" class="st-inline-status">${origin?'Bağlanmak için sunucunun /api/auth/session hizmeti etkin olmalı.':'Sunucu olmadan üyelik ve gerçek ödeme açılamaz.'}</div></div>
+  <div class="st-panel"><h3>2 · Üyelik hesabı</h3>${!acc?`<label class="st-field">E-posta<input id="stEmail" type="email" autocomplete="email" maxlength="200" placeholder="eposta@ornek.com"></label><label class="st-field">Şifre<input id="stPassword" type="password" autocomplete="current-password" minlength="10" placeholder="En az 10 karakter"></label><label class="st-legal-check"><input type="checkbox" id="stAccountConsent" ${!ST.legal?'disabled':''}><span>${ST.legal?`<a href="${stEsc(ST.legal.termsUrl)}" target="_blank" rel="noopener">Hizmet koşullarını</a> ve <a href="${stEsc(ST.legal.privacyUrl)}" target="_blank" rel="noopener">gizlilik bildirimini</a> okudum.`:'Yayıncının gerçek hizmet koşulları ve gizlilik metinleri sunucuda sağlanmadan yeni üyelik açılışı kapalıdır.'}</span></label><div class="st-toolbar"><button class="primary" data-st="login" ${!origin?'disabled':''}>Giriş yap</button><button class="ghost" data-st="register" ${!origin||!ST.legal?'disabled':''}>Üye ol</button></div>`:`<p><strong>${stEsc(acc.email||'Üye')}</strong></p><p class="muted">${stEsc(acc.subscription?.status||acc.plan||'Sunucu doğrulaması bekleniyor')}</p><div class="st-toolbar"><button class="ghost" data-st="account-refresh">Durumu yenile</button><button class="ghost" data-st="logout">Çıkış yap</button></div>`}</div>
+  <div class="st-panel"><h3>3 · iyzico abonelik ve ödeme</h3><p class="muted">Gerçek fiyatlar ve ödeme planları yalnızca yayıncının sunucusundan alınır. Tarayıcıda kart bilgisi toplanmaz; iyzico ödeme sayfasına güvenli yönlendirme yapılır.</p><div class="st-toolbar"><button class="ghost" data-st="plans" ${!origin?'disabled':''}>Abonelik planlarını getir</button><button class="ghost" data-st="subscription" ${!origin||!acc?'disabled':''}>Aboneliğimi sorgula</button></div><div id="stPlans">${ST.plans.length?ST.plans.map(p=>`<div class="st-plan"><div><strong>${stEsc(p.name)}</strong><small>${stEsc(stPlanLabel(p))}</small></div><button class="primary" data-st="checkout" data-id="${stEsc(p.id)}" ${!acc?'disabled':''}>Ödeme sayfasına geç</button></div>`).join(''):'<p class="muted">Henüz plan yok. Sunucuya bağlandıktan sonra planları görüntüleyebilirsin.</p>'}</div>${acc?`<button class="ghost" data-st="cancel-subscription">Aboneliğimin iptalini iste</button>`:''}</div>
+  <div class="st-panel"><h3>4 · Hesap eşitleme</h3><p class="muted">Varsayılan: yalnızca yerel cihaz. Eşitleme isteğe bağlıdır. Başka cihazdaki kayıtları önce dışa aktarıp yedeklemeni öneririz.</p><div class="st-toolbar"><button class="primary" data-st="sync-up" ${!acc?'disabled':''}>Buluta yedekle</button><button class="ghost" data-st="sync-down" ${!acc?'disabled':''}>Buluttan birleştir</button><button class="ghost" data-st="export-all">Yerel arşiv indir</button></div><p class="muted">Eşitleme için /api/sync/import ve /api/sync/export uç noktalarının sunucuda ayrıca geliştirilmesi gerekir.</p></div></div>
+  <div class="st-panel"><h3>Yayın öncesi güvenlik ve mevzuat kontrolü</h3><div class="st-checklist"><div><strong>Hesap güvenliği</strong><small>HTTPS · sunucu tarafında şifre hashleme · e-posta doğrulama · parola sıfırlama · hız sınırlama · oturum çerezi / CSRF</small></div><div><strong>iyzico abonelikleri</strong><small>Ürün ve ödeme planı · checkout başlatma · callback token sorgusu · imzalı webhook · ödeme durumu · yinelenen ödeme · iade/iptal</small></div><div><strong>KVKK ve tüketici bilgilendirmesi</strong><small>Aydınlatma metni · açık rıza gerektiren işlemler için ayrı tercih · mesafeli satış/abonelik şartları · ön bilgilendirme · iptal/iade ve destek süreçleri · çerez politikası</small></div><div><strong>Kurumsal işletme</strong><small>Ücret/fatura belgeleri · yasal satıcı kimliği · destek kanalı · denetim günlüğü · yedekleme · içerik lisansları · erişilebilirlik</small></div></div><p class="muted">Bu panel sunucu güvenliği ve hukuki uygunluğun yerini tutmaz; canlı ödeme entegrasyonu değildir.</p></div>
+  <div class="st-panel"><h3>Veri taşınabilirliği ve sözcük edinme</h3><p class="muted">Anki, CSV ve JSON olarak dışa aktar. İçe aktarılan yeni sözcükler kişisel sözlüğünle birleştirilir; mevcut sözcüklerin üzerine yazılmaz.</p><div class="st-toolbar"><button class="ghost" data-st="words-csv">CSV kelimeler</button><button class="ghost" data-st="words-json">JSON kelimeler</button><button class="ghost" data-st="words-anki">Anki TSV</button><button class="primary" data-st="export-all">Tam arşiv</button></div><label class="st-file-btn">📂 Arşiv / sözcük dosyası yükle<input type="file" id="stArchiveFile" accept=".json,.csv,.tsv" multiple></label></div>`;
+}
+async function stLogin(register){
+  if(register&&(!ST.legal?.termsUrl||!ST.legal?.privacyUrl||!$('stAccountConsent')?.checked))return stAccountNotice('Üyelik açılışı için sunucuda gerçek hizmet koşulları/gizlilik metinleri bulunmalı ve okunup kabul edilmelidir.');
+  const email=$('stEmail')?.value.trim(),password=$('stPassword')?.value||'';
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email||'')||password.length<10)return stAccountNotice('Geçerli e-posta ve en az 10 karakterli şifre gerekli.');
+  try{const data=await stAPI(register?'/api/auth/register':'/api/auth/login','POST',{email,password});
+    $('stPassword').value='';ST.account=data.user||null;
+    if(register&&!ST.account){stAccountNotice('Kayıt isteği gönderildi. E-posta doğrulama bağlantını kontrol et.');return;}
+    renderAccount();stAccountNotice('Oturum sunucudan doğrulandı.');
+  }catch(e){if($('stPassword'))$('stPassword').value='';stAccountNotice('Giriş/kayıt başarısız: '+e.message);}
+}
+async function stSessionCheck(){
+  try{
+    const publicData=await stAPI('/api/public/config').catch(()=>null);
+    const origin=stApiOrigin();
+    const validLink=x=>{try{const u=new URL(x,origin);return u.protocol==='https:'&&(u.origin===origin||u.hostname.endsWith('.iyzico.com'))?u.href:null;}catch{return null;}};
+    const termsUrl=validLink(publicData?.termsUrl),privacyUrl=validLink(publicData?.privacyUrl);
+    ST.legal=termsUrl&&privacyUrl?{termsUrl,privacyUrl}:null;
+    const data=await stAPI('/api/auth/session');ST.account=data.user||null;renderAccount();stAccountNotice(ST.account?'Üyelik oturumu doğrulandı.':'Sunucuya ulaşıldı; oturum açık değil.');}
+  catch(e){ST.account=null;renderAccount();stAccountNotice('Sunucu kontrolü başarısız: '+e.message);}
+}
+async function stPlans(){try{const data=await stAPI('/api/billing/plans');ST.plans=(Array.isArray(data.plans)?data.plans:[]).filter(p=>typeof p.id==='string'&&typeof p.name==='string'&&p.id.length<80).slice(0,20);renderAccount();stAccountNotice(ST.plans.length+' gerçek plan sunucudan geldi.');}
+catch(e){stAccountNotice('Planlar alınamadı: '+e.message);}}
+async function stCheckout(id){
+  if(!ST.account)return stAccountNotice('Ödeme öncesinde giriş yap.');
+  if(!ST.plans.some(x=>x.id===id))return stAccountNotice('Plan doğrulanamadı.');
+  try{const data=await stAPI('/api/billing/checkout','POST',{planId:id});const u=new URL(data.checkoutUrl||data.url||'');
+    const allowed=u.hostname==='iyzico.com'||u.hostname.endsWith('.iyzico.com')||u.hostname==='iyzipay.com'||u.hostname.endsWith('.iyzipay.com')||u.origin===stApiOrigin();
+    if(u.protocol!=='https:'||!allowed)throw new Error('Güvenli ödeme alan adı doğrulanamadı.');
+    location.assign(u.href);
+  }catch(e){stAccountNotice('Ödeme başlatılamadı: '+e.message);}
+}
+async function stSubscription(){try{const data=await stAPI('/api/billing/subscription');const status=data.subscription?.status||'Abonelik bulunamadı';
+  if(ST.account)ST.account.subscription=data.subscription;renderAccount();stAccountNotice('Sunucu abonelik durumu: '+status);
+}catch(e){stAccountNotice('Abonelik sorgulanamadı: '+e.message);}}
+async function stCancelSub(){if(!confirm('Abonelik iptal isteği kendi sunucuna gönderilsin mi? İptal şartları sunucudan ve sözleşmeden doğrulanmalıdır.'))return;
+  try{await stAPI('/api/billing/cancel','POST',{});await stSubscription();stAccountNotice('İptal isteği sunucuya gönderildi. Sonucu üyelik durumundan kontrol et.');}
+  catch(e){stAccountNotice('İptal isteği alınamadı: '+e.message);}
+}
+async function stSyncUp(){if(!confirm('Metinler ve sözcüklerin kendi üyelik sunucuna yüklensin mi?'))return;
+  try{await stDocsRefresh();await stAPI('/api/sync/import','POST',{format:'lexora_studio_v1',documents:ST.docs,words:state.words});stAccountNotice('Sunucuya veri aktarımı tamamlandı.');}
+  catch(e){stAccountNotice('Eşitleme başarısız: '+e.message);}
+}
+async function stSyncDown(){if(!confirm('Bulut kayıtları mevcut verilerinle birleştirilsin mi? Önce yerel yedek alman önerilir.'))return;
+  try{const data=await stAPI('/api/sync/export');await stImportWords(data.words||[]);
+    const existing=new Set((await stDocsRefresh()).map(d=>d.id));let n=0;
+    for(const d of (data.documents||[]).slice(0,200)){
+      if(!d||typeof d.text!=='string'||d.text.length>220000||existing.has(d.id))continue;
+      const doc=stCreateDoc(d.title,d.text,d);doc.notes=String(d.notes||'').slice(0,30000);doc.quizResults=Array.isArray(d.quizResults)?d.quizResults.slice(-100):[];
+      await stDocsPut(doc);n++;
+    }await stDocsRefresh();stAccountNotice(`Bulut kayıtları birleştirildi: ${n} yeni metin.`);
+  }catch(e){stAccountNotice('Buluttan eşitleme başarısız: '+e.message);}
+}
+/* ---- Uniform actions (buttons created by the reading/account renderer) ---- */
+const ST_ACTIONS={
+  'source-mode':(_,b)=>{document.querySelectorAll('.st-segment').forEach(x=>x.classList.toggle('active',x===b));$('stSourceArea').innerHTML=stSourceHtml(b.dataset.mode);},
+  'sample':async(id)=>{const x=ST.examples[+id];if(x)await stSaveNewDoc(x.title,x.text,{level:x.level,source:'Lexora özgün eğitim metni'});},
+  'save-paste':async()=>{const t=$('stPasteInput')?.value||'',title=$('stTitleInput')?.value||'Kendi metnim',level=$('stLevelInput')?.value||'B1';await stSaveNewDoc(title,t,{level});},
+  'open-doc':async(id)=>{ST.doc=ST.docs.find(d=>d.id===id)||null;ST.page=ST.doc?.page||0;ST.selected=null;ST.quiz=null;renderReading();},
+  'page-prev':async()=>{if(!ST.doc)return;ST.page=Math.max(0,ST.page-1);ST.doc.page=ST.page;await stDocsPut(ST.doc);$('stReadHost').innerHTML=stReadingBody();},
+  'page-next':async()=>{if(!ST.doc)return;ST.page=Math.min(stPageCount(ST.doc)-1,ST.page+1);ST.doc.page=ST.page;await stDocsPut(ST.doc);$('stReadHost').innerHTML=stReadingBody();},
+  'word':(w)=>stShowWord(w),
+  'close-word':()=>{ST.selected=null;const el=$('stWordPanel');if(el)el.innerHTML='';},
+  'word-online':()=>ST.selected&&stResearchWord(ST.selected),
+  'word-add':()=>ST.selected&&stAddWord(ST.selected),
+  'word-detail':()=>{const w=stWordMap().get(ST.selected);if(w)openDetail(w.id);},
+  'word-mark':()=>{const w=stWordMap().get(ST.selected);if(!w)return;w.readSeen=!w.readSeen;save();stShowWord(w.en);},
+  'speak-word':()=>ST.selected&&speak(ST.selected,'en-US',0.75),
+  'read-aloud':()=>ST.doc&&speak(stPageText(ST.doc,ST.page),'en-US',0.88),
+  'practice-doc':()=>{if(!ST.doc)return;const m=stReadMetrics(ST.doc);const picks=m.found.filter(w=>isDue(w)||isHard(w));startCustomWordSession((picks.length>=2?picks:m.found).slice(0,20),'Okuma metninden sözcükler');},
+  'finish':async()=>{if(!ST.doc)return;ST.doc.finished=!ST.doc.finished;await stDocsPut(ST.doc);await stDocsRefresh();renderReading();},
+  'save-note':async()=>{if(!ST.doc)return;ST.doc.notes=$('stDocNote')?.value.slice(0,30000)||'';await stDocsPut(ST.doc);stNotice('Okuma ve düşünme notun kaydedildi.','ok');},
+  'quote-export':()=>stExportDoc(), 'export-doc':()=>stExportDoc(),
+  'start-quiz':()=>stQuizStart(),
+  'quiz-choice':(id)=>{const z=ST.quiz;if(!z||z.chosen!==null||z.done)return;const q=z.questions[z.index],choice=+id;
+    if(!Number.isInteger(choice)||choice<0||choice>=q.options.length)return;
+    z.chosen=choice;z.answers.push(choice);if(choice===q.answer)z.correct++;
+    if(q.type==='cloze'){
+      const w=stWordMap().get(stWord(q.options[q.answer]));
+      if(w&&stQuality(w))recordAnswer(w,choice===q.answer,Math.max(300,Date.now()-(z.questionStarted||z.started)),'reading');
+    }
+    stQuizRender();
+  },
+  'quiz-next':async()=>{await stQuizNext();if(ST.quiz&&!ST.quiz.done)ST.quiz.questionStarted=Date.now();},
+  'quiz-again':()=>stQuizStart(), 'quiz-close':()=>stQuizClose(),
+  'wiki-search':(_,b)=>stWikiSearch(b.dataset.mode||'simple'),
+  'wiki-load':id=>stWikiLoad(+id),'guten-search':()=>stGutenSearch(),'guten-load':id=>stGutenLoad(+id),'url-import':()=>stDirectImport(),
+  'smart-words':()=>{const ws=usablePool().filter(w=>isDue(w)||isHard(w)).sort((a,b)=>(Number(b.wrong)||0)-(Number(a.wrong)||0));startCustomWordSession(ws.slice(0,16),'Uyarlanabilir tekrar');},
+  'network':()=>stDiagnose(),
+  'words-csv':()=>stExportWords('csv'),'words-json':()=>stExportWords('json'),'words-anki':()=>stExportAnki(),'export-all':()=>stExportArchive(),
+  'server-save':()=>{const raw=$('stServerUrl')?.value.trim()||'';
+    if(!raw){localStorage.removeItem(ST_API_KEY);ST.account=null;ST.plans=[];renderAccount();return;}
+    try{const u=new URL(raw);if((u.protocol!=='https:'&&!(u.protocol==='http:'&&u.hostname==='localhost'))||u.pathname!=='/'||u.search||u.hash||u.username||u.password)throw Error('Yalnızca HTTPS kök alan adı (veya test için localhost) kullanılabilir.');
+      localStorage.setItem(ST_API_KEY,u.origin);ST.account=null;ST.plans=[];renderAccount();stAccountNotice('Sunucu adresi kaydedildi. Bağlantıyı şimdi doğrulayabilirsin.');
+    }catch(e){stAccountNotice('Adres geçersiz: '+e.message);}
+  },
+  'server-check':()=>stSessionCheck(),'account-refresh':()=>stSessionCheck(),'login':()=>stLogin(false),'register':()=>stLogin(true),
+  'logout':async()=>{try{await stAPI('/api/auth/logout','POST',{});ST.account=null;ST.plans=[];renderAccount();stAccountNotice('Oturum sonlandırıldı.');}catch(e){stAccountNotice('Çıkış başarısız: '+e.message);}},
+  'plans':()=>stPlans(),'checkout':id=>stCheckout(id),'subscription':()=>stSubscription(),'cancel-subscription':()=>stCancelSub(),
+  'sync-up':()=>stSyncUp(),'sync-down':()=>stSyncDown(),
+  'read-jump':()=>showTab('reading'),'member-jump':()=>showTab('account')
+};
+let stActionBusy=false;
+document.addEventListener('click',async e=>{
+  const btn=e.target.closest?.('[data-st]');if(!btn||btn.disabled)return;
+  const fn=ST_ACTIONS[btn.dataset.st];if(!fn)return;
+  e.preventDefault();
+  if(btn.dataset.st==='source-mode'||btn.dataset.st==='open-doc'||btn.dataset.st==='word'||btn.dataset.st.startsWith('quiz-')){
+    try{await fn(btn.dataset.id||btn.dataset.word||'',btn);}catch(err){console.error(err);stNotice(err.message||'Bir hata oluştu.','error');}return;
+  }
+  if(stActionBusy)return;
+  stActionBusy=true;btn.classList.add('st-busy');
+  try{await fn(btn.dataset.id||btn.dataset.word||'',btn);}catch(err){console.error(err);stNotice(err.message||'Bir hata oluştu.','error');}
+  finally{stActionBusy=false;btn.classList.remove('st-busy');}
+});
+document.addEventListener('change',async e=>{
+  if(e.target?.id==='stTextFile'){await stReadFiles(e.target.files);e.target.value='';}
+  if(e.target?.id==='stArchiveFile'){
+    for(const f of [...e.target.files])try{
+      if(f.name.toLowerCase().endsWith('.json')){
+        const data=JSON.parse(await f.text());
+        if(data.format==='Lexora Studio Archive')await stImportArchive(f);
+        else await stImportWords(data);
+      }else{await stReadFiles([f]);}
+    }catch(err){stNotice('Dosya alınamadı: '+err.message,'error');}
+    e.target.value='';
+  }
+});
+document.addEventListener('input',e=>{
+  if(e.target?.id==='stFilter'){
+    ST.libraryFilter=e.target.value;const list=$('stListPanel')?.querySelector('.st-doc-list');if(!list)return;
+    list.querySelectorAll('.st-doc').forEach(n=>n.hidden=!n.textContent.toLocaleLowerCase('tr').includes(ST.libraryFilter.toLocaleLowerCase('tr')));
+  }
+});
+/* ---- A few purposeful entry points in existing tabs ---- */
+const _stToday0=renderToday;
+renderToday=function(){_stToday0();const sec=$('tab-today');if(!sec||sec.querySelector('#stTodayBridge'))return;
+  const due=state.words.filter(w=>isDue(w)&&stQuality(w));const hard=state.words.filter(isHard);
+  const card=document.createElement('div');card.className='card st-today-bridge';card.id='stTodayBridge';
+  card.innerHTML=`<div class="st-bridge-head"><div><span class="st-kicker">AKILLI ÇALIŞMA YOLU</span><h3>Kelime bilgisinden okuduğunu anlamaya</h3><p class="muted">${due.length} vadesi gelmiş kelime · ${hard.length} zorlanan kelime · ${ST.docs.length} okuma metni</p></div><span class="st-bridge-icon">📖</span></div>
+    <div class="st-toolbar"><button class="primary" data-st="read-jump">Okuma laboratuvarına git</button><button class="ghost" data-st="smart-words">Hedefli tekrar yap</button></div>`;
+  sec.prepend(card);
+};
+const _stLibrary0=renderLibrary;
+renderLibrary=function(note){_stLibrary0(note);const sec=$('tab-library');if(!sec||sec.querySelector('#stLibraryBridge'))return;
+  const c=document.createElement('div');c.id='stLibraryBridge';c.className='card st-compact-bridge';
+  c.innerHTML=`<strong>Kelime edinme · Dışa aktarma</strong><p class="muted">Pasajdan sözcük avcısı, CSV/Anki dışa aktarımı ve ücretsiz çevrimiçi metin kaynağı.</p><div class="st-toolbar"><button class="primary" data-st="read-jump">Metinden kelime çıkar</button><button class="ghost" data-st="words-anki">Anki'ye aktar</button><button class="ghost" data-st="words-csv">CSV indir</button></div>`;
+  sec.prepend(c);
+};
+const _stStats0=renderStats;
+renderStats=function(){_stStats0();const sec=$('tab-stats');if(!sec||sec.querySelector('#stReadingStats'))return;
+  const results=ST.docs.flatMap(d=>(d.quizResults||[]).map(r=>({r,title:d.title})));const avg=results.length?Math.round(results.reduce((a,x)=>a+x.r.score,0)/results.length):null;
+  const c=document.createElement('div');c.className='card';c.id='stReadingStats';
+  c.innerHTML=`<h3>Okuma ve bağlam performansı</h3><div class="st-metric-grid"><div><strong>${ST.docs.length}</strong><span>Metin</span></div><div><strong>${ST.docs.filter(d=>d.finished).length}</strong><span>Okunan</span></div><div><strong>${results.length}</strong><span>Mini test</span></div><div><strong>${avg===null?'—':avg+'%'}</strong><span>Quiz doğruluk</span></div></div><button class="ghost" data-st="read-jump">Okumaya geç</button>`;
+  sec.append(c);
+};
+const _stSettings0=renderSettings;
+renderSettings=function(){_stSettings0();const sec=$('tab-settings');if(!sec||sec.querySelector('#stSettingsBridge'))return;
+  const c=document.createElement('div');c.className='card';c.id='stSettingsBridge';
+  c.innerHTML=`<h3>Profesyonel veri ve abonelik araçları</h3><p class="muted">Tam arşiv, Anki/CSV/JSON aktarımı ve HTTPS üzerinde güvenli üyelik altyapısı.</p><div class="st-toolbar"><button class="primary" data-st="export-all">Tüm arşivi indir</button><button class="ghost" data-st="member-jump">Üyelik sistemi</button><button class="ghost" data-st="read-jump">Okuma laboratuvarı</button></div>`;
+  sec.prepend(c);
+};
+async function stInit(){
+  await stDocsRefresh();if(!ST.doc&&ST.docs.length){ST.doc=ST.docs[0];ST.page=ST.doc.page||0;}
+  if(currentTab==='reading')renderReading();
+  if(currentTab==='today')renderToday();
+}
+stInit().catch(e=>console.warn('Lexora Studio yerel metin kütüphanesi:',e));
+window.LEXORA_STUDIO={renderReading,renderAccount,stQuizBuild,stDocsGet,stDocsPut,stImportWords,stExportArchive,stDiagnose,ST};
+
+/* =====================================================================
+   LX6 · SİSTEM KATMANI
+   - Tek yönlendirici (lxGo): her bölüm aynı yoldan açılır
+   - Tek düzen: 4 ana sekme + gruplanmış "Menü" (yatay kaydırma yok)
+   - Mobil uyumlu Kelime Evreni: dokunma, basılı tut, klavye, arama, liste yedeği
+   - Her bölümde: yönlendirme başlığı, akıllı öneriler, sıradaki adım
+   ===================================================================== */
+(() => {
+  "use strict";
+
+  /* ---------- 0. Yardımcılar ---------- */
+  const $ = id => document.getElementById(id);
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const pct = (a, b) => (b ? Math.round((a / b) * 100) : 0);
+  const lxShuffle = arr => {
+    const c = arr.slice();
+    for (let i = c.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [c[i], c[j]] = [c[j], c[i]]; }
+    return c;
+  };
+  const bar = p => `<div class="lx-bar" role="img" aria-label="Yüzde ${clamp(Math.round(p), 0, 100)}"><span style="width:${clamp(p, 0, 100)}%"></span></div>`;
+  const cardHtml = (title, body, acts = "") =>
+    `<article class="lx-card"><h3>${esc(title)}</h3><div class="lx-body">${body}</div>${acts ? `<div class="lx-acts">${acts}</div>` : ""}</article>`;
+  const btnHtml = (act, label, arg = "", kind = "ghost") =>
+    `<button type="button" class="${kind}" data-lx="${esc(act)}" data-arg="${esc(String(arg))}">${esc(label)}</button>`;
+  const lxStore = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* depolama kapalı ya da dolu */ } }
+  };
+  const isPh = s => /Felsefi bir terim\.|^The concept (of|is)/i.test(String(s || ""));
+  const isPlaceholderWord = w => isPh(w.def) || isPh(w.example);
+  const rootOf = w => { const p = analyze(w).parts.find(x => x.type === "root"); return p ? p.f : null; };
+  const escRe = s => String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const dayHash = () => { let h = 0; for (const ch of dayKey()) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return h; };
+  const addDays = (key, n) => dayKey(new Date(new Date(key + "T00:00:00").getTime() + n * DAY));
+  const isFadingSoon = w => {
+    if (!w.last || w.mastered) return false;
+    const e = (Date.now() - w.last) / DAY;
+    const S = Math.max(0.5, w.interval || 0.5);
+    return e <= S && e + 3 > S;
+  };
+  const worstWords = () => usablePool().filter(w => w.wrong > 0).sort((a, b) => b.wrong - a.wrong).slice(0, 3);
+  const hexOk = s => /^#[0-9a-f]{6}$/i.test(String(s || ""));
+  const catStats = () => {
+    const m = new Map();
+    for (const w of state.words) {
+      let c = m.get(w.cat);
+      if (!c) { c = { cat: w.cat, n: 0, mastered: 0, due: 0, hard: 0, c: 0, wr: 0 }; m.set(w.cat, c); }
+      c.n++;
+      if (w.mastered) c.mastered++;
+      if (isDue(w)) c.due++;
+      if (isHard(w)) c.hard++;
+      c.c += w.correct || 0;
+      c.wr += w.wrong || 0;
+    }
+    return [...m.values()].sort((a, b) => b.n - a.n || a.cat.localeCompare(b.cat));
+  };
+
+  /* ---------- 1. Bölüm kayıtları (tek kaynak) ---------- */
+  const TABS = {
+    today:     { label: "Bugün", icon: "🏠", group: "primary", purpose: "Bugün ne çalışacağını ve ilerlemeni burada gör.", cta: { label: "Planı başlat", act: "plan-start" }, next: "learn" },
+    learn:     { label: "Öğren", icon: "🧠", group: "primary", purpose: "Eşleştirme, anlam ve cümle alıştırmalarıyla çalış.", cta: { label: "Oturum başlat", act: "session-start" }, next: "library" },
+    reading:   { label: "Okuma", icon: "📖", group: "primary", purpose: "Gerçek metinlerde anlam kur, bağlamdan kelime öğren, kanıt temelli sorular çöz.", cta: { label: "Okuma metni seç", act: "go" }, next: "library" },
+    library:   { label: "Sözlük", icon: "📚", group: "primary", purpose: "Kelimelerini ara, filtrele, düzenle ve yenilerini ekle.", cta: { label: "Yeni kelime", act: "add-word" }, next: "classes" },
+    room:      { label: "Özel Oda", icon: "🚪", group: "primary", purpose: "Favori kelimelerinden kendi çalışma odanı kur.", cta: { label: "Favorileri çalış", act: "fav-start" }, next: "learn" },
+    path:      { label: "Yol", icon: "🗺️", group: "study", desc: "Basamaklarını ve sonraki hedefini gör", purpose: "Hangi basamakta olduğunu ve neye ihtiyacın olduğunu gör.", next: "learn" },
+    focus:     { label: "Odak & Özet", icon: "⏱️", group: "study", desc: "Oturum özeti, mola ve tur planı", purpose: "Son turunu özetle, molanı planla, tur uzunluğunu ayarla.", next: "today" },
+    world:     { label: "Dünya Yolculuğu", icon: "🌐", group: "study", desc: "Kelime bölgelerinde ilerle", purpose: "Kelime bölgelerini gez ve her bölgenin ilerlemesini takip et.", next: "awards" },
+    classes:   { label: "Sınıf", icon: "🗂️", group: "dict", desc: "Yüzen kelime evreni ve gruplar", purpose: "Kelimeleri gruplara ayır ya da yüzen evrende keşfet.", cta: { label: "Evreni aç", act: "view-univ" }, next: "philo" },
+    philo:     { label: "Felsefe", icon: "📜", group: "dict", desc: "Felsefe terimleri", purpose: "Felsefe terimlerini tanımları ve kökleriyle öğren.", next: "journal" },
+    realworld: { label: "Gerçek Hayat", icon: "🌍", group: "dict", desc: "Metinlerden ve hayattan kelime", purpose: "Okuduğun metinlerden ve hayatından kelime topla.", next: "library" },
+    journal:   { label: "Günlük", icon: "📝", group: "track", desc: "Yansıtma ve yazı", purpose: "Günün yansıtmasını yaz ve hedef kelimelerini cümlelerinde kullan.", next: "stats" },
+    stats:     { label: "İstatistik", icon: "📊", group: "track", desc: "Grafikler ve analiz", purpose: "Ne kadar, ne kadar iyi çalıştığını ve nerede zorlandığını gör.", next: "path" },
+    awards:    { label: "Ödül Sergisi", icon: "🏆", group: "track", desc: "Rozetler ve yaklaşan hedefler", purpose: "Kazandığın rozetleri ve bir sonraki hedefini gör.", next: "world" },
+    look:      { label: "Görünüm", icon: "🎨", group: "account", desc: "Okuma ve dokunma ayarları", purpose: "Yazı boyutu, dokunma kolaylığı ve renk ayarlarını kendine göre yap.", next: "settings" },
+    settings:  { label: "Ayarlar", icon: "⚙️", group: "account", desc: "Veri, yedek ve önbellek", purpose: "Yedeğini al, önbelleği yönet ve ayarlarında ara.", next: "profile" },
+    account:   { label: "Üyelik", icon: "🔐", group: "account", desc: "Hesap, iyzico ve bulut eşitleme", purpose: "Üyelik sunucunu bağla, ödeme planlarını doğrula ve verilerini yönet.", next: "today" },
+    profile:   { label: "Profil", icon: "👤", group: "account", desc: "Hedeflerin ve tamamlama", purpose: "Profilini tamamla ve günlük hedefini kendi temponla eşleştir.", next: "today" },
+    session:   { label: "Oturum", icon: "🧠", hidden: true, purpose: "" }
+  };
+  const GROUPS = [["study", "Çalış"], ["dict", "Sözlük ve keşif"], ["track", "Takip"], ["account", "Görünüm ve hesap"]];
+  const PRIMARY = ["today", "learn", "reading", "library", "room"];
+  const LX = { open: {}, setQuery: "" };
+
+  /* ---------- 2. Önerilen adım ve oturum planı ---------- */
+  function lxPlan() {
+    const cap = clamp((state.settings.sessionLen || 10) + 4, 6, 16);
+    const hard = usablePool().filter(isHard).sort((a, b) => b.wrong - a.wrong);
+    const due = dueWords().filter(w => w.last && !isHard(w) && usableWord(w)).sort((a, b) => strengthOf(a) - strengthOf(b));
+    const fresh = lxShuffle(usablePool().filter(w => !w.last && !w.mastered));
+    const pick = [];
+    const take = (arr, n) => {
+      for (const w of arr) {
+        if (pick.length >= cap || n <= 0) break;
+        if (!pick.includes(w)) { pick.push(w); n--; }
+      }
+    };
+    take(hard, Math.ceil(cap * 0.3));
+    take(due, Math.ceil(cap * 0.5));
+    take(fresh, cap);
+    return {
+      words: pick,
+      hard: pick.filter(isHard).length,
+      due: pick.filter(w => w.last && !isHard(w)).length,
+      fresh: pick.filter(w => !w.last).length
+    };
+  }
+
+  function lxRecommend() {
+    const t = todayStats();
+    const due = dueWords().length;
+    const hard = state.words.filter(isHard).length;
+    if (t.answers === 0 && state.streak > 0 && new Date().getHours() >= 18)
+      return { label: "Seriyi koru", act: "streak-save", reason: "Bugün henüz çalışmadın ve serin tehlikede." };
+    if (due > 0) return { label: "Bugünkü planı başlat", act: "plan-start", reason: `${due} kelime tekrar zamanını bekliyor.` };
+    if (hard > 0) return { label: "Zorlayan kelimeleri çalış", act: "hard-start", reason: `${hard} kelimede zorlanıyorsun.` };
+    if (state.words.length < 100) return { label: "Sözlüğe kelime ekle", act: "go", arg: "library", reason: "Kelime havuzun büyüdükçe öneriler daha isabetli olur." };
+    return { label: "Evreni keşfet", act: "go", arg: "classes", reason: "Her şey yolunda. Kelimelerini galakside incele." };
+  }
+
+  /* ---------- 3. Akıllı öneriler (bölüm bazlı, her biri en az 3 kart) ---------- */
+  const SMART = {
+    today() {
+      const plan = lxPlan();
+      const t = todayStats();
+      const goal = state.settings.goal || 10;
+      const remain = Math.max(0, goal - t.answers);
+      const avgMs = state.totals.msCount ? state.totals.ms / state.totals.msCount : 12000;
+      const eta = Math.max(1, Math.ceil((remain * avgMs) / 60000));
+      const hour = new Date().getHours();
+      const out = [];
+      out.push(cardHtml("Günlük plan",
+        plan.words.length
+          ? `Bugün <strong>${plan.words.length}</strong> kelime: ${plan.hard} zor, ${plan.due} tekrar, ${plan.fresh} yeni. Tahmini süre yaklaşık ${Math.ceil(plan.words.length * 0.4)} dakika.`
+          : "Bugün planlanacak kelime yok. Sözlüğe yeni kelime ekleyebilirsin.",
+        plan.words.length >= 2 ? btnHtml("plan-start", "Planı başlat", "", "primary") : btnHtml("go", "Sözlüğe git", "library")));
+      if (t.answers === 0 && state.streak > 0)
+        out.push(cardHtml("Seri koruma",
+          hour >= 18
+            ? `Bugün henüz cevap vermedin. <strong>${state.streak} günlük serin</strong> tehlikede. Üç cevapla bu günü kurtar.`
+            : `${state.streak} günlük serin var. Bugün üç cevapla seriyi sürdür.`,
+          btnHtml("streak-save", "Üç cevap çöz", "", "primary")));
+      else if (t.answers > 0)
+        out.push(cardHtml("Seri koruma", `Bugün ${t.answers} cevap verdin. Serin güvende.`));
+      else
+        out.push(cardHtml("Seri koruma", "İlk cevabınla serin başlar.", btnHtml("streak-save", "İlk turu başlat", "", "primary")));
+      out.push(cardHtml("Hedefe kalan süre",
+        remain === 0
+          ? "Günlük hedefini tamamladın. Ek tur kalıcılığı artırır."
+          : `Hedefe ${remain} cevap kaldı. Ortalama cevap sürenle yaklaşık ${eta} dakika.`,
+        remain ? btnHtml("session-start", "Turu başlat", "", "primary") : ""));
+      return out;
+    },
+
+    path() {
+      const out = [];
+      const idx = stationsUnlocked();
+      const days7 = lastDays(7);
+      const correct7 = days7.reduce((s, d) => s + d.correct, 0);
+      const active7 = days7.filter(d => d.answers > 0).length;
+      if (idx >= STATIONS.length) {
+        out.push(cardHtml("Sonraki basamak", "Yolun sonuna geldin. Tüm basamaklar tamam.", btnHtml("go", "Rozetlere bak", "awards", "primary")));
+      } else {
+        const st = STATIONS[idx];
+        const cur = Math.min(progressOf(st.key), st.need);
+        const left = Math.max(0, st.need - cur);
+        const target = st.key === "morph" ? "library" : "learn";
+        out.push(cardHtml("Sonraki basamak",
+          `<strong>${esc(st.name)}</strong> için ${left} ${esc(REQ_LABEL[st.key])} kaldı (${cur}/${st.need}).` + bar(pct(cur, st.need)),
+          btnHtml("go", target === "library" ? "Sözlükte kök ara" : "Öğrenmeye geç", target, "primary")));
+        const pace = (correct7 / Math.max(1, active7)) * 0.25;
+        out.push(cardHtml("Tahmini süre",
+          active7 === 0
+            ? "Son yedi günde çalışmadın. Bugün beş cevapla temponu yakala."
+            : `Son yedi günlük temponla bu basamağa yaklaşık ${Math.max(1, Math.ceil(left / Math.max(0.5, pace)))} aktif gün kaldı. Bu kaba bir tahmindir.`));
+      }
+      const gap = state.lastActive ? dayDiff(state.lastActive, dayKey()) : 99;
+      out.push(cardHtml("Yol ritmi",
+        gap >= 2
+          ? `${gap} gündür yoldan uzaktasın. Kısa bir tur bile ilerlemeni korur.`
+          : `Bu hafta ${active7} aktif gün var. Ritmini koru.`,
+        gap >= 2 ? btnHtml("short-start", "Beş kelimelik tur", "", "primary") : ""));
+      return out;
+    },
+
+    learn() {
+      const out = [];
+      const types = Object.entries(state.totals.byType || {}).filter(([, v]) => v.n >= 5);
+      if (types.length) {
+        const [t, v] = types.sort((a, b) => a[1].c / a[1].n - b[1].c / b[1].n)[0];
+        const label = (LEARN_MODES.find(m => m[0] === t) || [t, t])[1];
+        out.push(cardHtml("Akıllı mod önerisi",
+          `En zayıf olduğun tür: <strong>${esc(label)}</strong> (%${pct(v.c, v.n)} doğru, ${v.n} soru). Bu türle kısa bir tur yap.`,
+          btnHtml("mode-start", `${label} turu`, t, "primary")));
+      } else {
+        out.push(cardHtml("Akıllı mod önerisi", "Her soru türünden beş soru çözdüğünde sana en zayıf türü önereceğim."));
+      }
+      const acc = state.totals.answers >= 15 ? state.totals.correct / state.totals.answers : null;
+      const pairs = state.settings.pairs || 4;
+      if (acc === null) out.push(cardHtml("Zorluk ayarı", "On beş cevaptan sonra eşleştirme sayını doğruluğuna göre önereceğim."));
+      else if (acc >= 0.85 && pairs < 6) out.push(cardHtml("Zorluk ayarı", `Doğruluğun %${Math.round(acc * 100)}. Eşleştirmeyi zorlaştırabilirsin.`, btnHtml("pairs", `${pairs + 1} eşleşmeye çık`, "1", "primary")));
+      else if (acc < 0.6 && pairs > 3) out.push(cardHtml("Zorluk ayarı", `Doğruluğun %${Math.round(acc * 100)}. Biraz kolaylaştırmak öğrenmeyi hızlandırır.`, btnHtml("pairs", `${pairs - 1} eşleşmeye in`, "-1", "primary")));
+      else out.push(cardHtml("Zorluk ayarı", `Doğruluğun %${Math.round(acc * 100)}. Eşleştirme sayın ${pairs} ve denge iyi.`));
+      const worst = worstWords();
+      out.push(cardHtml("Mikro tekrar",
+        worst.length >= 2
+          ? `En çok hata yaptığın kelimeler: ${worst.map(w => `<strong>${esc(w.en)}</strong>`).join(", ")}. Üçünü birlikte çalış.`
+          : "Hata yaptığın kelimeler biriktikçe burada üç kelimelik kısa bir tur önereceğim.",
+        worst.length >= 2 ? btnHtml("micro-start", "Üç kelimeyle tur", "", "primary") : ""));
+      return out;
+    },
+
+    library() {
+      const out = [];
+      out.push(cardHtml("Hızlı filtreler", "Tek dokunuşla listeni daralt.",
+        [["all", "Tümü"], ["strength", "En unutulanlar"], ["hard", "Zorlayanlar"], ["fav", "Favoriler"]]
+          .map(([k, l]) => btnHtml("lib-filter", l, k)).join("")));
+      const n = filteredWords().filter(usableWord).length;
+      out.push(cardHtml("Bu listeyi çalış",
+        `Şu an listede <strong>${n}</strong> kelime var. En fazla on iki tanesiyle hemen tur başlatabilirsin.`,
+        n >= 2 ? btnHtml("list-start", "Listeyle tur", "", "primary") : ""));
+      const ph = state.words.filter(isPlaceholderWord).length;
+      out.push(cardHtml("İçerik kalitesi",
+        ph ? `${ph} kelimede genel tanım ya da örnek var. Eksik beşini internetten tamamlayabilirsin.` : "Tüm kelimelerin tanım ve örnekleri dolu.",
+        ph ? btnHtml("enrich-batch", "Eksik beşini tamamla", "", "primary") : ""));
+      return out;
+    },
+
+    classes() {
+      const stats = catStats();
+      const weak = stats.filter(s => s.n >= 3).sort((a, b) => a.mastered / a.n - b.mastered / b.n)[0];
+      const roots = new Map();
+      state.words.forEach(w => { const r = rootOf(w); if (r) roots.set(r, (roots.get(r) || 0) + 1); });
+      const topRoot = [...roots.entries()].sort((a, b) => b[1] - a[1])[0];
+      return [
+        cardHtml("Galaksi haritası",
+          stats.length ? `${stats.length} galaksi, ${state.words.length} gökcismi. En büyük galaksi: <strong>${esc(stats[0].cat)}</strong> (${stats[0].n} kelime).` : "Henüz kelime yok.",
+          btnHtml("view-univ", "Evreni aç", "", "primary")),
+        cardHtml("Zayıf galaksi",
+          weak ? `En az ustalaştığın galaksi <strong>${esc(weak.cat)}</strong> (%${pct(weak.mastered, weak.n)}). Önce burayı çalış.`
+               : "Bir galakside en az üç kelime biriktiğinde zayıf galaksin burada görünür.",
+          weak ? btnHtml("galaxy-start", "Galaksiyi çalış", weak.cat, "primary") : ""),
+        cardHtml("Kök takımyıldızı",
+          topRoot ? `En geniş kök ailesi <strong>${esc(topRoot[0])}</strong>: ${topRoot[1]} kelime. Evrende bu aileyi birlikte görebilirsin.` : "Kök ailesi bulunamadı.",
+          topRoot ? btnHtml("root-start", "Ailesini çalış", topRoot[0]) : "")
+      ];
+    },
+
+    philo() {
+      const ph = state.words.filter(w => w.cat === "Felsefe");
+      if (!ph.length) return [cardHtml("Bugünün kavramı", "Felsefe kategorisinde henüz kelime yok.")];
+      const today = ph[dayHash() % ph.length];
+      const mast = ph.filter(w => w.mastered).length;
+      return [
+        cardHtml("Bugünün kavramı",
+          `<strong>${esc(today.en)}</strong> ${esc(today.tr || "")}`,
+          btnHtml("concept-open", "Detay", today.id) + btnHtml("concept-start", "Bunu çalış", today.id, "primary")),
+        cardHtml("Felsefe ilerlemesi",
+          `${ph.length} kavramın ${mast} tanesi ustalaştı (%${pct(mast, ph.length)}).` + bar(pct(mast, ph.length))),
+        cardHtml("Kök bağlantısı", familyLineHtml(today) || "Bu kavramın kardeş kelimesi henüz yok.")
+      ];
+    },
+
+    journal() {
+      const dk = dayKey();
+      let ids = lxStore.get("lx6_prompt_" + dk, null);
+      if (!ids || ids.some(id => !state.words.find(w => w.id === id))) {
+        const pool = dueWords().filter(w => w.tr).length >= 3 ? dueWords().filter(w => w.tr) : state.words.filter(w => w.tr);
+        ids = lxShuffle(pool).slice(0, 3).map(w => w.id);
+        lxStore.set("lx6_prompt_" + dk, ids);
+      }
+      const picks = ids.map(id => state.words.find(w => w.id === id)).filter(Boolean);
+      const dates = Object.keys(state.history).filter(k => (state.history[k].reflection || "").trim()).sort();
+      const has = k => dates.includes(k);
+      let streak = 0;
+      let d = has(dk) ? dk : addDays(dk, -1);
+      while (has(d)) { streak++; d = addDays(d, -1); }
+      return [
+        cardHtml("Bugünün yazı istemi",
+          "Yazına şu kelimeleri katmayı dene. Dokunduğunda metne eklenir." +
+          `<div class="lx-chiplist">${picks.map(w => `<button type="button" class="lx-chip" data-lx="insert-word" data-arg="${esc(w.en)}">${esc(w.en)}</button>`).join("")}</div>`),
+        cardHtml("Kelime bonusu",
+          "İki hedef kelimeyi yazına katıp kaydedersen gün için beş XP kazanırsın."),
+        cardHtml("Yazma serisi",
+          `Üst üste ${streak} gün yansıtma yazdın. Toplam ${dates.length} yansıtma kaydın var.`,
+          btnHtml("journal-focus", "Bugünü yaz", "", "primary"))
+      ];
+    },
+
+    stats() {
+      const days = lastDays(7);
+      const ans = days.reduce((s, d) => s + d.answers, 0);
+      const cor = days.reduce((s, d) => s + d.correct, 0);
+      const act = days.filter(d => d.answers > 0).length;
+      const hot = catStats().filter(c => c.n >= 3 && c.c + c.wr > 0)
+        .map(c => ({ ...c, err: pct(c.wr, c.c + c.wr) })).sort((a, b) => b.err - a.err)[0];
+      const soon = state.words.filter(isFadingSoon);
+      return [
+        cardHtml("Haftalık özet",
+          ans ? `Son yedi günde ${ans} cevap, %${pct(cor, ans)} doğruluk ve ${act} aktif gün.` : "Son yedi günde henüz cevap yok."),
+        cardHtml("Hata odağı",
+          hot ? `En çok hata yaptığın alan <strong>${esc(hot.cat)}</strong> (%${hot.err} hata). Bu alanda kısa bir tur iyi gelir.` : "Hata analizi için biraz daha veri gerekiyor.",
+          hot ? btnHtml("galaxy-start", "Alanı çalış", hot.cat, "primary") : ""),
+        cardHtml("Unutma tahmini",
+          soon.length ? `Önümüzdeki üç günde <strong>${soon.length}</strong> kelime hatırlanma eşiğinin altına düşebilir.` : "Önümüzdeki üç gün için kritik bir kayıp görünmüyor.",
+          soon.length ? btnHtml("forecast-start", "Bu kelimeleri şimdi çalış", "", "primary") : "")
+      ];
+    },
+
+    realworld() {
+      const LV = ["A2", "B1", "B2", "C1"];
+      let est = null;
+      for (const L of LV) {
+        const at = state.words.filter(w => w.level === L);
+        if (!at.length) continue;
+        const kn = at.filter(w => w.correct > 0 || w.mastered).length;
+        if (kn / at.length >= 0.6) est = { L, p: pct(kn, at.length) };
+      }
+      const logs = state.realWorldLogs || [];
+      const wk = logs.filter(l => l.date && dayDiff(l.date, dayKey()) >= 0 && dayDiff(l.date, dayKey()) < 7).length;
+      const out = [
+        cardHtml("Okuma seviyen",
+          est ? `Bildiğin kelimelerin çoğu (%${est.p}) <strong>${est.L}</strong> düzeyinde. Bu düzeydeki metinler sana uygun olabilir.`
+              : "Henüz net bir okuma seviyesi çıkmadı. Daha çok kelime çalıştıkça burada görünür."),
+        cardHtml("Bu hafta bağlam",
+          `Haftalık hedef üç bağlam kaydı. Bu hafta ${wk} kaydın var.` + bar(pct(Math.min(wk, 3), 3)))
+      ];
+      const lastLog = [...logs].reverse().find(l => {
+        const toks = new Set(String(l.sentence || "").toLowerCase().match(/[a-z']+/g) || []);
+        return state.words.some(x => toks.has(x.en));
+      });
+      if (lastLog) {
+        const toks = new Set(String(lastLog.sentence).toLowerCase().match(/[a-z']+/g) || []);
+        const hit = state.words.find(x => toks.has(x.en));
+        out.push(cardHtml("Son bağlamından çalış",
+          `Son kaydında <strong>${esc(hit.en)}</strong> geçiyor. Bu kelimeyi bağlamıyla hatırla.`,
+          btnHtml("rw-start", "Kelimeyle tur", hit.en, "primary")));
+      } else {
+        out.push(cardHtml("Son bağlamından çalış", "Bağlam kaydettikçe, kaydındaki bilinen kelimeler burada çıkar."));
+      }
+      return out;
+    },
+
+    look() {
+      const ui = state.ui || {};
+      return [
+        cardHtml("Okuma kolaylığı",
+          `Yazı boyutunu ve tipini tek dokunuşla ayarla. Şu an: ${esc(ui.size || "orta")} boyut, ${esc(ui.font || "sistem")} tip.`,
+          btnHtml("preset-read", "Rahat okuma", "", "primary") + btnHtml("preset-compact", "Kompakt") + btnHtml("preset-default", "Varsayılan")),
+        cardHtml("Dokunma kolaylığı",
+          `Düğmeleri 48 piksel yüksekliğine çıkarır. Şu an: ${ui.bigTouch ? "açık" : "kapalı"}.`,
+          btnHtml("toggle-big-touch", ui.bigTouch ? "Kapat" : "Aç", "", "primary")),
+        cardHtml("Renk ve kontrast",
+          `Renk körü dostu palet ve yüksek kontrast. Palet: ${ui.cbSafe ? "açık" : "kapalı"}, kontrast: ${ui.contrast ? "açık" : "kapalı"}.`,
+          btnHtml("toggle-cb", ui.cbSafe ? "Normal palet" : "Renk körü paleti") + btnHtml("toggle-contrast", ui.contrast ? "Kontrastı azalt" : "Yüksek kontrast"))
+      ];
+    },
+
+    settings() {
+      const last = lxStore.get("lx6_last_backup", 0);
+      const days = last ? Math.floor((Date.now() - last) / DAY) : null;
+      const kb = (new Blob([JSON.stringify(state)]).size / 1024).toFixed(0);
+      return [
+        `<article class="lx-card"><h3>Ayarlarda ara</h3><div class="lx-body">Aradığın ayarın adını yaz. Eşleşmeyen bölümler gizlenir.</div>` +
+        `<input type="search" id="lxSetSearch" class="lx-search" placeholder="Örn. yedek, yazı, önbellek" aria-label="Ayarlarda ara" value="${esc(LX.setQuery)}"><p class="muted" id="lxSetCount"></p></article>`,
+        cardHtml("Yedek",
+          days === null ? "Henüz yedek almadın. Verilerin bu tarayıcıda tutulur."
+            : days >= 14 ? `Son yedeğin ${days} gün önce. Yedek almanı öneririm.`
+            : `Son yedek ${days} gün önce alındı.`,
+          btnHtml("backup-now", "Yedek indir", "", days === null || days >= 14 ? "primary" : "ghost")),
+        cardHtml("Veri ve önbellek",
+          `Kayıtlı veri yaklaşık ${kb} KB. Çevrimdışı önbellekte ${Object.keys(cache || {}).length} kayıt var.`,
+          btnHtml("clear-cache", "Önbelleği temizle"))
+      ];
+    },
+
+    room() {
+      const fav = state.words.filter(w => w.favorite);
+      const fm = fav.filter(w => w.mastered).length;
+      const cols = lxStore.get("lx6_collections", {});
+      const names = Object.keys(cols);
+      const dueByCat = {};
+      dueWords().forEach(w => { dueByCat[w.cat] = (dueByCat[w.cat] || 0) + 1; });
+      const shelf = Object.entries(dueByCat).sort((a, b) => b[1] - a[1])[0];
+      return [
+        cardHtml("Oda hedefi",
+          fav.length ? `Favorilerinin ${fm}/${fav.length} tanesi ustalaştı.` + bar(pct(fm, fav.length))
+                     : "Odana kelime eklemek için sözlükten favori işaretle.",
+          fav.length ? btnHtml("fav-start", "Favorileri çalış", "", "primary") : btnHtml("go", "Sözlüğe git", "library")),
+        cardHtml("Koleksiyonlar",
+          names.length
+            ? names.map(nm => `<div class="lx-row"><span>${esc(nm)} <small class="muted">(${cols[nm].length})</small></span>${btnHtml("collection-start", "Çalış", nm)}${btnHtml("collection-del", "Sil", nm)}</div>`).join("")
+            : "Favorilerinden bir koleksiyon oluştur, sonra tek dokunuşla çalış.",
+          btnHtml("collection-save", "Favorileri koleksiyona kaydet", "", "primary")),
+        cardHtml("Akıllı raf",
+          shelf ? `Bugün en çok tekrar bekleyen raf <strong>${esc(shelf[0])}</strong> (${shelf[1]} kelime).`
+                : "Tekrar bekleyen kelime yok. Raflar sakin.",
+          shelf ? btnHtml("shelf-start", "Rafı çalış", shelf[0], "primary") : "")
+      ];
+    },
+
+    world() {
+      const stats = catStats().filter(c => c.n >= 3);
+      const out = [];
+      if (!stats.length) out.push(cardHtml("Rota önerisi", "Bir bölgede en az üç kelime olduğunda rota önerisi çıkar."));
+      else {
+        const next = stats.slice().sort((a, b) => a.mastered / a.n - b.mastered / b.n)[0];
+        out.push(cardHtml("Rota önerisi",
+          `Sonraki durak <strong>${esc(next.cat)}</strong>. Tamamlanma oranı %${pct(next.mastered, next.n)}.`,
+          btnHtml("galaxy-start", "Bu bölgeye git", next.cat, "primary")));
+      }
+      out.push(cardHtml("Bölge ilerlemesi",
+        stats.slice(0, 5).map(c => `<div class="lx-row"><span>${esc(c.cat)}</span>${bar(pct(c.mastered, c.n))}<small class="muted">%${pct(c.mastered, c.n)}</small></div>`).join("") || "Henüz bölge yok."));
+      const cards = lxStore.get("lx6_postcards", []);
+      stats.filter(c => c.mastered === c.n).forEach(c => { if (!cards.some(p => p.cat === c.cat)) cards.push({ cat: c.cat, at: Date.now() }); });
+      lxStore.set("lx6_postcards", cards);
+      out.push(cardHtml("Kartpostallar",
+        cards.length ? cards.slice(-3).map(p => `✉️ ${esc(p.cat)} bölgesini tamamladın.`).join("<br>")
+                     : "Bir bölgedeki bütün kelimeleri ustalaştırınca burada kartpostal alırsın."));
+      return out;
+    },
+
+    awards() {
+      const prog = {
+        first: ["İlk doğru cevap", state.totals.correct, 1, "learn"],
+        ten: ["On kelime öğrenmek", learnedWords(), 10, "learn"],
+        streak7: ["Yedi günlük seri", state.longest, 7, "today"],
+        xp500: ["500 XP", state.xp, 500, "learn"],
+        master3: ["Üç kelime ustalaştırmak", masteredCount(), 3, "learn"],
+        morph5: ["Beş kök parçası", learnedMorphs().length, 5, "library"],
+        curious: ["On sözlük araması", state.totals.lookups, 10, "library"],
+        explorer: ["Beş web kelimesi", state.totals.fetched, 5, "library"]
+      };
+      const earned = new Set(state.badges || []);
+      const open = Object.entries(prog).filter(([id]) => !earned.has(id))
+        .map(([id, [name, cur, need, tab]]) => ({ id, name, cur, need, tab, p: pct(Math.min(cur, need), need) }))
+        .sort((a, b) => b.p - a.p);
+      const lv = levelInfo().L;
+      const summary = `Seviye ${lv}, ${earned.size}/${BADGES.length} rozet, ${masteredCount()} kelime ustalaştı, en uzun seri ${state.longest} gün.`;
+      const out = [
+        cardHtml("Yakın rozetler",
+          open.slice(0, 3).map(o => `<div class="lx-row"><span>${esc(o.name)}</span>${bar(o.p)}<small class="muted">${Math.min(o.cur, o.need)}/${o.need}</small></div>`).join("")
+            || "Tüm rozetleri kazandın. Harika."),
+        cardHtml("Paylaş özeti", esc(summary), btnHtml("share-summary", "Özeti kopyala", "", "primary"))
+      ];
+      if (open.length) out.push(cardHtml("Rozet avcısı", `Bir sonraki hedefin: <strong>${esc(open[0].name)}</strong>.`, btnHtml("go", "Oraya git", open[0].tab, "primary")));
+      else out.push(cardHtml("Rozet avcısı", "Bütün rozetler kazanıldı. Yeni rozetler için hedefini yükselt."));
+      return out;
+    },
+
+    focus() {
+      const h = todayStats();
+      const mins = Math.round((h.ms || 0) / 60000);
+      const len = state.settings.sessionLen || 10;
+      const last = lxStore.get("lx6_last_session", null);
+      let adv = "";
+      if (last && last.acc >= 85) adv = btnHtml("len-adjust", `Turu ${Math.min(30, len + 5)} soruya çıkar`, "5", "primary");
+      else if (last && last.acc < 60) adv = btnHtml("len-adjust", `Turu ${Math.max(5, len - 5)} soruya indir`, "-5", "primary");
+      return [
+        cardHtml("Mola hatırlatıcı",
+          mins >= 25 ? `Bugün yaklaşık ${mins} dakika aktif çalıştın. Beş dakika uzaklaş ve dön.`
+                     : `Bugün yaklaşık ${mins} dakika aktif çalıştın. Yirmi beş dakikada bir mola vermeyi düşün.`),
+        cardHtml("Oturum kalitesi",
+          last ? `Son turunda %${last.acc} doğruluk (${last.n} cevap). ${adv ? "Tur uzunluğunu buna göre ayarlayabilirsin." : "Tur uzunluğun dengeli."}`
+               : "İlk turunu bitirince doğruluğuna göre tur uzunluğunu önereceğim.",
+          adv),
+        cardHtml("Hızlı tur", `Tur uzunluğun ${len} soru. Hemen başlatmak için dokun.`, btnHtml("session-start", "Turu başlat", "", "primary"))
+      ];
+    },
+
+    profile() {
+      const p = state.profile || {};
+      const checks = [
+        ["Adını ekle", !!(p.name && p.name !== "Bilge Okur"), "settings"],
+        ["En az yirmi kelime biriktir", state.words.length >= 20, "library"],
+        ["Bir kelimeyi favorile", state.words.some(w => w.favorite), "library"],
+        ["Bir yansıtma yaz", Object.values(state.history).some(h => h.reflection), "journal"],
+        ["İlk rozetini kazan", (state.badges || []).length >= 1, "awards"]
+      ];
+      const done = checks.filter(c => c[1]).length;
+      const missing = checks.filter(c => !c[1]).slice(0, 2);
+      const days = lastDays(14);
+      const act = days.filter(d => d.answers > 0);
+      const avg = act.length ? Math.round(act.reduce((s, d) => s + d.answers, 0) / act.length) : 0;
+      const sug = clamp(Math.round((avg * 1.1) / 5) * 5 || 10, 5, 100);
+      const cats = catStats().filter(c => c.n >= 3).sort((a, b) => b.mastered / b.n - a.mastered / a.n).slice(0, 3);
+      return [
+        cardHtml("Profil tamamlama",
+          `${done}/${checks.length} adım tamam.` + bar(pct(done, checks.length)) +
+          missing.map(m => `<div class="lx-row"><span>${esc(m[0])}</span></div>`).join(""),
+          missing[0] ? btnHtml("go", "Sıradakine git", missing[0][2], "primary") : ""),
+        cardHtml("Hedef sihirbazı",
+          `Son on dört günde çalıştığın günlerde ortalama ${avg} cevap verdin. Önerilen günlük hedef: <strong>${sug}</strong>.`,
+          btnHtml("goal-set", `Hedefi ${sug} yap`, String(sug), "primary")),
+        cardHtml("Güçlü alanların",
+          cats.length ? cats.map(c => esc(c.cat)).join(", ") + " alanlarında en çok ustalaştın."
+                      : "Bir alanda en az üç kelime biriktiğinde güçlü alanların burada çıkar.")
+      ];
+    },
+
+    session() { return []; }
+  };
+
+  SMART.reading = () => {
+    const due = usablePool().filter(isDue).length;
+    const recent = ST.docs.filter(d=>!d.finished).length;
+    return [
+      cardHtml("Okumaya devam et", `${recent} okunmakta olan metin. Kelimeye dokunarak bağlamını incele, ardından metinden sorular çöz.`, btnHtml("go", "Okuma laboratuvarını aç", "reading", "primary")),
+      cardHtml("Söz varlığı denetimi", `${due} sözcüğün tekrar tarihi gelmiş. Testleri okuma alıştırmalarıyla birleştir.`, btnHtml("hard-start", "Zor sözcükleri çalış", "", "primary"))
+    ];
+  };
+  SMART.account = () => [
+    cardHtml("Güvenlik kontrolü", stApiOrigin() ? "Sunucu adresi tanımlandı. Üyelik ve ödeme işlemlerinin sonuçları sunucudan doğrulanmalıdır." : "Şimdilik yerel kullanım güvenlidir; gerçek üyelik için HTTPS sunucu gereklidir.", btnHtml("go", "Üyelik ayarlarını aç", "account", "primary")),
+    cardHtml("Veri taşınabilirliği", "Tüm çalışmalarını arşivle; kayıtlarını yalnızca onay verince bulut sunucuna yükle.", btnHtml("go", "Okuma arşivine git", "reading", "primary"))
+  ];
+
+  function lxSmartHtml(tab) {
+    const fn = SMART[tab];
+    if (!fn) return "";
+    try { return fn().join(""); }
+    catch (err) { console.error(err); return cardHtml("Öneriler", "Bu bölümün önerileri şu an hazırlanamadı."); }
+  }
+
+  /* ---------- 4. Eylemler (tüm data-lx düğmeleri buradan yönetilir) ---------- */
+  const LX_ACT = {
+    "plan-start": () => {
+      const p = lxPlan();
+      if (p.words.length < 2) return toast("Plan için en az iki kelime gerekli.");
+      startCustomWordSession(p.words, "Günlük plan");
+    },
+    "session-start": () => startSession(),
+    "streak-save": () => startSession({ len: 3 }),
+    "short-start": () => startSession({ len: 5 }),
+    "hard-start": () => startSession({ onlyHard: true }),
+    "fav-start": () => startSession({ onlyFavorite: true }),
+    "add-word": () => openAddWord(),
+    "go": arg => lxGo(arg),
+    "retry-tab": arg => lxGo(arg),
+    "head-toggle": (arg, b) => {
+      const now = !lxStore.get("lx6_hd_" + arg, false);
+      lxStore.set("lx6_hd_" + arg, now);
+      const head = b.closest(".lx-head");
+      if (head) head.classList.toggle("lx-collapsed", now);
+      b.textContent = now ? "Yönlendirmeyi göster" : "Gizle";
+    },
+    "pairs": arg => {
+      state.settings.pairs = clamp((state.settings.pairs || 4) + Number(arg), 3, 6);
+      save();
+      lxRerender("learn");
+    },
+    "mode-start": arg => {
+      if (arg === "match") { learnFocus = "match"; lxGo("learn"); return; }
+      learnFocus = arg;
+      startSession({ focus: arg });
+    },
+    "micro-start": () => startCustomWordSession(worstWords(), "Mikro tekrar"),
+    "lib-filter": arg => {
+      if (arg === "all") Object.assign(lib, { q: "", pos: "hepsi", cat: "hepsi", level: "hepsi", sort: "alpha", hard: false, fav: false });
+      else if (arg === "strength") Object.assign(lib, { sort: "strength", hard: false, fav: false });
+      else if (arg === "hard") Object.assign(lib, { hard: true, fav: false });
+      else if (arg === "fav") Object.assign(lib, { fav: true, hard: false });
+      lxRerender("library");
+    },
+    "list-start": () => {
+      const ws = filteredWords().slice(0, 12);
+      if (ws.length < 2) return toast("Listede en az iki kelime olmalı.");
+      startCustomWordSession(ws, "Sözlük listesi");
+    },
+    "enrich-batch": async (_, b) => {
+      const list = state.words.filter(isPlaceholderWord).slice(0, 5);
+      if (!list.length) return toast("Eksik kelime kalmadı.");
+      b.disabled = true;
+      let done = 0;
+      for (const w of list) {
+        try {
+          const f = await fetchWordDetailsFromWeb(w.en);
+          if (f) {
+            if (isPh(w.def) && f.def) w.def = f.def;
+            if (isPh(w.example) && f.example) w.example = f.example;
+            if (!w.tr && f.tr) w.tr = f.tr;
+            done++;
+          }
+        } catch (e) { /* internet yoksa atla */ }
+        toast(`Tamamlanan: ${done}/${list.length}`);
+      }
+      save();
+      b.disabled = false;
+      lxRerender("library");
+    },
+    "galaxy-start": arg => startCustomWordSession(lxShuffle(state.words.filter(w => w.cat === arg)).slice(0, 10), arg),
+    "root-start": arg => startCustomWordSession(state.words.filter(w => rootOf(w) === arg).slice(0, 8), arg + " ailesi"),
+    "shelf-start": arg => startCustomWordSession(lxShuffle(dueWords().filter(w => w.cat === arg)).slice(0, 10), arg),
+    "forecast-start": () => startCustomWordSession(state.words.filter(isFadingSoon).slice(0, 10), "Unutma tahmini"),
+    "rw-start": arg => {
+      const w = state.words.find(x => x.en === arg);
+      if (!w) return;
+      const others = lxShuffle(state.words.filter(x => x.cat === w.cat && x.id !== w.id)).slice(0, 3);
+      startCustomWordSession([w, ...others], "Bağlam");
+    },
+    "concept-open": arg => openDetail(Number(arg)),
+    "concept-start": arg => {
+      const w = state.words.find(x => x.id === Number(arg));
+      if (!w) return;
+      const others = lxShuffle(state.words.filter(x => x.cat === w.cat && x.id !== w.id)).slice(0, 3);
+      startCustomWordSession([w, ...others], "Kavram");
+    },
+    "insert-word": arg => {
+      const ta = $("refText");
+      if (!ta) return;
+      ta.value = (ta.value.trim() ? ta.value.trimEnd() + " " : "") + arg;
+      ta.focus();
+    },
+    "journal-focus": () => { const ta = $("refText"); if (ta) ta.focus(); },
+    "collection-save": () => {
+      const name = prompt("Koleksiyonun adı ne olsun?");
+      if (!name || !name.trim()) return;
+      const ids = state.words.filter(w => w.favorite).map(w => w.id);
+      if (ids.length < 2) return toast("Koleksiyon için en az iki favori kelime gerekli.");
+      const cols = lxStore.get("lx6_collections", {});
+      cols[name.trim().slice(0, 30)] = ids;
+      lxStore.set("lx6_collections", cols);
+      toast("Koleksiyon kaydedildi.");
+      lxRerender("room");
+    },
+    "collection-start": arg => {
+      const ids = lxStore.get("lx6_collections", {})[arg] || [];
+      startCustomWordSession(state.words.filter(w => ids.includes(w.id)).slice(0, 12), arg);
+    },
+    "collection-del": arg => {
+      if (!confirm(`"${arg}" koleksiyonu silinsin mi?`)) return;
+      const cols = lxStore.get("lx6_collections", {});
+      delete cols[arg];
+      lxStore.set("lx6_collections", cols);
+      lxRerender("room");
+    },
+    "share-summary": () => {
+      const text = `Seviye ${levelInfo().L}, ${(state.badges || []).length}/${BADGES.length} rozet, ${masteredCount()} kelime ustalaştı.`;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => toast("Özet kopyalandı."), () => prompt("Özeti kopyala:", text));
+      } else prompt("Özeti kopyala:", text);
+    },
+    "len-adjust": arg => {
+      state.settings.sessionLen = clamp((state.settings.sessionLen || 10) + Number(arg), 5, 30);
+      save();
+      lxRerender("focus");
+    },
+    "goal-set": arg => {
+      state.settings.goal = Number(arg);
+      save();
+      toast("Günlük hedef güncellendi.");
+      lxRerender("profile");
+    },
+    "preset-read": () => { state.ui.size = "buyuk"; state.ui.font = "serif"; save(); applyUi(); lxRerender("look"); },
+    "preset-compact": () => { state.ui.size = "kucuk"; state.ui.font = "sistem"; save(); applyUi(); lxRerender("look"); },
+    "preset-default": () => { state.ui.size = "orta"; state.ui.font = "sistem"; save(); applyUi(); lxRerender("look"); },
+    "toggle-big-touch": () => { state.ui.bigTouch = !state.ui.bigTouch; save(); lxApplyFlags(); lxRerender("look"); },
+    "toggle-contrast": () => { state.ui.contrast = !state.ui.contrast; save(); lxApplyFlags(); lxRerender("look"); },
+    "toggle-cb": () => { state.ui.cbSafe = !state.ui.cbSafe; save(); lxRerender("look"); },
+    "backup-now": () => exportData(),
+    "clear-cache": () => { cache = {}; saveCache(); toast("Önbellek temizlendi."); lxRerender("settings"); },
+    "view-list": () => { classViewMode = "list"; if (currentTab === "classes") renderClasses(); else lxGo("classes"); },
+    "view-univ": () => { classViewMode = "universe"; if (currentTab === "classes") renderClasses(); else lxGo("classes"); },
+    "univ-cluster": (_, b) => {
+      U.clustering = !U.clustering;
+      b.textContent = U.clustering ? "Galaksiler açık" : "Galaksiler kapalı";
+      b.setAttribute("aria-pressed", String(U.clustering));
+    },
+    "univ-filter": arg => { universeFilter = arg; uUpdateActive(); },
+    "univ-pick": arg => {
+      const n = U.nodes.find(x => x.w.id === Number(arg));
+      if (!n) return;
+      if (!n.active) { universeFilter = "all"; uUpdateActive(); }
+      uSelect(n, true);
+    },
+    "univ-detail": arg => openDetail(Number(arg)),
+    "univ-pin": () => { if (U.sel) { U.sel.pinned = !U.sel.pinned; uPanel(); } },
+    "univ-clear": () => uSelect(null)
+  };
+
+  /* ---------- 5. Bölüm render eşlemesi (çağrılar her zaman en güncel fonksiyonu kullanır) ---------- */
+  const LX_RENDER = {
+    today: () => renderToday(), path: () => renderPath(), learn: () => renderLearn(),
+    library: () => renderLibrary(), classes: () => renderClasses(), philo: () => renderPhilo(),
+    journal: () => renderJournal(), stats: () => renderStats(), realworld: () => renderRealWorld(),
+    look: () => renderLook(), settings: () => renderSettings(), room: () => renderRoom(),
+    world: () => renderWorld(), awards: () => renderAwardsExhibition(), focus: () => renderFocusAndSummary(),
+    profile: () => renderProfile(), session: () => renderSession(),
+    reading: () => renderReading(), account: () => renderAccount()
+  };
+
+  /* ---------- 6. Kelime Evreni (mobil uyumlu) ---------- */
+  const PAL = ["#7c3aed", "#0ea5e9", "#10b981", "#f59e0b", "#ec4899", "#14b8a6", "#f97316", "#6366f1", "#84cc16", "#ef4444"];
+  const PAL_CB = ["#0072B2", "#E69F00", "#009E73", "#CC79A7", "#56B4E9", "#D55E00", "#F0E442", "#332288", "#44AA99", "#882255"];
+  const U = {
+    canvas: null, ctx: null, raf: 0, frame: 0, ro: null, W: 0, H: 0, dpr: 1, maxR: 20,
+    nodes: [], sorted: [], groups: new Map(), colors: {}, anchors: new Map(), catCount: {},
+    sel: null, focus: null, focusUntil: 0, drag: null, press: null, hold: 0, lastTap: { id: -1, t: 0 },
+    clustering: true, matches: null, text: "#1e1b4b", bg: "#ffffff"
+  };
+  const uPalette = () => (state.ui && state.ui.cbSafe ? PAL_CB : PAL);
+  const uColorMap = cats => { const pal = uPalette(); const m = {}; cats.forEach((c, i) => { m[c] = pal[i % pal.length]; }); return m; };
+  const hexA = (hex, a) => (hexOk(hex) ? hex : "#7c3aed") + Math.round(clamp(a, 0, 1) * 255).toString(16).padStart(2, "0");
+  const uActive = w => {
+    const f = universeFilter;
+    if (f === "all") return true;
+    if (f === "__hard") return isHard(w);
+    if (f === "__master") return !!w.mastered;
+    return w.cat === f;
+  };
+  const uPriority = n => (U.sel === n ? 1000 : U.matches && U.matches.has(n.w.id) ? 900 : isHard(n.w) ? 500 : isDue(n.w) ? 400 : n.s / 10);
+  const uAlive = () => !!(U.canvas && U.canvas.isConnected && currentTab === "classes" && classViewMode === "universe" && !document.hidden && U.W > 0);
+
+  function uTheme() {
+    const cs = getComputedStyle(document.documentElement);
+    const t = cs.getPropertyValue("--text").trim();
+    const b = cs.getPropertyValue("--surface").trim();
+    U.text = hexOk(t) ? t : "#1e1b4b";
+    U.bg = hexOk(b) ? b : "#ffffff";
+  }
+
+  function uBuild() {
+    const stats = catStats();
+    U.colors = uColorMap(stats.map(s => s.cat));
+    U.catCount = {};
+    stats.forEach(s => { U.catCount[s.cat] = s.n; });
+    const cx = U.W / 2, cy = U.H / 2;
+    const ring = Math.min(U.W, U.H) * 0.3;
+    U.anchors = new Map();
+    stats.forEach((s, i) => {
+      const a = (i / Math.max(1, stats.length)) * Math.PI * 2 - Math.PI / 2;
+      const k = stats.length > 1 ? 1 : 0;
+      U.anchors.set(s.cat, { x: cx + Math.cos(a) * ring * k * 1.2, y: cy + Math.sin(a) * ring * k * 0.9 });
+    });
+    const base = clamp(U.W / 19, 14, 22);
+    U.maxR = 0;
+    U.nodes = state.words.map((w, i) => {
+      const s = w.last ? strengthOf(w) : 15;
+      const r = base * (0.85 + (s / 100) * 0.45) * (w.mastered ? 1.1 : 1);
+      U.maxR = Math.max(U.maxR, r);
+      const an = U.anchors.get(w.cat) || { x: cx, y: cy };
+      return {
+        id: i, w, s, r, root: rootOf(w), cat: w.cat, color: U.colors[w.cat] || "#7c3aed",
+        x: clamp(an.x + (Math.random() - 0.5) * U.W * 0.3, r, U.W - r),
+        y: clamp(an.y + (Math.random() - 0.5) * U.H * 0.3, r, U.H - r),
+        vx: 0, vy: 0, hx: an.x, hy: an.y, pinned: false, active: uActive(w),
+        label: w.en.length > 18 ? w.en.slice(0, 17) + "…" : w.en, lbl: null
+      };
+    });
+    U.groups = new Map();
+    U.nodes.forEach(n => {
+      if (!n.root) return;
+      const g = U.groups.get(n.root) || [];
+      g.push(n);
+      U.groups.set(n.root, g);
+    });
+    U.sorted = [...U.nodes].sort((a, b) => a.w.en.localeCompare(b.w.en));
+  }
+
+  function uMeasure() {
+    const c = U.canvas;
+    if (!c || !c.isConnected) return false;
+    const cw = c.clientWidth, ch = c.clientHeight;
+    if (!cw || !ch) return false;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    if (cw === U.W && ch === U.H && dpr === U.dpr && U.ctx) return true;
+    const first = !U.W;
+    const sx = first ? 1 : cw / U.W, sy = first ? 1 : ch / U.H;
+    U.dpr = dpr; U.W = cw; U.H = ch;
+    c.width = Math.round(cw * dpr); c.height = Math.round(ch * dpr);
+    U.ctx = c.getContext("2d");
+    U.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (first || !U.nodes.length) uBuild();
+    else {
+      U.nodes.forEach(n => { n.x *= sx; n.y *= sy; n.hx *= sx; n.hy *= sy; });
+      U.anchors.forEach(a => { a.x *= sx; a.y *= sy; });
+    }
+    return true;
+  }
+
+  function uBounds(n) {
+    if (n.x < n.r) { n.x = n.r; n.vx = Math.abs(n.vx) * 0.4; }
+    if (n.x > U.W - n.r) { n.x = U.W - n.r; n.vx = -Math.abs(n.vx) * 0.4; }
+    if (n.y < n.r) { n.y = n.r; n.vy = Math.abs(n.vy) * 0.4; }
+    if (n.y > U.H - n.r) { n.y = U.H - n.r; n.vy = -Math.abs(n.vy) * 0.4; }
+  }
+
+  function uStep() {
+    const nodes = U.nodes, W = U.W, H = U.H;
+    if (!nodes.length || !W || !H) return;
+    const kc = U.clustering ? 0.0026 : 0;
+    const pull = U.focus && U.frame < U.focusUntil ? U.focus : null;
+    for (const n of nodes) {
+      if (n === U.drag || n.pinned) { n.vx = 0; n.vy = 0; continue; }
+      if (kc) { n.vx += (n.hx - n.x) * kc; n.vy += (n.hy - n.y) * kc; }
+      if (n === pull) { n.vx += (W / 2 - n.x) * 0.02; n.vy += (H / 2 - n.y) * 0.02; }
+      n.vx = (n.vx + (Math.random() - 0.5) * 0.05) * 0.96;
+      n.vy = (n.vy + (Math.random() - 0.5) * 0.05) * 0.96;
+      n.x += n.vx; n.y += n.vy;
+      uBounds(n);
+    }
+    const cell = Math.max(20, U.maxR * 2 + 4);
+    const grid = new Map();
+    for (const n of nodes) {
+      const key = Math.floor(n.x / cell) + ":" + Math.floor(n.y / cell);
+      const list = grid.get(key);
+      if (list) list.push(n); else grid.set(key, [n]);
+    }
+    for (let pass = 0; pass < 2; pass++) {
+      for (const n of nodes) {
+        const gx = Math.floor(n.x / cell), gy = Math.floor(n.y / cell);
+        for (let ox = -1; ox <= 1; ox++) {
+          for (let oy = -1; oy <= 1; oy++) {
+            const list = grid.get((gx + ox) + ":" + (gy + oy));
+            if (!list) continue;
+            for (const m of list) {
+              if (m.id <= n.id) continue;
+              let dx = m.x - n.x, dy = m.y - n.y, d = Math.hypot(dx, dy);
+              const min = n.r + m.r + 3;
+              if (d >= min) continue;
+              if (d < 0.01) { dx = Math.random() - 0.5; dy = Math.random() - 0.5; d = Math.hypot(dx, dy) || 1; }
+              const ux = dx / d, uy = dy / d, push = min - d;
+              const wn = n === U.drag || n.pinned ? 0 : 1;
+              const wm = m === U.drag || m.pinned ? 0 : 1;
+              const tot = wn + wm;
+              if (!tot) continue;
+              n.x -= ux * push * (wn / tot); n.y -= uy * push * (wn / tot);
+              m.x += ux * push * (wm / tot); m.y += uy * push * (wm / tot);
+            }
+          }
+        }
+      }
+    }
+    nodes.forEach(uBounds);
+  }
+
+  function uPlaceLabels() {
+    const ctx = U.ctx;
+    if (!ctx || !U.nodes.length) return;
+    ctx.font = "600 11px system-ui, -apple-system, sans-serif";
+    const order = U.nodes.filter(n => n.active).sort((a, b) => uPriority(b) - uPriority(a));
+    const placed = [];
+    U.nodes.forEach(n => { n.lbl = null; });
+    for (const n of order) {
+      const tw = Math.min(150, ctx.measureText(n.label).width + 12), th = 16;
+      for (const y0 of [n.y + n.r + 3, n.y - n.r - 3 - th]) {
+        const x0 = clamp(n.x - tw / 2, 2, U.W - tw - 2);
+        const y1 = clamp(y0, 2, U.H - th - 2);
+        const hit = placed.some(p => x0 < p.x + p.w && x0 + tw > p.x && y1 < p.y + p.h && y1 + th > p.y);
+        if (!hit) {
+          const spot = { x: x0, y: y1, w: tw, h: th };
+          placed.push(spot);
+          n.lbl = spot;
+          break;
+        }
+      }
+    }
+  }
+
+  function uDraw() {
+    const ctx = U.ctx, W = U.W, H = U.H;
+    if (!ctx) return;
+    ctx.clearRect(0, 0, W, H);
+    if (U.clustering) {
+      U.anchors.forEach((a, cat) => {
+        const color = U.colors[cat] || "#7c3aed";
+        const rad = 34 + Math.sqrt(U.catCount[cat] || 1) * 17;
+        const g = ctx.createRadialGradient(a.x, a.y, 0, a.x, a.y, rad);
+        g.addColorStop(0, hexA(color, 0.16));
+        g.addColorStop(1, hexA(color, 0));
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.arc(a.x, a.y, rad, 0, Math.PI * 2); ctx.fill();
+      });
+    }
+    U.groups.forEach((list, root) => {
+      if (list.length < 2) return;
+      const hot = U.sel && U.sel.root === root;
+      ctx.strokeStyle = hot ? "rgba(167,139,250,0.95)" : "rgba(167,139,250,0.25)";
+      ctx.lineWidth = hot ? 2 : 1;
+      ctx.beginPath();
+      let prev = null;
+      for (const n of list) {
+        if (prev && n.active && prev.active && Math.hypot(n.x - prev.x, n.y - prev.y) < 260) { ctx.moveTo(prev.x, prev.y); ctx.lineTo(n.x, n.y); }
+        prev = n;
+      }
+      ctx.stroke();
+    });
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    for (const n of U.nodes) {
+      ctx.globalAlpha = n.active ? 1 : 0.2;
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fillStyle = hexA(n.color, 0.22); ctx.fill();
+      ctx.lineWidth = n.w.mastered ? 2.6 : 1.4;
+      ctx.strokeStyle = n.color; ctx.stroke();
+      if (U.sel === n) {
+        ctx.beginPath(); ctx.arc(n.x, n.y, n.r + 5, 0, Math.PI * 2);
+        ctx.lineWidth = 2; ctx.strokeStyle = U.text; ctx.stroke();
+      }
+      if (n.pinned) {
+        ctx.beginPath(); ctx.arc(n.x + n.r * 0.7, n.y - n.r * 0.7, 2.6, 0, Math.PI * 2);
+        ctx.fillStyle = U.text; ctx.fill();
+      }
+      ctx.fillStyle = n.color;
+      ctx.font = `700 ${Math.round(n.r * 0.95)}px system-ui, sans-serif`;
+      ctx.fillText(n.w.en.charAt(0).toUpperCase(), n.x, n.y + 1);
+    }
+    ctx.globalAlpha = 1;
+    ctx.font = "600 11px system-ui, -apple-system, sans-serif";
+    for (const n of U.nodes) {
+      const L = n.lbl;
+      if (!L) continue;
+      ctx.fillStyle = hexA(U.bg, 0.88);
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(L.x, L.y, L.w, L.h, 6); else ctx.rect(L.x, L.y, L.w, L.h);
+      ctx.fill();
+      ctx.fillStyle = U.text;
+      ctx.fillText(n.label, L.x + L.w / 2, L.y + L.h / 2 + 0.5);
+    }
+  }
+
+  function uStart() {
+    cancelAnimationFrame(U.raf);
+    const loop = () => {
+      U.raf = 0;
+      if (!uAlive()) return;
+      U.frame++;
+      if (U.nodes.length) {
+        uStep();
+        if (U.frame % 4 === 0) uPlaceLabels();
+        if (U.frame % 120 === 0) uTheme();
+        uDraw();
+      }
+      U.raf = requestAnimationFrame(loop);
+    };
+    U.raf = requestAnimationFrame(loop);
+  }
+
+  function uStop() {
+    cancelAnimationFrame(U.raf);
+    U.raf = 0;
+    U.canvas = null;
+    if (U.ro) { U.ro.disconnect(); U.ro = null; }
+  }
+
+  function uSelect(n, pull) {
+    U.sel = n || null;
+    if (n && pull) { U.focus = n; U.focusUntil = U.frame + 100; }
+    uPanel();
+  }
+
+  function uTap(n) {
+    const now = Date.now();
+    if (U.lastTap.id === n.id && now - U.lastTap.t < 380) {
+      U.lastTap = { id: -1, t: 0 };
+      openDetail(n.w.id);
+      return;
+    }
+    U.lastTap = { id: n.id, t: now };
+    uSelect(n);
+  }
+
+  function uNeighbor(dir) {
+    const list = U.sorted.filter(n => n.active);
+    if (!list.length) return null;
+    const i = U.sel ? list.indexOf(U.sel) : -1;
+    if (i < 0) return dir > 0 ? list[0] : list[list.length - 1];
+    return list[(i + dir + list.length) % list.length];
+  }
+
+  function uPanel() {
+    const box = $("univPanel");
+    if (!box) return;
+    const n = U.sel;
+    if (!n) {
+      const weak = catStats().filter(s => s.n >= 3).sort((a, b) => a.mastered / a.n - b.mastered / b.n)[0];
+      box.innerHTML = `<p class="muted">Bir kelimeye dokun: anlamını, kökünü ve tekrar durumunu gör. Çift dokunuş detay açar.</p>` +
+        (weak ? `<p class="lx-tip">En az ustalaştığın galaksi <strong>${esc(weak.cat)}</strong> (%${pct(weak.mastered, weak.n)}).</p><div class="lx-acts">${btnHtml("galaxy-start", "Bu galaksiyi çalış", weak.cat, "primary")}</div>` : "");
+      return;
+    }
+    const status = n.w.mastered ? "ustalaşıldı" : isDue(n.w) ? "tekrar zamanı" : isHard(n.w) ? "zorlanıyorsun" : "planlı";
+    box.innerHTML = `<div class="lx-sel">
+        <p class="lx-sel-h"><strong>${esc(n.w.en)}</strong> <span class="muted">${esc(n.w.tr || "")}</span></p>
+        <p class="muted">Güç %${n.s} · ${n.root ? "Kök: " + esc(n.root) : esc(n.cat)} · ${status}${n.pinned ? " · sabitlendi" : ""}</p>
+        <div class="lx-acts">
+          ${btnHtml("univ-detail", "Detay", n.w.id, "primary")}
+          ${n.root ? btnHtml("root-start", "Kök ailesini çalış", n.root) : btnHtml("galaxy-start", "Galaksiyi çalış", n.cat)}
+          ${btnHtml("univ-pin", n.pinned ? "Sabitlemeyi kaldır" : "Sabitle")}
+          ${btnHtml("univ-clear", "Seçimi kaldır")}
+        </div></div>`;
+  }
+
+  function uUpdateActive() {
+    U.nodes.forEach(n => { n.active = uActive(n.w); });
+    const sel = $("univCat");
+    if (sel && sel.value !== universeFilter) sel.value = universeFilter;
+    document.querySelectorAll(".lx-galaxy").forEach(b => b.classList.toggle("on", b.dataset.arg === universeFilter));
+  }
+
+  function uSearchNow(q, pick) {
+    const s = String(q || "").trim().toLowerCase();
+    const cnt = $("univCount");
+    U.matches = null;
+    if (!s) {
+      if (cnt) cnt.textContent = `${U.nodes.length} gökcismi`;
+      return [];
+    }
+    const hits = U.nodes.filter(n => n.w.en.toLowerCase().includes(s) || String(n.w.tr || "").toLowerCase().includes(s));
+    U.matches = new Set(hits.map(n => n.w.id));
+    if (cnt) cnt.textContent = `${hits.length} eşleşme`;
+    if (pick && hits.length) {
+      if (!hits[0].active) { universeFilter = "all"; uUpdateActive(); }
+      uSelect(hits[0], true);
+    }
+    return hits;
+  }
+
+  function uBind(c) {
+    const pos = e => { const b = c.getBoundingClientRect(); return { x: e.clientX - b.left, y: e.clientY - b.top }; };
+    const hit = p => {
+      let best = null, bd = Infinity;
+      for (const n of U.nodes) {
+        if (!n.active) continue;
+        const d = Math.hypot(p.x - n.x, p.y - n.y);
+        if (d <= n.r + 6 && d < bd) { best = n; bd = d; }
+      }
+      return best;
+    };
+    c.addEventListener("pointerdown", e => {
+      const p = pos(e);
+      const n = hit(p);
+      U.press = { id: e.pointerId, type: e.pointerType, x0: p.x, y0: p.y, px: p.x, py: p.y, vx: 0, vy: 0, node: n, moved: false, dragging: false };
+      if (!n) return;
+      if (e.pointerType === "touch") {
+        clearTimeout(U.hold);
+        U.hold = setTimeout(() => {
+          const P = U.press;
+          if (!P || P.node !== n || P.moved) return;
+          P.dragging = true;
+          U.drag = n;
+          try { c.setPointerCapture(P.id); } catch (_) { /* yakalama yoksa sorun değil */ }
+          if (navigator.vibrate) navigator.vibrate(8);
+        }, 170);
+      } else {
+        U.press.dragging = true;
+        U.drag = n;
+        try { c.setPointerCapture(e.pointerId); } catch (_) { /* sorun değil */ }
+      }
+    });
+    c.addEventListener("pointermove", e => {
+      const P = U.press;
+      if (!P) return;
+      const p = pos(e);
+      if (Math.hypot(p.x - P.x0, p.y - P.y0) > 8) P.moved = true;
+      if (P.type === "touch" && P.moved && !P.dragging) clearTimeout(U.hold);
+      if (P.dragging && U.drag) {
+        const n = U.drag;
+        const nx = clamp(p.x, n.r, U.W - n.r), ny = clamp(p.y, n.r, U.H - n.r);
+        P.vx = nx - n.x; P.vy = ny - n.y;
+        n.x = nx; n.y = ny;
+      }
+      P.px = p.x; P.py = p.y;
+    });
+    const finish = () => {
+      const P = U.press;
+      clearTimeout(U.hold);
+      U.press = null;
+      if (!P) return;
+      const dragged = U.drag;
+      U.drag = null;
+      if (dragged && P.moved) {
+        dragged.vx = clamp(P.vx * 0.6, -6, 6);
+        dragged.vy = clamp(P.vy * 0.6, -6, 6);
+        return;
+      }
+      if (P.moved) return;
+      if (P.node) uTap(P.node); else uSelect(null);
+    };
+    c.addEventListener("pointerup", finish);
+    c.addEventListener("pointercancel", () => { clearTimeout(U.hold); U.press = null; U.drag = null; });
+    c.addEventListener("touchmove", ev => { if (U.press && U.press.dragging) ev.preventDefault(); }, { passive: false });
+    c.addEventListener("keydown", e => {
+      const k = e.key;
+      if (k === "ArrowRight" || k === "ArrowDown") { e.preventDefault(); uSelect(uNeighbor(1), true); }
+      else if (k === "ArrowLeft" || k === "ArrowUp") { e.preventDefault(); uSelect(uNeighbor(-1), true); }
+      else if (k === "Enter" && U.sel) { e.preventDefault(); openDetail(U.sel.w.id); }
+      else if (k === "Escape") uSelect(null);
+      else if ((k === "p" || k === "P") && U.sel) { U.sel.pinned = !U.sel.pinned; uPanel(); }
+    });
+  }
+
+  function lxuInit() {
+    const c = $("wordUniverseCanvas");
+    if (!c) return;
+    uStop();
+    U.canvas = c; U.W = 0; U.H = 0; U.nodes = []; U.sel = null; U.focus = null;
+    U.matches = null; U.press = null; U.drag = null;
+    uBind(c);
+    uTheme();
+    if (uMeasure()) for (let i = 0; i < 80; i++) uStep();
+    U.ro = new ResizeObserver(() => {
+      const had = U.nodes.length > 0;
+      if (uMeasure() && !had) { for (let i = 0; i < 80; i++) uStep(); uStart(); }
+    });
+    U.ro.observe(c);
+    uPanel();
+    uStart();
+  }
+
+  const lxViewBarHtml = mode => `<div class="tool-tabs lx-viewbar" role="group" aria-label="Sınıf görünümü">
+      <button type="button" class="${mode === "list" ? "active" : ""}" data-lx="view-list" aria-pressed="${mode === "list"}">📋 Liste</button>
+      <button type="button" class="${mode === "univ" ? "active" : ""}" data-lx="view-univ" aria-pressed="${mode === "univ"}">🌌 Yüzen Kelime Evreni</button></div>`;
+
+  function lxRenderUniverse() {
+    const sec = $("tab-classes");
+    if (!sec) return;
+    const stats = catStats();
+    const colors = uColorMap(stats.map(s => s.cat));
+    const cats = [...new Set(state.words.map(w => w.cat))].sort((a, b) => a.localeCompare(b));
+    const opts = [["all", "Tüm kategoriler"], ...cats.map(c => [c, c]), ["__hard", "🔥 Zor kelimeler"], ["__master", "⭐ Ustalaşılanlar"]];
+    sec.innerHTML = `
+      <div class="card lx-univ-card">
+        ${lxViewBarHtml("univ")}
+        <div class="lx-univ-tools" style="margin-top:8px;">
+          <select id="univCat" aria-label="Evren filtresi">${opts.map(([v, l]) => `<option value="${esc(v)}"${v === universeFilter ? " selected" : ""}>${esc(l)}</option>`).join("")}</select>
+          <input id="univSearch" type="search" placeholder="Kelime ara" aria-label="Evrende kelime ara" autocomplete="off">
+          <button type="button" class="ghost" data-lx="univ-cluster" aria-pressed="${U.clustering}">${U.clustering ? "Galaksiler açık" : "Galaksiler kapalı"}</button>
+        </div>
+        <p class="muted lx-univ-count" id="univCount">${state.words.length} gökcismi, ${stats.length} galaksi</p>
+        <div class="lx-legend" role="group" aria-label="Galaksiler">
+          ${stats.map(s => `<button type="button" class="lx-galaxy${universeFilter === s.cat ? " on" : ""}" data-lx="univ-filter" data-arg="${esc(s.cat)}" style="--gc:${colors[s.cat]}"><i aria-hidden="true"></i>${esc(s.cat)} <small>${s.n} kelime, %${pct(s.mastered, s.n)}</small></button>`).join("")}
+        </div>
+        <div class="universe-wrap"><canvas id="wordUniverseCanvas" tabindex="0" role="application" aria-label="Kelime evreni. Ok tuşlarıyla gez, Enter ile detay aç."></canvas></div>
+        <p class="muted lx-univ-hint">Dokun: seç. Çift dokun: detay. Basılı tut: taşı. Ara kutusuyla kelime bul.</p>
+        <div id="univPanel" class="lx-univ-panel" aria-live="polite"></div>
+        <details class="expl" style="margin-top:10px;"><summary>Liste görünümü (dokunma yedeği)</summary>
+          <div class="lx-chiplist">${state.words.map(w => `<button type="button" class="lx-chip" data-lx="univ-pick" data-arg="${w.id}">${esc(w.en)}</button>`).join("")}</div>
+        </details>
+      </div>`;
+    const sel = $("univCat");
+    if (sel) sel.onchange = () => { universeFilter = sel.value; uUpdateActive(); };
+    const si = $("univSearch");
+    if (si) {
+      si.addEventListener("input", () => uSearchNow(si.value, false));
+      si.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); uSearchNow(si.value, true); } });
+    }
+    lxuInit();
+  }
+
+  function lxRenderClasses() {
+    uStop();
+    document.body.classList.toggle("lx-univ-active", currentTab === "classes" && classViewMode === "universe");
+    if (classViewMode === "universe") { lxRenderUniverse(); return; }
+    _origRenderClasses();
+    const sec = $("tab-classes");
+    if (sec) sec.insertAdjacentHTML("afterbegin", lxViewBarHtml("list"));
+  }
+  renderClasses = lxRenderClasses;
+  startWordUniverse = () => lxuInit();
+
+  /* ---------- 7. Yönlendirici, düzen ve yönlendirme başlıkları ---------- */
+  function lxApplyFlags() {
+    const ui = state.ui || {};
+    document.body.classList.toggle("lx-big-touch", !!ui.bigTouch);
+    document.body.classList.toggle("lx-contrast", !!ui.contrast);
+  }
+
+  function lxSyncNav(tab) {
+    const key = tab === "session" ? "learn" : tab;
+    document.querySelectorAll("nav button[data-tab]").forEach(b => {
+      const on = b.dataset.tab === key;
+      b.classList.toggle("active", on);
+      if (on) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
+    });
+    const btn = $("lxMenuBtn"), lbl = $("lxMenuLbl");
+    const inMenu = !!TABS[key] && !PRIMARY.includes(key) && !TABS[key].hidden;
+    if (btn) btn.classList.toggle("active", inMenu);
+    if (lbl) lbl.textContent = inMenu ? `${TABS[key].icon} ${TABS[key].label}` : "Menü";
+  }
+
+  function lxBuildNav() {
+    const nav = document.querySelector("nav");
+    if (!nav) return;
+    nav.className = "lx-nav";
+    nav.setAttribute("aria-label", "Ana menü");
+    nav.innerHTML = "";
+    PRIMARY.forEach(k => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.dataset.tab = k;
+      b.innerHTML = `<span aria-hidden="true">${TABS[k].icon}</span>${esc(TABS[k].label)}`;
+      nav.appendChild(b);
+    });
+    const wrap = document.createElement("div");
+    wrap.className = "lx-menu-wrap";
+    wrap.innerHTML = `<button type="button" class="lx-menu-btn" id="lxMenuBtn" aria-expanded="false" aria-controls="lxMenu"><span aria-hidden="true">☰</span> <span id="lxMenuLbl">Menü</span></button>`;
+    nav.appendChild(wrap);
+    // Menü gövdesi <nav> dışında: nav'da backdrop-filter var ve sabit konumlamayı kapsıyor.
+    const menu = document.createElement("div");
+    menu.className = "lx-menu hidden";
+    menu.id = "lxMenu";
+    menu.setAttribute("role", "region");
+    menu.setAttribute("aria-label", "Tüm bölümler");
+    menu.innerHTML = `<div id="lxRecoSlot"></div>${GROUPS.map(([g, title]) => `<div class="lx-group"><p class="lx-group-title">${esc(title)}</p>${
+      Object.keys(TABS).filter(k => TABS[k].group === g).map(k =>
+        `<button type="button" class="lx-mi" data-tab="${k}"><span class="lx-mi-ico" aria-hidden="true">${TABS[k].icon}</span><span class="lx-mi-txt"><strong>${esc(TABS[k].label)}</strong><small>${esc(TABS[k].desc || "")}</small></span></button>`
+      ).join("")}</div>`).join("")}`;
+    document.body.appendChild(menu);
+  }
+
+  function lxRenderReco() {
+    const slot = $("lxRecoSlot");
+    if (!slot) return;
+    const r = lxRecommend();
+    slot.innerHTML = `<div class="lx-reco"><p class="lx-reco-h">Önerilen adım</p><p class="muted">${esc(r.reason)}</p>${btnHtml(r.act, r.label, r.arg || "", "primary")}</div>`;
+  }
+
+  function lxToggleMenu(force) {
+    const menu = $("lxMenu"), btn = $("lxMenuBtn");
+    if (!menu || !btn) return;
+    const open = force !== undefined ? !!force : menu.classList.contains("hidden");
+    if (open) {
+      lxRenderReco();
+      const top = document.querySelector("nav").getBoundingClientRect().bottom + 6;
+      const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      menu.style.top = top + "px";
+      menu.style.maxHeight = Math.max(160, vh - top - 12) + "px";
+    }
+    menu.classList.toggle("hidden", !open);
+    document.body.classList.toggle("lx-menu-open", open);
+    btn.setAttribute("aria-expanded", String(open));
+  }
+  const lxCloseMenu = () => lxToggleMenu(false);
+
+  function lxEnhance(tab) {
+    if (tab !== currentTab) return;
+    const sec = $("tab-" + tab);
+    const meta = TABS[tab];
+    if (!sec || !meta || meta.hidden) return;
+    const complete = sec.querySelector(":scope > .lx-head") && sec.querySelector(":scope > .lx-smart") && sec.querySelector(":scope > .lx-next");
+    if (complete) { if (tab === "settings") lxSettingsFilter(); return; }
+    sec.querySelectorAll(":scope > .lx-head, :scope > .lx-smart, :scope > .lx-next").forEach(n => n.remove());
+    const hidden = lxStore.get("lx6_hd_" + tab, false);
+    const head = document.createElement("div");
+    head.className = "lx-head" + (hidden ? " lx-collapsed" : "");
+    head.innerHTML = `<div class="lx-head-row">
+        <div><p class="lx-head-title"><span aria-hidden="true">${meta.icon}</span> ${esc(meta.label)}</p><p class="lx-head-purpose">${esc(meta.purpose)}</p></div>
+        <div class="lx-head-acts">${meta.cta ? btnHtml(meta.cta.act, meta.cta.label, tab, "primary") : ""}<button type="button" class="lx-mini" data-lx="head-toggle" data-arg="${tab}">${hidden ? "Yönlendirmeyi göster" : "Gizle"}</button></div>
+      </div>`;
+    const smart = document.createElement("details");
+    smart.className = "lx-smart";
+    smart.dataset.tab = tab;
+    smart.open = LX.open[tab] !== undefined ? LX.open[tab] : tab !== "classes";
+    smart.innerHTML = `<summary>Akıllı öneriler</summary><div class="lx-cards">${lxSmartHtml(tab) || `<p class="muted">Bu bölüm için şimdilik öneri yok.</p>`}</div>`;
+    const nxt = meta.next && TABS[meta.next];
+    const next = document.createElement("div");
+    next.className = "lx-next";
+    next.innerHTML = nxt ? `<p class="muted">Sıradaki adım</p><button type="button" class="lx-next-btn" data-lx="go" data-arg="${meta.next}"><span>${nxt.icon} ${esc(nxt.label)}</span><small>${esc(nxt.purpose)}</small></button>` : "";
+    sec.prepend(smart);
+    sec.prepend(head);
+    sec.append(next);
+    if (tab === "settings") lxSettingsFilter();
+  }
+
+  function lxSettingsFilter() {
+    const sec = $("tab-settings");
+    if (!sec) return;
+    const q = LX.setQuery.trim().toLowerCase();
+    let shown = 0;
+    [...sec.children].forEach(ch => {
+      if (ch.matches(".lx-head, .lx-smart, .lx-next")) return;
+      const ok = !q || ch.textContent.toLowerCase().includes(q);
+      ch.style.display = ok ? "" : "none";
+      if (ok) shown++;
+    });
+    const note = $("lxSetCount");
+    if (note) note.textContent = q ? `${shown} bölüm eşleşti.` : "";
+  }
+
+  function lxRerender(tab) {
+    if (currentTab !== tab) return;
+    try { const r = LX_RENDER[tab]; if (r) r(); } catch (err) { console.error(err); }
+    lxEnhance(tab);
+  }
+
+  const pendingEnhance = new Set();
+  function lxSoon(tab) {
+    if (pendingEnhance.has(tab)) return;
+    pendingEnhance.add(tab);
+    requestAnimationFrame(() => { pendingEnhance.delete(tab); lxEnhance(tab); });
+  }
+
+  function lxGo(tab, opt = {}) {
+    if (!TABS[tab]) tab = "today";
+    const prev = currentTab;
+    if (prev === "classes" && tab !== "classes") uStop();
+    currentTab = tab;
+    lxSyncNav(tab);
+    document.querySelectorAll("main > section").forEach(s => s.classList.toggle("hidden", s.id !== "tab-" + tab));
+    const sec = $("tab-" + tab);
+    if (sec) {
+      if (prev !== tab && state.ui && state.ui.motion !== "yok") {
+        sec.classList.remove("anim-r", "anim-l", "anim-f");
+        void sec.offsetWidth;
+        sec.classList.add(state.ui.motion === "solma" ? "anim-f" : "anim-r");
+      }
+      try {
+        const render = LX_RENDER[tab];
+        if (render) render();
+      } catch (err) {
+        console.error(err);
+        sec.innerHTML = `<div class="card lx-err"><strong>Bu bölüm açılamadı.</strong><p class="muted">Sayfayı yenileyip tekrar dene. Sorun sürerse ayarlarından yedek alıp bize bildir.</p><button type="button" class="primary" data-lx="retry-tab" data-arg="${tab}">Yeniden dene</button></div>`;
+      }
+      lxEnhance(tab);
+    }
+    if (!opt.fromPop && location.hash !== "#" + tab) {
+      try { history.pushState({ lxTab: tab }, "", "#" + tab); } catch (_) { /* geçmiş kullanılamıyor */ }
+    }
+    document.body.classList.toggle("lx-univ-active", tab === "classes" && classViewMode === "universe");
+    lxCloseMenu();
+    if (typeof updateStreakBadge === "function") updateStreakBadge();
+    window.scrollTo(0, 0);
+  }
+
+  /* ---------- 8. Olay bağlama (tek yer) ---------- */
+  function lxBindChrome() {
+    const nav = document.querySelector("nav");
+    nav.addEventListener("click", e => {
+      const menuBtn = e.target.closest("#lxMenuBtn");
+      if (menuBtn) { lxToggleMenu(); return; }
+      const b = e.target.closest("button[data-tab]");
+      if (b) lxGo(b.dataset.tab);
+    });
+    const menuEl = $("lxMenu");
+    if (menuEl) menuEl.addEventListener("click", e => {
+      const b = e.target.closest("button[data-tab]");
+      if (b) lxGo(b.dataset.tab);
+    });
+    document.addEventListener("click", e => {
+      if (!e.target.closest || (!e.target.closest(".lx-menu-wrap") && !e.target.closest("#lxMenu"))) lxCloseMenu();
+    });
+    document.addEventListener("keydown", e => { if (e.key === "Escape") lxCloseMenu(); });
+    document.addEventListener("click", e => {
+      const b = e.target.closest && e.target.closest("[data-lx]");
+      if (!b || b.disabled) return;
+      const fn = LX_ACT[b.dataset.lx];
+      if (!fn) return;
+      e.preventDefault();
+      try {
+        const r = fn(b.dataset.arg || "", b, e);
+        if (r && typeof r.catch === "function") r.catch(err => console.error(err));
+      } catch (err) {
+        console.error(err);
+        toast("Bir sorun oluştu. Tekrar dene.");
+      }
+    });
+    document.addEventListener("input", e => {
+      if (e.target && e.target.id === "lxSetSearch") { LX.setQuery = e.target.value; lxSettingsFilter(); }
+    });
+    document.addEventListener("toggle", e => {
+      if (e.target && e.target.classList && e.target.classList.contains("lx-smart")) LX.open[e.target.dataset.tab] = e.target.open;
+    }, true);
+    document.addEventListener("visibilitychange", () => { if (!document.hidden && uAlive()) uStart(); });
+    window.addEventListener("popstate", e => {
+      const t = (e.state && e.state.lxTab) || (location.hash || "").replace("#", "") || "today";
+      lxGo(t, { fromPop: true });
+    });
+    const pill = $("profilePill");
+    if (pill) pill.onclick = () => lxGo("profile");
+    document.addEventListener("click", e => {
+      const b = e.target.closest && e.target.closest("#saveRef");
+      if (!b) return;
+      const ta = $("refText");
+      const ids = lxStore.get("lx6_prompt_" + dayKey(), []);
+      if (!ta || !ids.length) return;
+      const words = ids.map(id => state.words.find(w => w.id === id)).filter(Boolean);
+      const text = ta.value.toLowerCase();
+      const used = words.filter(w => new RegExp("\\b" + escRe(w.en.toLowerCase()) + "\\b").test(text));
+      if (used.length) toast(`${used.length}/${words.length} hedef kelimeyi yazına kattın.`);
+      const day = dayKey();
+      if (used.length >= 2 && !lxStore.get("lx6_bonus_" + day, false)) {
+        lxStore.set("lx6_bonus_" + day, true);
+        state.xp += 5;
+        save();
+        toast("+5 XP: yazına kelime katma bonusu.");
+      }
+    });
+  }
+
+  /* ---------- 9. Eski kancaları yeni düzene bağla ---------- */
+  showTab = lxGo;
+  window.switchTab = lxGo;
+
+  const _baseExport = exportData;
+  exportData = function () {
+    lxStore.set("lx6_last_backup", Date.now());
+    return _baseExport();
+  };
+
+  const _baseFinish = finishSession;
+  finishSession = function (early) {
+    try {
+      if (session && !session.done) {
+        const answered = session.correct + session.wrong;
+        if (answered > 0) lxStore.set("lx6_last_session", { acc: Math.round((session.correct / answered) * 100), n: answered, at: Date.now() });
+      }
+    } catch (_) { /* oturum özeti kaydedilemedi, akış devam etsin */ }
+    return _baseFinish(early);
+  };
+
+  /* ---------- 10. Başlatma ---------- */
+  function lxBoot() {
+    if (!document.getElementById("tab-awards")) {
+      const s = document.createElement("section");
+      s.id = "tab-awards";
+      s.className = "hidden";
+      document.querySelector("main").appendChild(s);
+    }
+    lxBuildNav();
+    lxBindChrome();
+    lxApplyFlags();
+    document.querySelectorAll("main > section").forEach(sec => {
+      new MutationObserver(() => lxSoon(sec.id.replace("tab-", ""))).observe(sec, { childList: true });
+    });
+    const hash = (location.hash || "").replace("#", "");
+    const start = TABS[hash] && !TABS[hash].hidden ? hash : "today";
+    try { history.replaceState({ lxTab: start }, "", "#" + start); } catch (_) { /* sorun değil */ }
+    lxGo(start, { fromPop: true });
+  }
+  lxBoot();
+})();
 
 </script>
 </body>
