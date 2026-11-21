@@ -435,6 +435,235 @@
 .tier-silver { background: #e2e8f0; color: #1e293b; }
 .tier-gold { background: #fef08a; color: #854d0e; }
 .tier-legend { background: var(--primary); color: #fff; }
+/* === LEXORA 5.0 EK STİLLER (ÖZEL ODA, DÜNYA HARİTASI & ÖDÜLLER) === */
+.room-stage {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1.5px solid var(--border);
+  background: var(--surface-2);
+  margin-bottom: 14px;
+}
+.room-visual {
+  width: 100%;
+  max-height: 260px;
+  object-fit: cover;
+  display: block;
+}
+.room-overlay-bar {
+  padding: 12px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+.world-map-wrap {
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #0b132b;
+  margin-bottom: 14px;
+}
+.quest-item {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  background: var(--bg);
+}
+.quest-item.done {
+  border-color: var(--ok);
+  background: color-mix(in srgb, var(--ok) 8%, var(--surface));
+}
+.reward-box {
+  margin-top: 10px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border-left: 4px solid var(--primary);
+  background: var(--surface);
+}
+/* === LEXORA 5.0 EK ROZETLER, SESLER & BİLGİ ÖDÜLLERİ SERGİSİ === */
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+.badge-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px;
+  background: var(--bg);
+  transition: transform 0.16s ease, border-color 0.2s ease;
+}
+.badge-card.unlocked {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 7%, var(--surface));
+}
+.badge-card.locked {
+  opacity: 0.62;
+}
+.exhibition-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+.exhibit-card {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 14px;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+}
+.exhibit-card.unlocked {
+  border-color: var(--ok);
+  background: var(--surface);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+}
+.exhibit-card.locked {
+  border-style: dashed;
+  opacity: 0.72;
+}
+.exhibit-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  font-size: 12px;
+}
+.filter-bar {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+/* === LEXORA 5.0 ODAK TURU, ETİMOLOJİ KARTI & ÖZET STİLLERİ === */
+.focus-timer-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1.5px solid var(--primary);
+  background: color-mix(in srgb, var(--primary) 8%, var(--surface));
+  margin-bottom: 14px;
+}
+.focus-clock {
+  font-size: 26px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--primary);
+}
+.etym-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 12, 36, 0.62);
+  backdrop-filter: blur(4px);
+  display: grid;
+  place-items: center;
+  z-index: 95;
+  padding: 16px;
+}
+.etym-modal {
+  width: 100%;
+  max-width: 520px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
+}
+.etym-tag-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 8px 0;
+}
+.cat-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+/* === LEXORA 5.0 GELİŞMİŞ SESLENDİRME BUTONLARI & SAATLİK HEDİYE KUTUSU === */
+.tts-btn-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.tts-mini-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.tts-mini-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.tts-mini-btn.slow {
+  background: color-mix(in srgb, var(--warn) 12%, var(--surface));
+  border-color: color-mix(in srgb, var(--warn) 45%, var(--border));
+}
+
+/* Sayfa Kenarı Saatlik Sürpriz Hediye Kutusu */
+.hourly-gift-dock {
+  position: fixed;
+  right: 16px;
+  bottom: 74px;
+  z-index: 88;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+.gift-float-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 15px;
+  border-radius: 999px;
+  border: 2px solid var(--primary);
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(109, 40, 217, 0.28);
+  animation: giftBounce 2.2s infinite ease-in-out;
+}
+@keyframes giftBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.gift-popup-card {
+  width: min(340px, calc(100vw - 32px));
+  background: var(--surface);
+  color: var(--text);
+  border: 2px solid var(--primary);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.25);
+}
 </style>
 </head>
 <body>
@@ -457,6 +686,10 @@
   <button data-tab="realworld"><span aria-hidden="true">🌍</span>Gerçek Hayat</button>
   <button data-tab="look"><span aria-hidden="true">🎨</span>Görünüm</button>
   <button data-tab="settings"><span aria-hidden="true">⚙️</span>Ayarlar</button>
+  <button data-tab="room">🚪 Özel Oda</button>
+  <button data-tab="world">🗺️ Dünya Yolculuğu</button>
+  <button data-tab="awards">🏆 Ödül Sergisi</button>
+  <button data-tab="focus">⏱️ Odak &amp; Özet</button>
 </nav>
 <main>
   <section id="tab-today"></section>
@@ -471,6 +704,9 @@
   <section id="tab-realworld" class="hidden"></section>
   <section id="tab-settings" class="hidden"></section>
   <section id="tab-session" class="hidden"></section>
+  <section id="tab-room" class="hidden"></section>
+  <section id="tab-world" class="hidden"></section>
+  <section id="tab-focus" class="hidden"></section>
 </main>
 <dialog id="detail" aria-labelledby="detailTitle">
   <div id="detailBody"></div>
@@ -5396,6 +5632,1065 @@ renderSettings = function() {
 // İlk yüklemede yüzen buton konumunu ve profil bilgisini uygula
 applyFloatingLayout();
 updateProfilePill();
+// === LEXORA 5.0 ÖZEL ODA, DÜNYA HARİTASI & DİZİN ÖDÜLLERİ ===
+const LEXORA5_CONFIG = {
+  roomTitle: "Felsefe & Sözcük Çalışma Odası",
+  youtubeUrl: "https://www.youtube.com/watch?v=9UEQADC65Ks",
+  // Kendi oda resminin bağlantısını tırnak içine yazabilirsin (boşsa özel oda sahnesi çizilir):
+  customRoomImageUrl: ""
+};
+
+const LEXORA5_REWARDS = [
+  {
+    id: "rw_yardimli_1",
+    questId: "q_words_15",
+    badge: "Aziz Yardımlı Arşivi Ödülü",
+    sourceName: "azizyardimli.com",
+    sourceUrl: "https://azizyardimli.com/",
+    title: "Kavram, Çeviri ve Düşüncenin Kuruluşu",
+    paragraph: "Felsefi metin çevirisinde her kavram yalnızca sözlük karşılığıyla değil, kendi kavramsal ağı ve tarihsel bağlamıyla taşınır; Türkçede karşılık üretirken kavramın mantıksal işlevini korumak, dilin kendi olanaklarını derinleştiren yaratıcı bir edimdir."
+  },
+  {
+    id: "rw_idea_1",
+    questId: "q_xp_150",
+    badge: "İdea Yayınevi Dizin Ödülü",
+    sourceName: "İdea Yayınevi Dizinler",
+    sourceUrl: "https://www.xn--ideayaynevi-5zb.com/dizinler/dizinler_anasayfa.html",
+    title: "Terim Dizini ve Sistematik Kavram Disiplini",
+    paragraph: "Sistematik bir terim dizini, dağınık sözcük bilgisini kavramsal bir bütüne dönüştürür; aynı kök veya düşünce ailesine bağlı ifadeleri yan yana görmek, metin okurken kavramlar arası geçişleri çok daha berrak hale getirir."
+  },
+  {
+    id: "rw_yardimli_2",
+    questId: "q_room_note",
+    badge: "Aziz Yardımlı Külliyat Ödülü",
+    sourceName: "azizyardimli.com",
+    sourceUrl: "https://azizyardimli.com/",
+    title: "Eleştirel Okuma ve Bütünlüklü Anlama",
+    paragraph: "Metni yüzeysel bir bilgi yığını olarak değil, kendi iç tutarlılığı ve hareketi içinde okumak, okuru pasif bir alıcı olmaktan çıkarıp kavramı yeniden kuran etkin bir düşünce öznesine dönüştürür."
+  }
+];
+
+const LEXORA5_STOPS = [
+  { id: "ist", name: "İstanbul", region: "Avrasya", x: 472, y: 112, desc: "Yolculuğun başlangıç noktası; kavramların buluştuğu eşik." },
+  { id: "ath", name: "Atina", region: "Akdeniz", x: 446, y: 122, desc: "Sorgulama, tanım ve diyalektik düşünmenin kadim limanı." },
+  { id: "ams", name: "Amsterdam", region: "Kuzey Avrupa", x: 404, y: 90, desc: "Etik, nedensellik ve özgürlüğün geometrik disiplini." },
+  { id: "lon", name: "Londra", region: "Britanya", x: 382, y: 88, desc: "Akademik İngilizce ve etimoloji inceleme durağı." },
+  { id: "tok", name: "Tokyo", region: "Doğu Asya", x: 682, y: 124, desc: "Yüksek odak, ritim ve kesintisiz pratik durağı." }
+];
+
+const LEXORA5_QUESTS = [
+  {
+    id: "q_words_15",
+    stop: "Atina",
+    title: "Sözlükte En Az 15 Kelimeye Ulaş",
+    desc: "Sözlüğüne yeni kelimeler ekleyerek toplam kelime sayını 15'e çıkar.",
+    check: () => Array.isArray(state?.words) && state.words.length >= 15,
+    progress: () => `${Math.min(state?.words?.length || 0, 15)}/15 kelime`
+  },
+  {
+    id: "q_xp_150",
+    stop: "Amsterdam",
+    title: "150 XP Barajını Aş",
+    desc: "Öğrenme oturumları tamamlayarak 150 XP puanına ulaş.",
+    check: () => (state?.xp || 0) >= 150,
+    progress: () => `${Math.min(state?.xp || 0, 150)}/150 XP`
+  },
+  {
+    id: "q_room_note",
+    stop: "Londra",
+    title: "Özel Odada Çalışma Notu Kaydet",
+    desc: "Özel Oda sekmesindeki deftere bir çalışma notu yaz ve kaydet.",
+    check: () => Boolean(localStorage.getItem("lexora5_room_note")?.trim()),
+    progress: () => (localStorage.getItem("lexora5_room_note")?.trim() ? "1/1 not tamam" : "0/1 not")
+  }
+];
+
+const LEXORA5_ROOM_SVG = `<svg viewBox="0 0 800 260" width="100%" height="240" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="l5sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1e1b4b"/><stop offset="100%" stop-color="#3b0764"/></linearGradient></defs><rect width="800" height="260" fill="url(#l5sky)"/><rect x="70" y="34" width="170" height="115" rx="12" fill="#0f172a" stroke="#a78bfa" stroke-width="3"/><circle cx="195" cy="70" r="16" fill="#fef08a"/><rect x="470" y="40" width="240" height="135" rx="10" fill="#271812" stroke="#92400e" stroke-width="3"/><line x1="470" y1="88" x2="710" y2="88" stroke="#92400e" stroke-width="3"/><line x1="470" y1="132" x2="710" y2="132" stroke="#92400e" stroke-width="3"/><rect x="490" y="52" width="22" height="34" rx="3" fill="#7c3aed"/><rect x="518" y="56" width="26" height="30" rx="3" fill="#0284c7"/><rect x="550" y="50" width="20" height="36" rx="3" fill="#059669"/><rect x="0" y="205" width="800" height="55" fill="#18122b"/><rect x="190" y="172" width="420" height="15" rx="5" fill="#78350f"/><text x="400" y="238" text-anchor="middle" fill="#e9d5ff" font-size="15" font-weight="700" font-family="system-ui, sans-serif">ÖZEL ÇALIŞMA ODASI · KİTAPLIK &amp; MÜZİK ATMOSFERİ</text></svg>`;
+
+let l5AudioCtx = null;
+let l5Osc = null;
+let l5MusicOn = false;
+
+function toggleLexora5Music(forceState, openYoutube = false) {
+  l5MusicOn = typeof forceState === "boolean" ? forceState : !l5MusicOn;
+  if (l5MusicOn) {
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) {
+        if (!l5AudioCtx) l5AudioCtx = new AC();
+        if (l5AudioCtx.state === "suspended") l5AudioCtx.resume();
+        if (!l5Osc) {
+          const osc = l5AudioCtx.createOscillator();
+          const gain = l5AudioCtx.createGain();
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(174.61, l5AudioCtx.currentTime);
+          gain.gain.setValueAtTime(0.025, l5AudioCtx.currentTime);
+          osc.connect(gain);
+          gain.connect(l5AudioCtx.destination);
+          osc.start();
+          l5Osc = { osc, gain };
+        }
+      }
+    } catch {}
+    if (openYoutube) window.open(LEXORA5_CONFIG.youtubeUrl, "_blank", "noopener");
+  } else if (l5Osc) {
+    try { l5Osc.osc.stop(); l5Osc.osc.disconnect(); } catch {}
+    l5Osc = null;
+  }
+}
+
+function renderRoom() {
+  const el = document.getElementById("tab-room");
+  if (!el) return;
+  const savedImg = localStorage.getItem("lexora5_room_img") || LEXORA5_CONFIG.customRoomImageUrl;
+  const savedNote = localStorage.getItem("lexora5_room_note") || "";
+  const unlocked = LEXORA5_REWARDS.filter(r => LEXORA5_QUESTS.find(q => q.id === r.questId)?.check());
+
+  el.innerHTML = `
+    <div class="card">
+      <div class="room-stage">
+        ${savedImg ? `<img src="${savedImg}" alt="Özel Oda" class="room-visual" onerror="this.outerHTML=LEXORA5_ROOM_SVG">` : LEXORA5_ROOM_SVG}
+        <div class="room-overlay-bar">
+          <div>
+            <strong>${LEXORA5_CONFIG.roomTitle}</strong>
+            <div class="muted" style="font-size:12px;">Oda Müziği: ${l5MusicOn ? "Çalıyor 🎵" : "Hazır"}</div>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="primary" id="l5MusicBtn">${l5MusicOn ? "Müziği Durdur" : "Oda Müziğini Çal"}</button>
+            <a class="ghost" href="${LEXORA5_CONFIG.youtubeUrl}" target="_blank" rel="noopener" style="text-decoration:none; display:inline-flex; align-items:center;">YouTube'da Aç ↗</a>
+          </div>
+        </div>
+      </div>
+      <strong>Odadaki Kişisel Çalışma Notun</strong>
+      <textarea id="l5NoteInput" rows="3" style="width:100%; margin-top:8px; padding:10px; border-radius:10px; border:1px solid var(--border); background:var(--bg); color:var(--text);" placeholder="Bugünkü kelime veya felsefe notunu buraya yaz...">${savedNote}</textarea>
+      <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="primary" id="l5SaveNoteBtn">Notu Kaydet</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <strong>Odadaki Açık Dizin Ödülleri (${unlocked.length}/${LEXORA5_REWARDS.length})</strong>
+      ${unlocked.length ? unlocked.map(r => `
+        <div class="reward-box">
+          <strong>${r.title}</strong> <span class="pill">${r.badge}</span>
+          <p style="margin:8px 0 6px;">${r.paragraph}</p>
+          <a href="${r.sourceUrl}" target="_blank" rel="noopener" style="color:var(--primary); font-size:13px;">Kaynak: ${r.sourceName} ↗</a>
+        </div>
+      `).join("") : `<p class="muted" style="margin-top:8px;">Henüz ödül açılmadı. Dünya Yolculuğu sekmesindeki görevleri tamamladıkça ödül paragrafları burada açılır.</p>`}
+    </div>
+  `;
+
+  document.getElementById("l5MusicBtn").onclick = () => {
+    toggleLexora5Music(!l5MusicOn, !l5MusicOn);
+    renderRoom();
+  };
+  document.getElementById("l5SaveNoteBtn").onclick = () => {
+    localStorage.setItem("lexora5_room_note", document.getElementById("l5NoteInput").value.trim());
+    if (typeof toast === "function") toast("Oda notu kaydedildi ✓");
+    renderRoom();
+  };
+}
+
+function renderWorld() {
+  const el = document.getElementById("tab-world");
+  if (!el) return;
+  const activeStopId = localStorage.getItem("lexora5_stop") || "ath";
+  const activeStop = LEXORA5_STOPS.find(s => s.id === activeStopId) || LEXORA5_STOPS[0];
+
+  const mapSvg = `
+    <svg viewBox="0 0 800 240" width="100%" height="230" xmlns="http://www.w3.org/2000/svg">
+      <rect width="800" height="240" fill="#0b132b"/>
+      <path d="M110 50 L260 44 L295 98 L235 140 L150 135 Z" fill="#1c2541" stroke="#3a506b"/>
+      <path d="M365 44 L475 42 L495 98 L430 120 L360 105 Z" fill="#1c2541" stroke="#3a506b"/>
+      <path d="M375 122 L485 124 L515 200 L420 218 L370 165 Z" fill="#1c2541" stroke="#3a506b"/>
+      <path d="M495 48 L715 54 L735 135 L635 158 L515 132 Z" fill="#1c2541" stroke="#3a506b"/>
+      <polyline fill="none" stroke="#a78bfa" stroke-width="2.5" stroke-dasharray="6 5"
+        points="${LEXORA5_STOPS.map(s => `${s.x},${s.y}`).join(" ")}"/>
+      ${LEXORA5_STOPS.map(s => `
+        <g style="cursor:pointer" data-l5stop="${s.id}">
+          <circle cx="${s.x}" cy="${s.y}" r="${s.id === activeStop.id ? 10 : 7}" fill="${s.id === activeStop.id ? "#fbbf24" : "#38bdf8"}" stroke="#fff" stroke-width="2"/>
+          <text x="${s.x}" y="${s.y - 13}" text-anchor="middle" fill="#f8fafc" font-size="12" font-weight="700">${s.name}</text>
+        </g>
+      `).join("")}
+    </svg>
+  `;
+
+  el.innerHTML = `
+    <div class="card">
+      <strong>Dünya Haritası Üzerinde Yolculuk</strong>
+      <p class="muted" style="margin:4px 0 10px;">Duraklara tıklayarak rotayı incele.</p>
+      <div class="world-map-wrap">${mapSvg}</div>
+      <div class="reward-box" style="margin-top:0;">
+        <strong>Seçili Durak: ${activeStop.name} (${activeStop.region})</strong>
+        <p style="margin:6px 0 0;">${activeStop.desc}</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <strong>Yolculuk Görevleri ve Özel Dizin Ödülleri</strong>
+      ${LEXORA5_QUESTS.map(q => {
+        const done = q.check();
+        const rw = LEXORA5_REWARDS.find(r => r.questId === q.id);
+        return `
+          <div class="quest-item ${done ? "done" : ""}">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+              <strong>📍 ${q.stop} — ${q.title}</strong>
+              <span class="muted">${done ? "✓ Tamamlandı" : q.progress()}</span>
+            </div>
+            <p class="muted" style="margin:6px 0 0;">${q.desc}</p>
+            ${done && rw ? `
+              <div class="reward-box">
+                <div style="font-size:12px; font-weight:700; color:var(--primary);">🎁 ÖDÜL AÇILDI · ${rw.badge}</div>
+                <strong>${rw.title}</strong>
+                <p style="margin:6px 0;">${rw.paragraph}</p>
+                <a href="${rw.sourceUrl}" target="_blank" rel="noopener" style="color:var(--primary); font-size:13px;">${rw.sourceName} ↗</a>
+              </div>
+            ` : rw ? `<div class="muted" style="margin-top:6px; font-size:12px;">🔒 Tamamlandığında <strong>${rw.sourceName}</strong> kaynağından 1 paragraflık özel ödül açılır.</div>` : ""}
+          </div>
+        `;
+      }).join("")}
+    </div>
+  `;
+
+  el.querySelectorAll("[data-l5stop]").forEach(g => {
+    g.onclick = () => {
+      localStorage.setItem("lexora5_stop", g.getAttribute("data-l5stop"));
+      renderWorld();
+    };
+  });
+}
+
+// Mevcut switchTab fonksiyonuna "room" ve "world" sekmelerini otomatik bağla:
+(function hookLexora5Tabs() {
+  if (typeof window.switchTab === "function") {
+    const origSwitchTab = window.switchTab;
+    window.switchTab = function(tab) {
+      origSwitchTab(tab);
+      if (tab === "room") {
+        toggleLexora5Music(true, false);
+        renderRoom();
+      } else if (tab === "world") {
+        renderWorld();
+      }
+    };
+  }
+  document.querySelectorAll('nav button[data-tab="room"], nav button[data-tab="world"]').forEach(btn => {
+    btn.addEventListener("click", () => {
+      const t = btn.getAttribute("data-tab");
+      document.querySelectorAll("nav button").forEach(b => b.classList.toggle("active", b.dataset.tab === t));
+      document.querySelectorAll("main > section").forEach(s => s.classList.toggle("hidden", s.id !== "tab-" + t));
+      if (t === "room") { toggleLexora5Music(true, false); renderRoom(); }
+      if (t === "world") { renderWorld(); }
+    });
+  });
+})();
+// === LEXORA 5.0 EK ROZETLER, SES MOTORU & BİLGİ ÖDÜLLERİ SERGİSİ ===
+const LEXORA5_EXTRA_BADGES = [
+  {
+    id: "bdg_first_word",
+    icon: "🌱",
+    name: "İlk Filiz",
+    desc: "Sözlükte en az 12 kelimeye sahip ol.",
+    check: () => (state?.words?.length || 0) >= 12
+  },
+  {
+    id: "bdg_wordsmith_20",
+    icon: "📚",
+    name: "Kavram Koleksiyoneri",
+    desc: "Sözlükteki kelime sayısını 20 veya üzerine çıkar.",
+    check: () => (state?.words?.length || 0) >= 20
+  },
+  {
+    id: "bdg_xp_80",
+    icon: "⚡",
+    name: "Odak Kıvılcımı",
+    desc: "80 XP puanına ulaş.",
+    check: () => (state?.xp || 0) >= 80
+  },
+  {
+    id: "bdg_xp_250",
+    icon: "🏛️",
+    name: "Akademik İlerleme",
+    desc: "250 XP puanına ulaş.",
+    check: () => (state?.xp || 0) >= 250
+  },
+  {
+    id: "bdg_room_scribe",
+    icon: "✒️",
+    name: "Oda Deftercisi",
+    desc: "Özel Odada en az 15 karakterlik bir not kaydet.",
+    check: () => (localStorage.getItem("lexora5_room_note") || "").trim().length >= 15
+  },
+  {
+    id: "bdg_exhibit_curator",
+    icon: "🏆",
+    name: "Sergi Küratörü",
+    desc: "En az 2 bilgi ödülünün kilidini aç.",
+    check: () => {
+      if (!Array.isArray(window.LEXORA5_REWARDS) || !Array.isArray(window.LEXORA5_QUESTS)) return false;
+      const unlockedCount = LEXORA5_REWARDS.filter(r => LEXORA5_QUESTS.find(q => q.id === r.questId)?.check()).length;
+      return unlockedCount >= 2;
+    }
+  }
+];
+
+function playLexoraSound(kind = "badge") {
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    if (!window._l5SfxCtx) window._l5SfxCtx = new AC();
+    const ctx = window._l5SfxCtx;
+    if (ctx.state === "suspended") ctx.resume();
+
+    // Rozet için parlak iki notalı akor; Bilgi Ödülü için üç notalı sıcak armoni
+    const notes = kind === "reward" ? [523.25, 659.25, 783.99, 1046.5] : [440, 587.33, 880];
+    notes.forEach((freq, idx) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = kind === "reward" ? "triangle" : "sine";
+      const start = ctx.currentTime + idx * 0.09;
+      const dur = kind === "reward" ? 0.28 : 0.18;
+      osc.frequency.setValueAtTime(freq, start);
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(0.06, start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + dur);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(start);
+      osc.stop(start + dur + 0.02);
+    });
+  } catch {}
+}
+
+function getCustomExhibits() {
+  try {
+    const arr = JSON.parse(localStorage.getItem("lexora5_custom_exhibits") || "[]");
+    return Array.isArray(arr) ? arr : [];
+  } catch {
+    return [];
+  }
+}
+
+function getAllExhibits() {
+  const base = Array.isArray(window.LEXORA5_REWARDS) ? window.LEXORA5_REWARDS : [];
+  const quests = Array.isArray(window.LEXORA5_QUESTS) ? window.LEXORA5_QUESTS : [];
+  const mappedBase = base.map(r => ({
+    ...r,
+    isCustom: false,
+    unlocked: Boolean(quests.find(q => q.id === r.questId)?.check()),
+    unlockHint: quests.find(q => q.id === r.questId)?.title || "İlgili görevi tamamla"
+  }));
+  const mappedCustom = getCustomExhibits().map(c => ({
+    ...c,
+    isCustom: true,
+    unlocked: true,
+    unlockHint: "Kişisel sergi notu"
+  }));
+  return [...mappedBase, ...mappedCustom];
+}
+
+function checkUnlocksAndPlaySounds(silent = false) {
+  let seenBadges = [];
+  let seenRewards = [];
+  try {
+    seenBadges = JSON.parse(localStorage.getItem("lexora5_seen_badges") || "[]");
+    seenRewards = JSON.parse(localStorage.getItem("lexora5_seen_rewards") || "[]");
+  } catch {}
+
+  let newBadgeFound = false;
+  LEXORA5_EXTRA_BADGES.forEach(b => {
+    if (b.check() && !seenBadges.includes(b.id)) {
+      seenBadges.push(b.id);
+      newBadgeFound = true;
+      if (!silent) {
+        playLexoraSound("badge");
+        if (typeof toast === "function") toast(`${b.icon} Yeni Rozet: ${b.name}`);
+      }
+    }
+  });
+
+  let newRewardFound = false;
+  getAllExhibits().filter(r => !r.isCustom && r.unlocked).forEach(r => {
+    if (!seenRewards.includes(r.id)) {
+      seenRewards.push(r.id);
+      newRewardFound = true;
+      if (!silent) {
+        setTimeout(() => playLexoraSound("reward"), newBadgeFound ? 240 : 0);
+        if (typeof toast === "function") toast(`🏆 Yeni Bilgi Ödülü Açıldı: ${r.title}`);
+      }
+    }
+  });
+
+  localStorage.setItem("lexora5_seen_badges", JSON.stringify(seenBadges));
+  localStorage.setItem("lexora5_seen_rewards", JSON.stringify(seenRewards));
+}
+
+let l5AwardFilter = "all";
+
+function renderAwardsExhibition() {
+  checkUnlocksAndPlaySounds(false);
+  const el = document.getElementById("tab-awards");
+  if (!el) return;
+
+  const allExhibits = getAllExhibits();
+  const unlockedExhibits = allExhibits.filter(x => x.unlocked);
+  const filteredExhibits = allExhibits.filter(x => {
+    if (l5AwardFilter === "unlocked") return x.unlocked;
+    if (l5AwardFilter === "locked") return !x.unlocked;
+    if (l5AwardFilter === "yardimli") return (x.sourceUrl || "").includes("azizyardimli");
+    if (l5AwardFilter === "idea") return (x.sourceUrl || "").includes("ideayaynevi");
+    return true;
+  });
+
+  const unlockedBadgesCount = LEXORA5_EXTRA_BADGES.filter(b => b.check()).length;
+
+  el.innerHTML = `
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+        <div>
+          <strong>🏆 Bilgi Ödülleri Sergi Alanı</strong>
+          <div class="muted">Açılan Bilgi Ödülleri: ${unlockedExhibits.length}/${allExhibits.length} · Açılan Rozetler: ${unlockedBadgesCount}/${LEXORA5_EXTRA_BADGES.length}</div>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="ghost" id="l5TestRewardSfx">🔊 Ödül Sesi</button>
+          <button class="ghost" id="l5TestBadgeSfx">🔔 Rozet Sesi</button>
+        </div>
+      </div>
+
+      <div class="filter-bar">
+        <button class="pill ${l5AwardFilter === "all" ? "active" : ""}" data-af="all">Tümü (${allExhibits.length})</button>
+        <button class="pill ${l5AwardFilter === "unlocked" ? "active" : ""}" data-af="unlocked">Açılanlar (${unlockedExhibits.length})</button>
+        <button class="pill ${l5AwardFilter === "locked" ? "active" : ""}" data-af="locked">Kilitli (${allExhibits.length - unlockedExhibits.length})</button>
+        <button class="pill ${l5AwardFilter === "yardimli" ? "active" : ""}" data-af="yardimli">Aziz Yardımlı</button>
+        <button class="pill ${l5AwardFilter === "idea" ? "active" : ""}" data-af="idea">İdea Yayınevi</button>
+      </div>
+
+      <div class="exhibition-grid">
+        ${filteredExhibits.map(item => `
+          <div class="exhibit-card ${item.unlocked ? "unlocked" : "locked"}">
+            <div>
+              <div class="exhibit-meta">
+                <span class="pill ${item.unlocked ? "active" : ""}">${item.unlocked ? "✓ Sergide Açık" : "🔒 Kilitli"}</span>
+                <span class="muted">${item.badge || "Dizin Ödülü"}</span>
+              </div>
+              <strong style="display:block; margin-top:8px; font-size:16px;">${item.title}</strong>
+              ${item.unlocked
+                ? `<p style="margin:8px 0 0; font-size:14px; line-height:1.55;">${item.paragraph}</p>`
+                : `<p class="muted" style="margin:8px 0 0; font-size:13px;">Kilidi açmak için: <strong>${item.unlockHint}</strong></p>`}
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; padding-top:8px; border-top:1px solid var(--border);">
+              ${item.sourceUrl
+                ? `<a href="${item.sourceUrl}" target="_blank" rel="noopener" style="color:var(--primary); font-size:12px;">${item.sourceName || "Kaynak"} ↗</a>`
+                : `<span class="muted" style="font-size:12px;">Kişisel Kayıt</span>`}
+              ${item.unlocked ? `<button class="ghost" style="padding:5px 10px; font-size:12px;" data-copy-ex="${encodeURIComponent(item.title + " — " + item.paragraph)}">Kopyala</button>` : ""}
+            </div>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+
+    <div class="card">
+      <strong>🎖️ Ek Rozet Vitrini (${unlockedBadgesCount}/${LEXORA5_EXTRA_BADGES.length})</strong>
+      <div class="badges-grid">
+        ${LEXORA5_EXTRA_BADGES.map(b => {
+          const ok = b.check();
+          return `
+            <div class="badge-card ${ok ? "unlocked" : "locked"}">
+              <div style="font-size:22px;">${b.icon} <strong>${b.name}</strong></div>
+              <div class="muted" style="margin-top:4px; font-size:13px;">${b.desc}</div>
+              <div style="margin-top:8px; font-size:12px; font-weight:700; color:${ok ? "var(--ok)" : "var(--muted)"};">${ok ? "✓ Kazanıldı" : "Henüz kazanılmadı"}</div>
+            </div>
+          `;
+        }).join("")}
+      </div>
+    </div>
+
+    <div class="card">
+      <strong>➕ Sergiye Kendi Bilgi Ödülünü / Dizin Alıntını Ekle</strong>
+      <div style="display:grid; gap:8px; margin-top:10px;">
+        <input type="text" id="l5ExTitle" placeholder="Başlık (örn: Töz ve Kavram Notu)">
+        <input type="text" id="l5ExSource" placeholder="Kaynak adı veya URL (örn: https://azizyardimli.com/)">
+        <textarea id="l5ExPara" rows="3" placeholder="Sergide görünmesini istediğin paragraf..."></textarea>
+        <button class="primary" id="l5AddExBtn" style="justify-self:start;">Sergiye Ekle</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("l5TestRewardSfx").onclick = () => { playLexoraSound("reward"); if (typeof toast === "function") toast("🏆 Bilgi ödülü sesi çalındı"); };
+  document.getElementById("l5TestBadgeSfx").onclick = () => { playLexoraSound("badge"); if (typeof toast === "function") toast("🔔 Rozet sesi çalındı"); };
+
+  el.querySelectorAll("[data-af]").forEach(btn => {
+    btn.onclick = () => {
+      l5AwardFilter = btn.getAttribute("data-af");
+      renderAwardsExhibition();
+    };
+  });
+
+  el.querySelectorAll("[data-copy-ex]").forEach(btn => {
+    btn.onclick = () => {
+      const text = decodeURIComponent(btn.getAttribute("data-copy-ex"));
+      navigator.clipboard?.writeText(text).catch(() => {});
+      if (typeof toast === "function") toast("Bilgi ödülü panoya kopyalandı ✓");
+    };
+  });
+
+  document.getElementById("l5AddExBtn").onclick = () => {
+    const title = document.getElementById("l5ExTitle").value.trim();
+    const srcRaw = document.getElementById("l5ExSource").value.trim();
+    const paragraph = document.getElementById("l5ExPara").value.trim();
+    if (!title || !paragraph) {
+      if (typeof toast === "function") toast("Başlık ve paragraf alanını doldur");
+      return;
+    }
+    const isUrl = /^https?:\/\//i.test(srcRaw);
+    const list = getCustomExhibits();
+    list.unshift({
+      id: "custom_" + Date.now(),
+      badge: "Özel Eklenen Ödül",
+      title,
+      paragraph,
+      sourceName: srcRaw || "Kişisel Dizin Notu",
+      sourceUrl: isUrl ? srcRaw : ""
+    });
+    localStorage.setItem("lexora5_custom_exhibits", JSON.stringify(list));
+    playLexoraSound("reward");
+    if (typeof toast === "function") toast("Bilgi ödülü sergiye eklendi 🏆");
+    renderAwardsExhibition();
+  };
+}
+
+(function hookAwardsTabAndEvents() {
+  const awardsBtn = document.querySelector('nav button[data-tab="awards"]');
+  if (awardsBtn) {
+    awardsBtn.addEventListener("click", () => {
+      document.querySelectorAll("nav button").forEach(b => b.classList.toggle("active", b.dataset.tab === "awards"));
+      document.querySelectorAll("main > section").forEach(s => s.classList.toggle("hidden", s.id !== "tab-awards"));
+      renderAwardsExhibition();
+    });
+  }
+  if (typeof window.switchTab === "function") {
+    const prev = window.switchTab;
+    window.switchTab = function(tab) {
+      prev(tab);
+      if (tab === "awards") renderAwardsExhibition();
+      else checkUnlocksAndPlaySounds(false);
+    };
+  }
+  setTimeout(() => checkUnlocksAndPlaySounds(true), 600);
+})();
+// === LEXORA 5.0 GÜNLÜK 3 DK ODAK TURU, ETİMOLOJİ KARTLARI & ÇALIŞMA ÖZETİ ===
+const LEXORA5_ETYMOLOGY_DB = {
+  resilient: {
+    root: "Latince: re- (geri) + salire (sıçramak)",
+    synonyms: "adaptable, hardy, tenacious",
+    antonyms: "fragile, vulnerable",
+    note: "Darbe veya zorluk sonrasında eski dengesine hızla dönebilen yapıları anlatır."
+  },
+  coherent: {
+    root: "Latince: co- (birlikte) + haerere (tutunmak, bağlı olmak)",
+    synonyms: "logical, consistent, unified",
+    antonyms: "incoherent, fragmented",
+    note: "Parçaları birbiriyle mantıksal bütünlük içinde tutunan argüman veya metin."
+  },
+  sublation: {
+    root: "Latince: sub- (alttan) + latio (taşıma, kaldırma) · Alm. Aufhebung",
+    synonyms: "transcendence, dialectical synthesis",
+    antonyms: "annihilation, stagnation",
+    note: "Felsefede bir kavramı hem aşıp hem özünü koruyarak üst düzeye taşıma hareketi."
+  },
+  meticulous: {
+    root: "Latince: metus (korku, çekince) → aşırı özen gösterme",
+    synonyms: "scrupulous, painstaking, thorough",
+    antonyms: "careless, negligent",
+    note: "En küçük ayrıntıyı bile gözden kaçırmayan titiz çalışma biçimi."
+  },
+  ubiquitous: {
+    root: "Latince: ubique (her yerde)",
+    synonyms: "omnipresent, pervasive, universal",
+    antonyms: "rare, scarce",
+    note: "Aynı anda her yerde hazır ve yaygın bulunan olgu."
+  },
+  eloquent: {
+    root: "Latince: e- (dışarı) + loqui (konuşmak)",
+    synonyms: "articulate, expressive, fluent",
+    antonyms: "inarticulate, hesitant",
+    note: "Düşünceyi hem açık hem estetik biçimde ifade etme gücü."
+  },
+  pragmatic: {
+    root: "Yunanca: pragma (eylem, iş, pratik sonuç)",
+    synonyms: "practical, realistic, results-oriented",
+    antonyms: "idealistic, impractical",
+    note: "Soyut kuramdan çok uygulanabilir sonuçlara odaklanan yaklaşım."
+  },
+  ambiguous: {
+    root: "Latince: ambi- (iki yöne) + agere (sürmek, yöneltmek)",
+    synonyms: "equivocal, vague, polysemous",
+    antonyms: "unambiguous, explicit, lucid",
+    note: "Birden fazla yoruma açık olan, tek anlama sabitlenmemiş ifade."
+  },
+  synthesis: {
+    root: "Yunanca: syn- (birlikte) + tithenai (koymak, yerleştirmek)",
+    synonyms: "integration, fusion, combination",
+    antonyms: "analysis, separation",
+    note: "Karşıt veya farklı öğeleri yeni bir kavramsal bütünlükte birleştirme."
+  },
+  lucid: {
+    root: "Latince: lucidus (ışıklı, parlak) ← lux (ışık)",
+    synonyms: "clear, transparent, intelligible",
+    antonyms: "obscure, opaque",
+    note: "Zihinde hiçbir bulanıklık bırakmayan berrak anlatım."
+  }
+};
+
+// 1) 3 Dakikalık (180 sn) Odak Zamanlayıcısı Durumu
+let l5FocusSeconds = 180;
+let l5FocusInterval = null;
+let l5FocusRunning = false;
+
+function formatFocusClock(sec) {
+  const m = String(Math.floor(sec / 60)).padStart(2, "0");
+  const s = String(sec % 60).padStart(2, "0");
+  return `${m}:${s}`;
+}
+
+function stopFocusTimer(completed = false) {
+  l5FocusRunning = false;
+  if (l5FocusInterval) {
+    clearInterval(l5FocusInterval);
+    l5FocusInterval = null;
+  }
+  if (completed) {
+    l5FocusSeconds = 180;
+    const prevSprints = +(localStorage.getItem("lexora5_sprints") || "0") + 1;
+    localStorage.setItem("lexora5_sprints", String(prevSprints));
+    if (typeof state === "object" && state) {
+      state.xp = (state.xp || 0) + 25;
+      if (typeof saveState === "function") saveState();
+      if (typeof applyTheme === "function") applyTheme();
+    }
+    if (typeof playLexoraSound === "function") playLexoraSound("reward");
+    if (typeof toast === "function") toast("⏱️ 3 Dakikalık Odak Turu Tamamlandı! (+25 XP)");
+  }
+}
+
+function toggleFocusTimer() {
+  if (l5FocusRunning) {
+    stopFocusTimer(false);
+    renderFocusAndSummary();
+    return;
+  }
+  l5FocusRunning = true;
+  l5FocusInterval = setInterval(() => {
+    l5FocusSeconds--;
+    const clockEl = document.getElementById("l5ClockText");
+    if (clockEl) clockEl.textContent = formatFocusClock(Math.max(0, l5FocusSeconds));
+    if (l5FocusSeconds <= 0) {
+      stopFocusTimer(true);
+      renderFocusAndSummary();
+    }
+  }, 1000);
+  renderFocusAndSummary();
+}
+
+// 2) Kelime Bağlam & Etimoloji Kartı Modalı
+function openEtymologyCard(wordObj) {
+  if (!wordObj) return;
+  const key = (wordObj.en || "").toLowerCase().trim();
+  const extra = LEXORA5_ETYMOLOGY_DB[key] || {
+    root: "Kök notu henüz eklenmedi — kendi etimoloji notunu aşağıdan ekleyebilirsin.",
+    synonyms: "—",
+    antonyms: "—",
+    note: wordObj.ex || "Bağlam içinde tekrar ederek pekiştir."
+  };
+  const customNotes = JSON.parse(localStorage.getItem("lexora5_word_notes") || "{}");
+  const userNote = customNotes[key] || "";
+
+  const wrap = document.createElement("div");
+  wrap.className = "etym-modal-backdrop";
+  wrap.innerHTML = `
+    <div class="etym-modal" role="dialog" aria-modal="true">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+        <div>
+          <span class="pill active">${wordObj.cat || "Kavram"}</span>
+          <h3 style="margin:6px 0 2px; font-size:22px;">${wordObj.en}</h3>
+          <div class="muted">${wordObj.tr}</div>
+        </div>
+        <button class="ghost" id="l5CloseEtymBtn">✕ Kapat</button>
+      </div>
+
+      <div style="margin-top:12px; padding:10px 12px; border-radius:12px; background:var(--bg); border:1px solid var(--border);">
+        <div style="font-size:12px; font-weight:700; color:var(--primary);">KÖKEN / ETİMOLOJİ</div>
+        <div style="margin-top:4px; font-size:14px;">${extra.root}</div>
+      </div>
+
+      <div class="etym-tag-row">
+        <span class="pill">≈ Eş anlam: ${extra.synonyms}</span>
+        <span class="pill">≠ Zıt anlam: ${extra.antonyms}</span>
+      </div>
+
+      <p style="margin:8px 0; font-size:14px;"><strong>Bağlam &amp; Açıklama:</strong> ${extra.note}</p>
+      <p class="muted" style="margin:0 0 10px; font-style:italic;">“${wordObj.ex || ""}”</p>
+
+      <label class="muted" style="font-size:12px; font-weight:700;">Kişisel Çağrışım / Etimoloji Notun:</label>
+      <textarea id="l5UserEtymInput" rows="2" style="width:100%; margin-top:4px; padding:8px; border-radius:10px; border:1px solid var(--border); background:var(--bg); color:var(--text);" placeholder="Bu kelimeyi hatırlatan kök veya örnek...">${userNote}</textarea>
+      <div style="margin-top:10px; display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap;">
+        <button class="primary" id="l5SaveEtymNoteBtn">Notu Kaydet</button>
+        <button class="ghost" id="l5SpeakWordBtn">🔊 Telaffuzu Dinle</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(wrap);
+
+  wrap.onclick = e => { if (e.target === wrap) wrap.remove(); };
+  wrap.querySelector("#l5CloseEtymBtn").onclick = () => wrap.remove();
+  wrap.querySelector("#l5SpeakWordBtn").onclick = () => {
+    if ("speechSynthesis" in window) {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(wordObj.en);
+      u.lang = "en-US";
+      speechSynthesis.speak(u);
+    }
+  };
+  wrap.querySelector("#l5SaveEtymNoteBtn").onclick = () => {
+    const val = wrap.querySelector("#l5UserEtymInput").value.trim();
+    customNotes[key] = val;
+    localStorage.setItem("lexora5_word_notes", JSON.stringify(customNotes));
+    if (typeof toast === "function") toast(`"${wordObj.en}" için etimoloji notu kaydedildi ✓`);
+    wrap.remove();
+  };
+}
+
+// 3) Odak Turu, Kategori Filtreli Etimoloji Gezgini & Çalışma Özeti Ekranı
+let l5SelectedCat = "Tümü";
+
+function renderFocusAndSummary() {
+  const el = document.getElementById("tab-focus");
+  if (!el) return;
+
+  const words = Array.isArray(state?.words) ? state.words : [];
+  const cats = ["Tümü", ...Array.from(new Set(words.map(w => w.cat || "Genel")))];
+  const filteredWords = l5SelectedCat === "Tümü" ? words : words.filter(w => (w.cat || "Genel") === l5SelectedCat);
+  const sprintsCount = +(localStorage.getItem("lexora5_sprints") || "0");
+
+  el.innerHTML = `
+    <div class="focus-timer-box">
+      <div>
+        <strong>⏱️ Günlük 3 Dakikalık Hızlı Odak Turu</strong>
+        <div class="muted">Tamamlanan Odak Turu: <strong>${sprintsCount}</strong> · Tur bitiminde +25 XP ve ödül sesi çalar.</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+        <span class="focus-clock" id="l5ClockText">${formatFocusClock(l5FocusSeconds)}</span>
+        <button class="primary" id="l5FocusToggleBtn">${l5FocusRunning ? "Duraklat" : "Başlat"}</button>
+        <button class="ghost" id="l5FocusResetBtn">Sıfırla</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <strong>🧬 Kelime Bağlam &amp; Etimoloji Kartları</strong>
+      <p class="muted" style="margin:4px 0 8px;">Kategori seç ve herhangi bir kelimeye dokunarak kök, eş/zıt anlam ve kişisel not kartını aç.</p>
+      <div class="cat-chips">
+        ${cats.map(c => `<button class="pill ${l5SelectedCat === c ? "active" : ""}" data-l5cat="${c}">${c}</button>`).join("")}
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:8px; margin-top:10px;">
+        ${filteredWords.map(w => `
+          <div class="quest-item" style="margin:0; cursor:pointer;" data-etym-word="${w.en}">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
+              <strong>${w.en}</strong>
+              <span class="pill" style="font-size:11px;">${w.cat || "Genel"}</span>
+            </div>
+            <div class="muted" style="font-size:13px; margin-top:4px;">${w.tr}</div>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+
+    <div class="card">
+      <strong>📋 Çalışma Özeti &amp; Dışa Aktarma</strong>
+      <p class="muted" style="margin:4px 0 10px;">XP puanını, kelime sayını, odak turlarını ve özel oda notlarını tek tıkla panoya kopyala.</p>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="primary" id="l5CopySummaryBtn">📋 Çalışma Özetini Kopyala</button>
+        <button class="ghost" id="l5DownloadSummaryBtn">⬇️ Özet Dosyası İndir (.txt)</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("l5FocusToggleBtn").onclick = toggleFocusTimer;
+  document.getElementById("l5FocusResetBtn").onclick = () => {
+    stopFocusTimer(false);
+    l5FocusSeconds = 180;
+    renderFocusAndSummary();
+  };
+
+  el.querySelectorAll("[data-l5cat]").forEach(btn => {
+    btn.onclick = () => {
+      l5SelectedCat = btn.getAttribute("data-l5cat");
+      renderFocusAndSummary();
+    };
+  });
+
+  el.querySelectorAll("[data-etym-word]").forEach(card => {
+    card.onclick = () => {
+      const targetEn = card.getAttribute("data-etym-word");
+      const found = words.find(x => x.en === targetEn);
+      openEtymologyCard(found);
+    };
+  });
+
+  function buildSummaryText() {
+    const note = (localStorage.getItem("lexora5_room_note") || "").trim();
+    return [
+      "=== LEXORA 5.0 ÇALIŞMA ÖZETİ ===",
+      `Tarih: ${new Date().toLocaleDateString("tr-TR")}`,
+      `Toplam XP: ${state?.xp || 0}`,
+      `Kayıtlı Kelime Sayısı: ${words.length}`,
+      `Tamamlanan 3 Dk Odak Turu: ${sprintsCount}`,
+      `Özel Oda Notu: ${note || "(Henüz not yok)"}`
+    ].join("\n");
+  }
+
+  document.getElementById("l5CopySummaryBtn").onclick = () => {
+    navigator.clipboard?.writeText(buildSummaryText()).catch(() => {});
+    if (typeof toast === "function") toast("Çalışma özeti panoya kopyalandı ✓");
+  };
+
+  document.getElementById("l5DownloadSummaryBtn").onclick = () => {
+    const blob = new Blob([buildSummaryText()], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "lexora-calisma-ozeti.txt";
+    a.click();
+    URL.revokeObjectURL(url);
+    if (typeof toast === "function") toast("Özet dosyası indirildi ✓");
+  };
+}
+
+(function hookFocusTab() {
+  const btn = document.querySelector('nav button[data-tab="focus"]');
+  if (btn) {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("nav button").forEach(b => b.classList.toggle("active", b.dataset.tab === "focus"));
+      document.querySelectorAll("main > section").forEach(s => s.classList.toggle("hidden", s.id !== "tab-focus"));
+      renderFocusAndSummary();
+    });
+  }
+  if (typeof window.switchTab === "function") {
+    const prev = window.switchTab;
+    window.switchTab = function(tab) {
+      prev(tab);
+      if (tab === "focus") renderFocusAndSummary();
+    };
+  }
+})();
+// === LEXORA 5.0 SESLENDİRME MOTORU & SAATLİK HEDİYE KUTUSU SİSTEMİ ===
+const LEXORA5_GIFT_WORDS = [
+  { en: "serendipity", tr: "şans eseri güzel bir keşif yapma, tatlı tesadüf", cat: "Edebi", ex: "Finding that rare book was pure serendipity." },
+  { en: "ephemeral", tr: "kısa ömürlü, geçici", cat: "Felsefe", ex: "Cherry blossoms are admired for their ephemeral beauty." },
+  { en: "perspicacious", tr: "keskin görüşlü, kavrayışı güçlü", cat: "Akademik", ex: "Her perspicacious analysis clarified the entire debate." },
+  { en: "equanimity", tr: "soğukkanlılık, ruh dinginliği", cat: "Felsefe", ex: "He faced unexpected criticism with remarkable equanimity." },
+  { en: "verisimilitude", tr: "gerçeğe benzerlik, hakikat izlenimi", cat: "Edebi", ex: "The novel achieves extraordinary historical verisimilitude." },
+  { en: "tacit", tr: "söylenmeden anlaşılan, örtük", cat: "Akademik", ex: "There was a tacit agreement among all participants." },
+  { en: "alacrity", tr: "isteklilik, hevesli çabukluk", cat: "Karakter", ex: "She accepted the research challenge with alacrity." },
+  { en: "cogent", tr: "ikna edici, sağlam ve tutarlı", cat: "Felsefe", ex: "He offered a cogent explanation of the paradox." },
+  { en: "ineffable", tr: "sözle anlatılamaz, tarife sığmaz", cat: "Edebi", ex: "They watched the sunrise in ineffable silence." },
+  { en: "sagacious", tr: "bilge, sağgörülü", cat: "Felsefe", ex: "A sagacious mentor asks the right questions." },
+  { en: "quintessential", tr: "özünü en saf haliyle yansıtan, tipik", cat: "Akademik", ex: "This essay is the quintessential example of clear prose." },
+  { en: "obfuscate", tr: "bulanıklaştırmak, kafa karıştırmak", cat: "Akademik", ex: "Jargon should never be used to obfuscate simple ideas." }
+];
+
+// 1) Kesin Hız Ayrımı Yapan Gelişmiş Seslendirme Fonksiyonu
+function speakLexoraWord(text, mode = "normal") {
+  const clean = String(text || "").trim();
+  if (!clean) return;
+  if (!("speechSynthesis" in window)) {
+    if (typeof toast === "function") toast("Tarayıcı seslendirmeyi desteklemiyor");
+    return;
+  }
+
+  try {
+    window.speechSynthesis.cancel();
+  } catch {}
+
+  const isSlow = mode === "slow";
+  const utter = new SpeechSynthesisUtterance(clean);
+  utter.lang = "en-US";
+  // Normal okuma 1.0x, Yavaş okuma belirgin biçimde 0.52x
+  utter.rate = isSlow ? 0.52 : 1.0;
+  utter.pitch = isSlow ? 0.95 : 1.02;
+  utter.volume = 1.0;
+
+  const voices = window.speechSynthesis.getVoices ? window.speechSynthesis.getVoices() : [];
+  const enVoice = voices.find(v => /en[-_](US|GB)/i.test(v.lang) && !/compact/i.test(v.name))
+               || voices.find(v => /^en/i.test(v.lang));
+  if (enVoice) utter.voice = enVoice;
+
+  // Bazı tarayıcılarda cancel() hemen ardından speak() çağrılınca rate sıfırlanmasını önlemek için kısa gecikme:
+  setTimeout(() => {
+    try {
+      window.speechSynthesis.speak(utter);
+      if (typeof toast === "function") {
+        toast(isSlow ? `🐢 Yavaş Okuma (0.52x): "${clean}"` : `🔊 Normal Okuma (1.0x): "${clean}"`);
+      }
+    } catch {}
+  }, 45);
+}
+
+// Mevcut sözlük ve kartlardaki eski ses butonlarını Normal + Yavaş olarak iyileştir
+function upgradeSpeechButtons() {
+  document.querySelectorAll("[data-say]").forEach(row => {
+    if (row.dataset.ttsUpgraded === "1") return;
+    row.dataset.ttsUpgraded = "1";
+    const word = row.getAttribute("data-say");
+    const oldPill = row.querySelector(".pill");
+    const group = document.createElement("span");
+    group.className = "tts-btn-group";
+    group.innerHTML = `
+      <button type="button" class="tts-mini-btn" data-tts-norm="${word}" title="Normal hızda dinle">🔊 Normal</button>
+      <button type="button" class="tts-mini-btn slow" data-tts-slow="${word}" title="Yavaş ve anlaşılır dinle">🐢 Yavaş</button>
+    `;
+    if (oldPill) oldPill.replaceWith(group);
+    else row.appendChild(group);
+
+    // Satırın geneline tıklanınca normal okusun, butonlara basılınca ilgili hızda okusun
+    row.onclick = e => {
+      if (e.target.closest("[data-tts-slow]")) {
+        e.stopPropagation();
+        speakLexoraWord(word, "slow");
+        return;
+      }
+      if (e.target.closest("[data-tts-norm]")) {
+        e.stopPropagation();
+        speakLexoraWord(word, "normal");
+        return;
+      }
+      speakLexoraWord(word, "normal");
+    };
+  });
+
+  // Varsa diğer yavaş/normal okuma butonlarını da bağla
+  document.querySelectorAll("[data-speak-normal]").forEach(b => {
+    b.onclick = () => speakLexoraWord(b.getAttribute("data-speak-normal"), "normal");
+  });
+  document.querySelectorAll("[data-speak-slow]").forEach(b => {
+    b.onclick = () => speakLexoraWord(b.getAttribute("data-speak-slow"), "slow");
+  });
+}
+
+// 2) Her Saat Başı Sayfa Kenarında Beliren Sürpriz Hediye Kutusu Sistemi
+function getCurrentHourKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}_H${d.getHours()}`;
+}
+
+function pickGiftWord() {
+  const existing = Array.isArray(state?.words) ? state.words.map(w => w.en.toLowerCase()) : [];
+  const unseen = LEXORA5_GIFT_WORDS.filter(g => !existing.includes(g.en.toLowerCase()));
+  const pool = unseen.length ? unseen : LEXORA5_GIFT_WORDS;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function renderHourlyGiftDock(forceShow = false) {
+  let dock = document.getElementById("lexoraHourlyGiftDock");
+  if (!dock) {
+    dock = document.createElement("div");
+    dock.id = "lexoraHourlyGiftDock";
+    dock.className = "hourly-gift-dock";
+    document.body.appendChild(dock);
+  }
+
+  const hourKey = getCurrentHourKey();
+  const claimedHour = localStorage.getItem("lexora5_last_gift_hour");
+  const isAvailable = forceShow || claimedHour !== hourKey;
+
+  if (!isAvailable) {
+    dock.innerHTML = `
+      <button type="button" class="pill" id="l5TestGiftSpawnBtn" title="Test için şimdi yeni hediye kutusu çıkar" style="opacity:0.78;">
+        🎁 Saatlik Kutu Hazır (Test Et)
+      </button>
+    `;
+    document.getElementById("l5TestGiftSpawnBtn").onclick = () => renderHourlyGiftDock(true);
+    return;
+  }
+
+  dock.innerHTML = `
+    <button type="button" class="gift-float-btn" id="l5OpenGiftBtn">
+      🎁 Saatlik Sürpriz Kutu! (Aç)
+    </button>
+  `;
+
+  document.getElementById("l5OpenGiftBtn").onclick = () => {
+    localStorage.setItem("lexora5_last_gift_hour", hourKey);
+    const gift = pickGiftWord();
+    if (typeof playLexoraSound === "function") playLexoraSound("reward");
+
+    dock.innerHTML = `
+      <div class="gift-popup-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+          <span class="pill active">🎁 Saatlik Kelime Hediyesi</span>
+          <button type="button" class="ghost" id="l5CloseGiftCard" style="padding:3px 8px; font-size:12px;">✕</button>
+        </div>
+        <h3 style="margin:10px 0 4px; font-size:22px;">${gift.en}</h3>
+        <div style="font-weight:700; color:var(--primary); margin-bottom:6px;">${gift.tr}</div>
+        <p class="muted" style="margin:0 0 10px; font-size:13px; font-style:italic;">“${gift.ex}”</p>
+        <div class="tts-btn-group" style="margin-bottom:10px;">
+          <button type="button" class="tts-mini-btn" id="l5GiftSpeakNorm">🔊 Normal</button>
+          <button type="button" class="tts-mini-btn slow" id="l5GiftSpeakSlow">🐢 Yavaş</button>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button type="button" class="primary" id="l5AddGiftWordBtn">+ Sözlüğe Ekle (+15 XP)</button>
+        </div>
+      </div>
+    `;
+
+    document.getElementById("l5GiftSpeakNorm").onclick = () => speakLexoraWord(gift.en, "normal");
+    document.getElementById("l5GiftSpeakSlow").onclick = () => speakLexoraWord(gift.en, "slow");
+    document.getElementById("l5CloseGiftCard").onclick = () => renderHourlyGiftDock(false);
+
+    document.getElementById("l5AddGiftWordBtn").onclick = () => {
+      if (typeof state === "object" && Array.isArray(state.words)) {
+        const exists = state.words.some(w => w.en.toLowerCase() === gift.en.toLowerCase());
+        if (!exists) {
+          state.words.unshift({
+            id: Date.now(),
+            en: gift.en,
+            tr: gift.tr,
+            cat: gift.cat || "Hediye",
+            ex: gift.ex,
+            correct: 0,
+            wrong: 0
+          });
+        }
+        state.xp = (state.xp || 0) + 15;
+        if (typeof saveState === "function") saveState();
+        if (typeof applyTheme === "function") applyTheme();
+      }
+      if (typeof toast === "function") toast(`🎁 "${gift.en}" sözlüğe eklendi (+15 XP)!`);
+      renderHourlyGiftDock(false);
+    };
+  };
+}
+
+// Sayfa yüklendiğinde, her sekme geçişinde ve her saat başı otomatik kontrol et
+(function initSpeechAndHourlyGift() {
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+  }
+
+  // DOM güncellemelerinde yeni gelen [data-say] satırlarını otomatik yükselt
+  const obs = new MutationObserver(() => upgradeSpeechButtons());
+  obs.observe(document.body, { childList: true, subtree: true });
+  upgradeSpeechButtons();
+
+  // Saatlik hediye kutusunu başlat ve her 30 saniyede bir saat değişimini denetle
+  renderHourlyGiftDock(false);
+  setInterval(() => {
+    const hourKey = getCurrentHourKey();
+    if (localStorage.getItem("lexora5_last_gift_hour") !== hourKey) {
+      renderHourlyGiftDock(false);
+    }
+  }, 30000);
+})();
 </script>
 </body>
 </html>
