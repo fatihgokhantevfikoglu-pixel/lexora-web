@@ -664,6 +664,295 @@
   padding: 16px;
   box-shadow: 0 18px 44px rgba(0, 0, 0, 0.25);
 }
+/* === LEXORA 5.0 SANATSAL TASARIM, ÇERÇEVELER, EFEKTLER & PROFİL === */
+:root {
+  --gold-accent: #d4af37;
+  --glass-bg: color-mix(in srgb, var(--surface) 82%, transparent);
+  --art-shadow: 0 12px 32px -8px rgba(30, 27, 75, 0.14), 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="emerald"] {
+  --bg: #ecf4f0;
+  --surface: #fbfdfc;
+  --surface-2: #dcece4;
+  --text: #102a22;
+  --muted: #4b6b60;
+  --primary: #0f766e;
+  --primary-soft: rgba(15, 118, 110, 0.13);
+  --border: #c5ded3;
+}
+
+body {
+  background-image:
+    radial-gradient(circle at 12% 8%, color-mix(in srgb, var(--primary) 11%, transparent) 0%, transparent 42%),
+    radial-gradient(circle at 88% 18%, rgba(212, 175, 55, 0.09) 0%, transparent 38%),
+    radial-gradient(circle at 50% 92%, color-mix(in srgb, var(--primary) 8%, transparent) 0%, transparent 45%);
+  background-attachment: fixed;
+  transition: background-color 0.35s ease, color 0.3s ease;
+}
+
+header {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(16px) saturate(140%);
+  border-bottom: 1px solid color-mix(in srgb, var(--gold-accent) 28%, var(--border)) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+nav {
+  background: color-mix(in srgb, var(--bg) 85%, transparent) !important;
+  backdrop-filter: blur(10px);
+}
+
+nav button {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease, background 0.2s ease;
+}
+
+nav button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(109, 40, 217, 0.14);
+}
+
+nav button.active {
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--primary) 35%, transparent);
+}
+
+/* Sanatsal Çift Çerçeveli Kartlar */
+.card {
+  position: relative;
+  border: 1px solid color-mix(in srgb, var(--gold-accent) 30%, var(--border)) !important;
+  border-radius: 20px !important;
+  box-shadow: var(--art-shadow) !important;
+  transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.24s ease, border-color 0.24s ease;
+  animation: artCardFadeIn 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: 15px;
+  border: 1px solid color-mix(in srgb, var(--gold-accent) 16%, transparent);
+  pointer-events: none;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--primary) 48%, var(--gold-accent)) !important;
+  box-shadow: 0 18px 40px -10px rgba(30, 27, 75, 0.18) !important;
+}
+
+@keyframes artCardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+button.primary {
+  background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 72%, #1e1b4b)) !important;
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--primary) 34%, transparent);
+  transition: transform 0.16s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+button.primary:hover {
+  transform: translateY(-1.5px);
+  filter: brightness(1.06);
+  box-shadow: 0 10px 22px color-mix(in srgb, var(--primary) 42%, transparent);
+}
+
+button.primary:active {
+  transform: scale(0.97);
+}
+
+/* Profil Sekmesi & Sanatsal Kahraman Kartı */
+.profile-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 18px;
+  border-radius: 20px;
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--primary) 16%, var(--surface)),
+    color-mix(in srgb, var(--gold-accent) 12%, var(--surface)));
+  border: 1.5px solid color-mix(in srgb, var(--gold-accent) 45%, var(--primary));
+  margin-bottom: 14px;
+}
+
+.profile-avatar-ring {
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  padding: 3px;
+  background: linear-gradient(135deg, var(--gold-accent), var(--primary));
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  box-shadow: 0 8px 20px rgba(109, 40, 217, 0.25);
+}
+
+.profile-avatar-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--surface);
+  display: grid;
+  place-items: center;
+  font-size: 30px;
+}
+
+.guide-checklist-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 13px 14px;
+  border-radius: 15px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  margin-bottom: 10px;
+  transition: transform 0.16s ease, border-color 0.2s ease;
+}
+
+.guide-checklist-item:hover {
+  transform: translateX(3px);
+  border-color: var(--primary);
+}
+
+.guide-checklist-item.completed {
+  border-color: var(--ok);
+  background: color-mix(in srgb, var(--ok) 9%, var(--surface));
+}
+
+.theme-swatch-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.theme-swatch-btn {
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.theme-swatch-btn.active {
+  border-color: var(--gold-accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--gold-accent) 30%, transparent);
+}
+
+/* Kutlama Parçacık Efekti */
+.l5-sparkle {
+  position: fixed;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  animation: l5SparkleFly 0.95s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes l5SparkleFly {
+  0% { opacity: 1; transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.2); }
+}    
+/* === LEXORA 5.0 DÜZENLİ ÜST MENÜ & "DAHA FAZLA / KEŞFET" AÇILIR PANELİ === */
+nav {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  overflow-x: visible !important;
+  flex-wrap: nowrap !important;
+  padding: 10px 14px !important;
+}
+
+.lexora-nav-primary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.lexora-nav-more-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.lexora-more-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 13px;
+  border-radius: 12px;
+  border: 1.5px solid color-mix(in srgb, var(--gold-accent, #d4af37) 45%, var(--primary));
+  background: var(--surface);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.16s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.lexora-more-trigger:hover,
+.lexora-more-trigger.has-active {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.lexora-more-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  width: min(320px, calc(100vw - 24px));
+  background: var(--surface);
+  border: 1.5px solid color-mix(in srgb, var(--gold-accent, #d4af37) 35%, var(--border));
+  border-radius: 18px;
+  padding: 10px;
+  box-shadow: 0 20px 45px rgba(15, 12, 36, 0.22);
+  z-index: 60;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+  animation: artCardFadeIn 0.2s ease;
+}
+
+.lexora-more-menu button {
+  width: 100%;
+  justify-content: flex-start !important;
+  text-align: left;
+  font-size: 13px !important;
+  padding: 9px 11px !important;
+}
+
+@media (max-width: 600px) {
+  .lexora-nav-primary button {
+    padding: 7px 10px !important;
+    font-size: 13px !important;
+  }
+  .lexora-more-trigger {
+    padding: 7px 11px !important;
+    font-size: 13px !important;
+  }
+}    
 </style>
 </head>
 <body>
@@ -707,6 +996,7 @@
   <section id="tab-room" class="hidden"></section>
   <section id="tab-world" class="hidden"></section>
   <section id="tab-focus" class="hidden"></section>
+  <section id="tab-profile" class="hidden"></section>  
 </main>
 <dialog id="detail" aria-labelledby="detailTitle">
   <div id="detailBody"></div>
@@ -6691,6 +6981,574 @@ function renderHourlyGiftDock(forceShow = false) {
     }
   }, 30000);
 })();
+// === LEXORA 5.0 CANLI İNTERNET KELİME MOTORU (DIŞ DÜNYA BAĞLANTISI) ===
+const LEXORA5_ONLINE_FALLBACK = [
+  { en: "epistemology", tr: "bilgi kuramı, bilginin kaynağı ve sınırlarını inceleyen felsefe dalı", cat: "Felsefe", ex: "Epistemology examines how we know what we claim to know." },
+  { en: "conciliatory", tr: "uzlaştırıcı, gerginliği yatıştırıcı", cat: "Akademik", ex: "She made a conciliatory remark to ease the tension." },
+  { en: "corroborate", tr: "doğrulamak, desteklemek, kanıtla sağlamlaştırmak", cat: "Akademik", ex: "Independent findings corroborate the initial hypothesis." },
+  { en: "idiosyncrasy", tr: "kişiye özgü tuhaf veya ayırt edici özellik", cat: "Toplum", ex: "Every great writer has a distinct stylistic idiosyncrasy." },
+  { en: "ostensible", tr: "görünürdeki, ileri sürülen (gerçek niyetten farklı olabilen)", cat: "Felsefe", ex: "His ostensible reason was travel, though he sought solitude." }
+];
+
+// Tek bir İngilizce kelimenin tanımını, örneğini ve Türkçe karşılığını internetten getirir
+async function fetchWordDetailsFromWeb(word) {
+  const clean = String(word || "").trim().toLowerCase();
+  if (!clean) return null;
+
+  let enDef = "";
+  let exSentence = "";
+  let partOfSpeech = "Akademik";
+
+  // 1) Free Dictionary API üzerinden İngilizce anlam ve örnek cümle
+  try {
+    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(clean)}`);
+    if (res.ok) {
+      const data = await res.json();
+      const firstEntry = Array.isArray(data) ? data[0] : null;
+      const firstMeaning = firstEntry?.meanings?.[0];
+      const firstDefObj = firstMeaning?.definitions?.[0];
+
+      if (firstMeaning?.partOfSpeech) {
+        partOfSpeech = firstMeaning.partOfSpeech.charAt(0).toUpperCase() + firstMeaning.partOfSpeech.slice(1);
+      }
+      enDef = firstDefObj?.definition || "";
+      exSentence = firstDefObj?.example || "";
+
+      // Örnek cümle yoksa diğer anlamlardan ara
+      if (!exSentence && Array.isArray(firstEntry?.meanings)) {
+        for (const m of firstEntry.meanings) {
+          const foundEx = (m.definitions || []).find(d => d.example)?.example;
+          if (foundEx) { exSentence = foundEx; break; }
+        }
+      }
+    }
+  } catch {}
+
+  // 2) Türkçe anlamını internet çeviri servisinden al
+  let trMeaning = "";
+  try {
+    const queryText = enDef || clean;
+    const trRes = await fetch(
+      `https://api.mymemory.translated.net/get?q=${encodeURIComponent(queryText)}&langpair=en|tr`
+    );
+    if (trRes.ok) {
+      const trData = await trRes.json();
+      trMeaning = trData?.responseData?.translatedText || "";
+    }
+  } catch {}
+
+  if (!trMeaning && enDef) {
+    trMeaning = enDef;
+  }
+  if (!trMeaning && !enDef) {
+    return null;
+  }
+
+  return {
+    en: clean,
+    tr: trMeaning.trim(),
+    cat: partOfSpeech,
+    ex: exSentence.trim() || `The term "${clean}" appeared in today's online vocabulary discovery.`
+  };
+}
+
+// İnternetten rastgele yeni bir İngilizce kelime bulup anlamıyla birlikte döndürür
+async function fetchRandomOnlineWord() {
+  const existing = new Set(
+    (Array.isArray(state?.words) ? state.words : []).map(w => (w.en || "").toLowerCase())
+  );
+
+  // 1) Açık kelime havuzundan rastgele kelimeler dene
+  let candidates = [];
+  try {
+    const r1 = await fetch("https://random-word-api.herokuapp.com/word?number=8");
+    if (r1.ok) {
+      const arr = await r1.json();
+      if (Array.isArray(arr)) candidates.push(...arr);
+    }
+  } catch {}
+
+  if (!candidates.length) {
+    try {
+      const r2 = await fetch("https://random-word-api.vercel.app/api?words=8");
+      if (r2.ok) {
+        const arr = await r2.json();
+        if (Array.isArray(arr)) candidates.push(...arr);
+      }
+    } catch {}
+  }
+
+  // Sözlükte olmayan ve tanımı bulunan ilk kelimeyi seç
+  for (const rawWord of candidates) {
+    const w = String(rawWord || "").trim().toLowerCase();
+    if (!w || w.length < 4 || w.length > 16 || existing.has(w)) continue;
+    const details = await fetchWordDetailsFromWeb(w);
+    if (details && details.tr) {
+      return { ...details, fromWeb: true };
+    }
+  }
+
+  // İnternet erişimi kısıtlıysa yedek havuzdan seç
+  const fallbackPool = LEXORA5_ONLINE_FALLBACK.filter(x => !existing.has(x.en.toLowerCase()));
+  const chosen = (fallbackPool.length ? fallbackPool : LEXORA5_ONLINE_FALLBACK)[
+    Math.floor(Math.random() * (fallbackPool.length ? fallbackPool.length : LEXORA5_ONLINE_FALLBACK.length))
+  ];
+  return { ...chosen, fromWeb: false };
+}
+
+// Sözlük ve Hediye Kutusuna "İnternetten Kelime Çek" kontrolü ekler
+function injectOnlineWordFetcherUI() {
+  // 1) Sözlük ekleme alanına canlı internet çekme butonu ekle
+  const saveBtn = document.getElementById("saveNewWordBtn");
+  if (saveBtn && !document.getElementById("l5FetchOnlineWordBtn")) {
+    const fetchBtn = document.createElement("button");
+    fetchBtn.type = "button";
+    fetchBtn.id = "l5FetchOnlineWordBtn";
+    fetchBtn.className = "ghost";
+    fetchBtn.style.marginLeft = "8px";
+    fetchBtn.textContent = "🌐 İnternetten Yeni Kelime Çek";
+
+    const lookupBtn = document.createElement("button");
+    lookupBtn.type = "button";
+    lookupBtn.id = "l5LookupEnBtn";
+    lookupBtn.className = "ghost";
+    lookupBtn.style.marginLeft = "8px";
+    lookupBtn.textContent = "🔍 Yazılan Kelimeyi İnternetten Bul";
+
+    saveBtn.insertAdjacentElement("afterend", fetchBtn);
+    fetchBtn.insertAdjacentElement("afterend", lookupBtn);
+
+    fetchBtn.onclick = async () => {
+      fetchBtn.disabled = true;
+      const oldText = fetchBtn.textContent;
+      fetchBtn.textContent = "⏳ İnternetten aranıyor...";
+      if (typeof toast === "function") toast("İnternetten yeni İngilizce kelime çekiliyor...");
+
+      const item = await fetchRandomOnlineWord();
+      fetchBtn.disabled = false;
+      fetchBtn.textContent = oldText;
+
+      if (!item) {
+        if (typeof toast === "function") toast("Şu an internetten kelime alınamadı");
+        return;
+      }
+
+      if (typeof state === "object" && Array.isArray(state.words)) {
+        if (!state.words.some(w => w.en.toLowerCase() === item.en.toLowerCase())) {
+          state.words.unshift({
+            id: Date.now(),
+            en: item.en,
+            tr: item.tr,
+            cat: item.fromWeb ? `İnternet · ${item.cat}` : `Yedek · ${item.cat}`,
+            ex: item.ex,
+            correct: 0,
+            wrong: 0
+          });
+          state.xp = (state.xp || 0) + 10;
+          if (typeof saveState === "function") saveState();
+          if (typeof applyTheme === "function") applyTheme();
+        }
+      }
+
+      if (typeof toast === "function") {
+        toast(
+          item.fromWeb
+            ? `🌐 İnternetten "${item.en}" eklendi (+10 XP)`
+            : `📦 Bağlantı yedek modunda: "${item.en}" eklendi (+10 XP)`
+        );
+      }
+      if (typeof renderLibrary === "function") {
+        renderLibrary();
+        injectOnlineWordFetcherUI();
+      }
+    };
+
+    lookupBtn.onclick = async () => {
+      const enInput = document.getElementById("addEn");
+      const trInput = document.getElementById("addTr");
+      const catInput = document.getElementById("addCat");
+      const exInput = document.getElementById("addEx");
+      const targetWord = (enInput?.value || "").trim();
+      if (!targetWord) {
+        if (typeof toast === "function") toast("Önce İngilizce kelime kutusuna bir kelime yaz");
+        return;
+      }
+      lookupBtn.disabled = true;
+      lookupBtn.textContent = "⏳ Aranıyor...";
+      const found = await fetchWordDetailsFromWeb(targetWord);
+      lookupBtn.disabled = false;
+      lookupBtn.textContent = "🔍 Yazılan Kelimeyi İnternetten Bul";
+
+      if (!found) {
+        if (typeof toast === "function") toast(`"${targetWord}" için internet kaydı bulunamadı`);
+        return;
+      }
+      if (trInput) trInput.value = found.tr;
+      if (catInput && !catInput.value.trim()) catInput.value = found.cat;
+      if (exInput && !exInput.value.trim()) exInput.value = found.ex;
+      if (typeof toast === "function") toast(`"${found.en}" için anlam ve örnek internetten getirildi ✓`);
+    };
+  }
+
+  // 2) Saatlik Hediye Kutusu açıldığında internetten taze kelime çekmeyi de destekle
+  const giftBtn = document.getElementById("l5OpenGiftBtn");
+  if (giftBtn && giftBtn.dataset.onlineHooked !== "1") {
+    giftBtn.dataset.onlineHooked = "1";
+    const origClick = giftBtn.onclick;
+    giftBtn.onclick = async () => {
+      if (typeof toast === "function") toast("🌐 İnternetten sürpriz kelime getiriliyor...");
+      const liveGift = await fetchRandomOnlineWord();
+      if (liveGift && Array.isArray(window.LEXORA5_GIFT_WORDS)) {
+        window.LEXORA5_GIFT_WORDS.unshift(liveGift);
+      }
+      if (typeof origClick === "function") origClick();
+    };
+  }
+}
+
+(function initOnlineWordEngine() {
+  const observer = new MutationObserver(() => injectOnlineWordFetcherUI());
+  observer.observe(document.body, { childList: true, subtree: true });
+  injectOnlineWordFetcherUI();
+})();    
+// === LEXORA 5.0 PROFİL SEKMESİ, BAŞLANGIÇ REHBERİ GÖREV LİSTESİ & PARÇACIK EFEKTLERİ ===
+function spawnArtisticSparkles(x = window.innerWidth / 2, y = window.innerHeight / 2) {
+  const colors = ["#d4af37", "#a78bfa", "#38bdf8", "#34d399", "#f472b6"];
+  for (let i = 0; i < 18; i++) {
+    const dot = document.createElement("span");
+    dot.className = "l5-sparkle";
+    const angle = (Math.PI * 2 * i) / 18;
+    const dist = 55 + Math.random() * 85;
+    dot.style.left = `${x}px`;
+    dot.style.top = `${y}px`;
+    dot.style.background = colors[i % colors.length];
+    dot.style.setProperty("--dx", `${Math.cos(angle) * dist}px`);
+    dot.style.setProperty("--dy", `${Math.sin(angle) * dist - 20}px`);
+    document.body.appendChild(dot);
+    setTimeout(() => dot.remove(), 1000);
+  }
+}
+
+function getProfileGuideTasks() {
+  const wordsCount = Array.isArray(state?.words) ? state.words.length : 0;
+  const xpVal = state?.xp || 0;
+  const answersVal = state?.answersCount || 0;
+  const noteDone = Boolean((localStorage.getItem("lexora5_room_note") || "").trim());
+  const sprintsDone = +(localStorage.getItem("lexora5_sprints") || "0") > 0;
+  const giftDone = Boolean(localStorage.getItem("lexora5_last_gift_hour"));
+
+  return [
+    {
+      id: "g_learn",
+      icon: "🧠",
+      title: "Kelime Pratiği & Test Çöz",
+      desc: "Öğren sekmesinde karşına çıkan kelimelerin anlamını seç, hem seri hem +15 XP kazan.",
+      done: answersVal >= 1,
+      statusText: answersVal >= 1 ? `✓ ${answersVal} pratik yapıldı` : "Henüz başlanmadı",
+      targetTab: "learn"
+    },
+    {
+      id: "g_online_word",
+      icon: "🌐",
+      title: "İnternetten Yeni Kelime Çek veya Sözlüğe Ekle",
+      desc: "Sözlük sekmesinde dış dünyadan otomatik kelime çek veya kendi kelimeni ekleyip Normal/Yavaş dinle.",
+      done: wordsCount >= 13,
+      statusText: `${wordsCount} kelime kayıtlı`,
+      targetTab: "library"
+    },
+    {
+      id: "g_room",
+      icon: "🚪",
+      title: "Özel Çalışma Odasına Gir ve Not Bırak",
+      desc: "Özel Odaya girdiğinde çalışma atmosferi ve müziği açılır; defterine kendi düşünceni kaydet.",
+      done: noteDone,
+      statusText: noteDone ? "✓ Oda notu kaydedildi" : "Not bekleniyor",
+      targetTab: "room"
+    },
+    {
+      id: "g_world",
+      icon: "🗺️",
+      title: "Dünya Haritası Duraklarını Gez ve Görevleri Tamamla",
+      desc: "İstanbul'dan Tokyo'ya uzanan haritada görevleri bitirerek Aziz Yardımlı & İdea Yayınevi dizin ödüllerini aç.",
+      done: xpVal >= 150,
+      statusText: `${xpVal}/150 XP`,
+      targetTab: "world"
+    },
+    {
+      id: "g_awards",
+      icon: "🏆",
+      title: "Ödül Sergisi ve Rozet Vitrinini İncele",
+      desc: "Kazandığın rozetleri gör, açılan bilgi ödüllerini oku, kopyala veya kendi alıntını sergiye ekle.",
+      done: wordsCount >= 12 && xpVal >= 80,
+      statusText: "Sergi aktif",
+      targetTab: "awards"
+    },
+    {
+      id: "g_focus",
+      icon: "⏱️",
+      title: "3 Dakikalık Hızlı Odak Turu & Etimoloji Kartları",
+      desc: "Odak & Özet sekmesinde 3 dakikalık zamanlayıcıyı başlat veya kelimelerin Latince/Yunanca köklerine bak.",
+      done: sprintsDone,
+      statusText: sprintsDone ? "✓ Odak turu tamamlandı" : "3 dk tur hazır",
+      targetTab: "focus"
+    },
+    {
+      id: "g_gift",
+      icon: "🎁",
+      title: "Saatlik Sürpriz Kelime Kutusunu Aç",
+      desc: "Sağ alt köşede her saat başı beliren hediye kutusuna tıkla, sürpriz kelimeyi keşfet ve sözlüğe ekle.",
+      done: giftDone,
+      statusText: giftDone ? "✓ Kutu açıldı" : "Sağ altta seni bekliyor",
+      targetTab: null
+    }
+  ];
+}
+
+function renderProfile() {
+  const el = document.getElementById("tab-profile");
+  if (!el) return;
+
+  const xp = state?.xp || 0;
+  const level = Math.floor(xp / 100) + 1;
+  const levelPct = xp % 100;
+  const wordsCount = Array.isArray(state?.words) ? state.words.length : 0;
+  const streak = state?.streak || 1;
+  const profileName = localStorage.getItem("lexora5_profile_name") || "Kavram Kaşifi";
+  const profileBio = localStorage.getItem("lexora5_profile_bio") || "Kelimeler, felsefi kavramlar ve düzenli okuma yolculuğu";
+  const currentTheme = state?.settings?.theme || document.documentElement.getAttribute("data-theme") || "lila";
+
+  const tasks = getProfileGuideTasks();
+  const doneCount = tasks.filter(t => t.done).length;
+
+  el.innerHTML = `
+    <div class="profile-hero">
+      <div style="display:flex; align-items:center; gap:14px; flex:1; min-width:240px;">
+        <div class="profile-avatar-ring">
+          <div class="profile-avatar-inner">🦉</div>
+        </div>
+        <div style="flex:1;">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <strong style="font-size:20px;">${profileName}</strong>
+            <span class="pill active">Seviye ${level}</span>
+          </div>
+          <div class="muted" style="margin-top:3px;">${profileBio}</div>
+          <div class="progress" style="max-width:340px; margin-top:8px;">
+            <div style="width:${levelPct}%"></div>
+          </div>
+          <div class="muted" style="font-size:12px;">Sonraki seviyeye ${100 - levelPct} XP kaldı · 🔥 ${streak} gün seri · 📚 ${wordsCount} kelime</div>
+        </div>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="primary" id="l5ProfileCelebrateBtn">✨ Kutlama Efekti</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+        <div>
+          <strong>🧭 Uygulamaya Girdiğinde Neler Yapabilirsin? (Görev &amp; Rehber Listesi)</strong>
+          <div class="muted">Tamamlanan adımlar: <strong>${doneCount}/${tasks.length}</strong> — Herhangi bir göreve tıklayıp doğrudan ilgili bölüme geçebilirsin.</div>
+        </div>
+      </div>
+
+      <div style="margin-top:12px;">
+        ${tasks.map(t => `
+          <div class="guide-checklist-item ${t.done ? "completed" : ""}">
+            <div style="flex:1; min-width:220px;">
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <span style="font-size:18px;">${t.done ? "✅" : t.icon}</span>
+                <strong>${t.title}</strong>
+                <span class="pill ${t.done ? "active" : ""}" style="font-size:11px;">${t.statusText}</span>
+              </div>
+              <div class="muted" style="margin-top:4px; font-size:13px;">${t.desc}</div>
+            </div>
+            ${t.targetTab
+              ? `<button type="button" class="ghost" data-jump-tab="${t.targetTab}">Git &amp; Yap →</button>`
+              : `<button type="button" class="ghost" id="l5OpenGiftFromProfile">Kutuyu Aç 🎁</button>`}
+          </div>
+        `).join("")}
+      </div>
+    </div>
+
+    <div class="card">
+      <strong>🎨 Sanatsal Tema &amp; Çerçeve Atmosferi Seçimi</strong>
+      <p class="muted" style="margin:4px 0 8px;">Uygulamanın çerçeve, ışık ve arka plan atmosferini tek dokunuşla değiştir.</p>
+      <div class="theme-swatch-row">
+        <button type="button" class="theme-swatch-btn ${currentTheme === "lila" ? "active" : ""}" data-set-art-theme="lila">🏛️ Klasik Lila &amp; Altın</button>
+        <button type="button" class="theme-swatch-btn ${currentTheme === "dark" ? "active" : ""}" data-set-art-theme="dark">🌌 Gece Rasathanesi</button>
+        <button type="button" class="theme-swatch-btn ${currentTheme === "parchment" ? "active" : ""}" data-set-art-theme="parchment">📜 Kadim Parşömen</button>
+        <button type="button" class="theme-swatch-btn ${currentTheme === "emerald" ? "active" : ""}" data-set-art-theme="emerald">🌿 Zümrüt Atölye</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <strong>🪪 Profil Bilgilerini Özelleştir</strong>
+      <div class="grid-2" style="margin-top:10px;">
+        <div>
+          <label class="muted" style="font-size:12px;">Görünen Unvan / İsim</label>
+          <input type="text" id="l5ProfNameInput" value="${profileName}">
+        </div>
+        <div>
+          <label class="muted" style="font-size:12px;">Çalışma Mottosu</label>
+          <input type="text" id="l5ProfBioInput" value="${profileBio}">
+        </div>
+      </div>
+      <button type="button" class="primary" id="l5SaveProfileBtn" style="margin-top:10px;">Profili Kaydet</button>
+    </div>
+  `;
+
+  document.getElementById("l5ProfileCelebrateBtn").onclick = e => {
+    spawnArtisticSparkles(e.clientX, e.clientY);
+    if (typeof playLexoraSound === "function") playLexoraSound("reward");
+  };
+
+  el.querySelectorAll("[data-jump-tab]").forEach(btn => {
+    btn.onclick = () => {
+      const target = btn.getAttribute("data-jump-tab");
+      const navBtn = document.querySelector(`nav button[data-tab="${target}"]`);
+      if (navBtn) navBtn.click();
+      else if (typeof window.switchTab === "function") window.switchTab(target);
+    };
+  });
+
+  const giftJump = document.getElementById("l5OpenGiftFromProfile");
+  if (giftJump) {
+    giftJump.onclick = () => {
+      if (typeof renderHourlyGiftDock === "function") renderHourlyGiftDock(true);
+      const openBtn = document.getElementById("l5OpenGiftBtn");
+      if (openBtn) openBtn.click();
+    };
+  }
+
+  el.querySelectorAll("[data-set-art-theme]").forEach(btn => {
+    btn.onclick = e => {
+      const chosen = btn.getAttribute("data-set-art-theme");
+      document.documentElement.setAttribute("data-theme", chosen);
+      if (state?.settings) {
+        state.settings.theme = chosen;
+        if (typeof saveState === "function") saveState();
+      }
+      spawnArtisticSparkles(e.clientX, e.clientY);
+      if (typeof toast === "function") toast("Tema atmosferi güncellendi ✨");
+      renderProfile();
+    };
+  });
+
+  document.getElementById("l5SaveProfileBtn").onclick = e => {
+    const newName = document.getElementById("l5ProfNameInput").value.trim() || "Kavram Kaşifi";
+    const newBio = document.getElementById("l5ProfBioInput").value.trim() || "Kelimeler ve felsefi kavramlar yolculuğu";
+    localStorage.setItem("lexora5_profile_name", newName);
+    localStorage.setItem("lexora5_profile_bio", newBio);
+    spawnArtisticSparkles(e.clientX, e.clientY);
+    if (typeof toast === "function") toast("Profil bilgilerin güncellendi ✓");
+    renderProfile();
+  };
+}
+
+// Profil sekmesini üst menüye ve switchTab sistemine bağla
+(function hookProfileTab() {
+  const profBtn = document.querySelector('nav button[data-tab="profile"]');
+  if (profBtn) {
+    profBtn.addEventListener("click", () => {
+      document.querySelectorAll("nav button").forEach(b => b.classList.toggle("active", b.dataset.tab === "profile"));
+      document.querySelectorAll("main > section").forEach(s => s.classList.toggle("hidden", s.id !== "tab-profile"));
+      renderProfile();
+    });
+  }
+  if (typeof window.switchTab === "function") {
+    const prev = window.switchTab;
+    window.switchTab = function(tab) {
+      prev(tab);
+      if (tab === "profile") renderProfile();
+    };
+  }
+})(); 
+// === LEXORA 5.0 AKILLI MENÜ GRUPLAMA ("ANA SEKMELER" + "KEŞFET / DİĞER") ===
+(function organizeLexoraNavigation() {
+  const nav = document.querySelector("nav");
+  if (!nav || nav.dataset.l5Organized === "1") return;
+  nav.dataset.l5Organized = "1";
+
+  const allButtons = Array.from(nav.querySelectorAll("button[data-tab]"));
+  if (allButtons.length <= 4) return;
+
+  // Üst şeritte her zaman görünür kalacak ana sekmeler:
+  const primaryTabs = new Set(["today", "learn", "library", "room"]);
+
+  const primaryWrap = document.createElement("div");
+  primaryWrap.className = "lexora-nav-primary";
+
+  const moreWrap = document.createElement("div");
+  moreWrap.className = "lexora-nav-more-wrap";
+
+  const secondaryButtons = [];
+
+  allButtons.forEach(btn => {
+    const t = btn.getAttribute("data-tab");
+    if (primaryTabs.has(t)) {
+      primaryWrap.appendChild(btn);
+    } else {
+      secondaryButtons.push(btn);
+    }
+  });
+
+  if (!secondaryButtons.length) {
+    nav.appendChild(primaryWrap);
+    return;
+  }
+
+  const trigger = document.createElement("button");
+  trigger.type = "button";
+  trigger.className = "lexora-more-trigger";
+  trigger.id = "l5MoreNavTrigger";
+  trigger.innerHTML = `<span>🧭 Keşfet (${secondaryButtons.length})</span><span style="font-size:11px;">▾</span>`;
+
+  const menu = document.createElement("div");
+  menu.className = "lexora-more-menu hidden";
+  menu.id = "l5MoreNavMenu";
+
+  secondaryButtons.forEach(btn => menu.appendChild(btn));
+
+  moreWrap.appendChild(trigger);
+  moreWrap.appendChild(menu);
+
+  nav.innerHTML = "";
+  nav.appendChild(primaryWrap);
+  nav.appendChild(moreWrap);
+
+  function closeMoreMenu() {
+    menu.classList.add("hidden");
+  }
+
+  trigger.addEventListener("click", e => {
+    e.stopPropagation();
+    menu.classList.toggle("hidden");
+  });
+
+  document.addEventListener("click", e => {
+    if (!moreWrap.contains(e.target)) closeMoreMenu();
+  });
+
+  menu.querySelectorAll("button[data-tab]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      closeMoreMenu();
+      syncMoreTriggerState();
+    });
+  });
+
+  function syncMoreTriggerState() {
+    const anySecActive = secondaryButtons.some(b => b.classList.contains("active"));
+    trigger.classList.toggle("has-active", anySecActive);
+    const activeSec = secondaryButtons.find(b => b.classList.contains("active"));
+    trigger.firstElementChild.textContent = activeSec
+      ? `${activeSec.textContent.trim()} (${secondaryButtons.length})`
+      : `🧭 Keşfet (${secondaryButtons.length})`;
+  }
+
+  const navObs = new MutationObserver(() => syncMoreTriggerState());
+  navObs.observe(nav, { attributes: true, subtree: true, attributeFilter: ["class"] });
+  syncMoreTriggerState();
+})();    
 </script>
 </body>
 </html>
