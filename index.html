@@ -10,7 +10,7 @@
     <link rel="apple-touch-icon" href="icon.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Lexora 2.0</title>    
+<title>İngilizce</title>    
 <style>
   :root {
     --bg:#f5f3ff; --surface:#ffffff; --text:#1e1b4b; --muted:#6b7280; --primary:#6d28d9;
@@ -186,7 +186,7 @@
   .dw-stat-row { flex-wrap: wrap; }
   .dw-stat-box { min-width: 0; flex: 1 1 90px; }
   .iconrow { flex-wrap: wrap; }
-  .lib-pane { min-height: 160px; position: sticky; top: 72px; overflow: hidden; }
+  .lib-pane { min-height: 160px; max-height: calc(100vh - 96px); position: sticky; top: 72px; overflow: auto; }
   .lib-pane .dw-image-wrap { height: 140px; border-radius: 14px; }
   .lib-pane .dw-content { max-height: none; padding: 12px 0 0; overflow: visible; }
   .lib-pane .dw-word { font-size: 26px; }
@@ -637,19 +637,21 @@
   gap: 8px;
 }
 .gift-float-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 11px 15px;
-  border-radius: 999px;
-  border: 2px solid var(--primary);
-  background: var(--surface);
-  color: var(--text);
-  font-weight: 800;
-  font-size: 14px;
+  width: 76px;
+  height: 76px;
+  padding: 0;
+  border-radius: 18px;
+  border: 3px solid #d4af37;
+  background: linear-gradient(160deg, #fde68a 0%, #d4af37 46%, #6d28d9 100%);
+  color: #1e1b4b;
+  font-size: 32px;
   cursor: pointer;
-  box-shadow: 0 10px 28px rgba(109, 40, 217, 0.28);
-  animation: giftBounce 2.2s infinite ease-in-out;
+  box-shadow: 0 0 0 6px rgba(212, 175, 55, 0.28), 0 0 28px 8px rgba(167, 139, 250, 0.55);
+  animation: giftGlow 1.8s ease-in-out infinite;
+}
+@keyframes giftGlow {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.25), 0 0 16px 4px rgba(167, 139, 250, 0.4); transform: translateY(0); }
+  50% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0.35), 0 0 34px 12px rgba(167, 139, 250, 0.75); transform: translateY(-4px); }
 }
 @keyframes giftBounce {
   0%, 100% { transform: translateY(0); }
@@ -958,7 +960,7 @@ nav {
 <body>
 <canvas id="fxCanvas"></canvas>
 <header>
-  <span>Lexora 2.0</span>
+  <span>İngilizce</span>
   <button class="header-pill" id="profilePill" title="Profili Düzenle"></button>
   <span class="streak-badge" id="streakBadge"></span>
   <button class="header-pill" id="ambientBtn" title="Odak Ambiyansı (Kahverengi Gürültü)">🎧 Odak</button>
@@ -3540,6 +3542,12 @@ function renderSettings() {
   const opt = (arr, v) => arr.map(n => `<option ${n === v ? "selected" : ""}>${n}</option>`).join("");
   const chk = (id, v) => `<input type="checkbox" id="${id}" ${v ? "checked" : ""}>`;
   el.innerHTML = `
+      <div class="card">
+      <strong>Tema ve kontrast</strong>
+      <p class="muted">Yazı ve zemin renkleri birlikte değişir. Yüksek kontrast ayrı durur.</p>
+      <div class="themes">${Object.entries(THEMES).map(([k, t]) => `<button class="theme ${state.ui.theme === k ? "on" : ""}" data-theme="${k}" style="background:${t.bg};color:${t.text};border-color:${t.primary}">${esc(t.name)}</button>`).join("")}</div>
+      <div class="swatches" style="margin-top:10px">${ACCENTS.map(c => `<button class="swatch ${state.ui.accent === c ? "on" : ""}" data-accent="${c}" style="background:${c || "transparent"}" aria-label="Vurgu rengi"></button>`).join("")}</div>
+    </div>
     <div class="card">
       <strong>Öğrenme</strong>
       <div class="toggle"><span>Eşleştirme çifti sayısı</span><select id="pairs">${opt([3, 4, 5, 6], s.pairs)}</select></div>
@@ -3571,6 +3579,8 @@ function renderSettings() {
       <button class="ghost" id="reset">İlerlemeyi sıfırla</button>
       <p class="muted">Tüm ilerleme, rozetler, notlar, alıntılar ve web'den eklenen kelimeler silinir.</p>
     </div>`;
+  el.querySelectorAll("[data-theme]").forEach(b => b.onclick = () => { state.ui.theme = b.dataset.theme; save(); applyUi(); renderSettings(); });
+  el.querySelectorAll("[data-accent]").forEach(b => b.onclick = () => { state.ui.accent = b.dataset.accent; save(); applyUi(); renderSettings(); });    
   $("pairs").onchange = e => { s.pairs = +e.target.value; save(); matchRound = null; };
   $("sessionLen").onchange = e => { s.sessionLen = +e.target.value; save(); };
   $("goal").onchange = e => { s.goal = +e.target.value; save(); };
@@ -6893,19 +6903,13 @@ function renderHourlyGiftDock(forceShow = false) {
   const isAvailable = forceShow || claimedHour !== hourKey;
 
   if (!isAvailable) {
-    dock.innerHTML = `
-      <button type="button" class="pill" id="l5TestGiftSpawnBtn" title="Test için şimdi yeni hediye kutusu çıkar" style="opacity:0.78;">
-        🎁 Saatlik Kutu Hazır (Test Et)
-      </button>
-    `;
-    document.getElementById("l5TestGiftSpawnBtn").onclick = () => renderHourlyGiftDock(true);
+    dock.innerHTML = "";
+    dock.style.display = "none";
     return;
   }
-
+  dock.style.display = "flex";
   dock.innerHTML = `
-    <button type="button" class="gift-float-btn" id="l5OpenGiftBtn">
-      🎁 Saatlik Sürpriz Kutu! (Aç)
-    </button>
+    <button type="button" class="gift-float-btn" id="l5OpenGiftBtn" aria-label="Saatlik Sürpriz Kutu">🎁</button>
   `;
 
   document.getElementById("l5OpenGiftBtn").onclick = () => {
@@ -7549,6 +7553,416 @@ function renderProfile() {
   navObs.observe(nav, { attributes: true, subtree: true, attributeFilter: ["class"] });
   syncMoreTriggerState();
 })();    
+function fourPairs(prefer) {
+  let pool = state.words.filter(w => w.en && w.tr);
+  if (prefer) {
+    const hit = pool.filter(prefer);
+    if (hit.length >= 4) pool = hit;
+  }
+  return shuffle(pool).slice(0, 4).map(w => ({ a: w.en, b: w.tr }));
+}
+
+function mountMatch(el, title, lead, pairs) {
+  if (!el || el.querySelector("[data-lexmatch]") || pairs.length < 4) return;
+  const card = document.createElement("div");
+  card.className = "card";
+  card.dataset.lexmatch = "1";
+  const L = shuffle(pairs.map((p, i) => ({ i, t: p.a })));
+  const R = shuffle(pairs.map((p, i) => ({ i, t: p.b })));
+  card.innerHTML = `<strong>${esc(title)}</strong><p class="muted">${esc(lead)}</p>
+    <div class="grid">
+      <div>${L.map(x => `<button class="tile" data-side="l" data-i="${x.i}">${esc(x.t)}</button>`).join("")}</div>
+      <div>${R.map(x => `<button class="tile" data-side="r" data-i="${x.i}">${esc(x.t)}</button>`).join("")}</div>
+    </div>
+    <p class="muted" data-msg>0/4 çift</p>`;
+  el.appendChild(card);
+  let sel = null, done = 0;
+  card.querySelectorAll(".tile").forEach(b => b.onclick = () => {
+    if (b.disabled) return;
+    if (!sel) { sel = b; b.classList.add("sel"); return; }
+    if (sel.dataset.side === b.dataset.side) { sel.classList.remove("sel"); sel = b; b.classList.add("sel"); return; }
+    if (sel.dataset.i === b.dataset.i) {
+      sel.disabled = b.disabled = true;
+      sel.classList.remove("sel"); sel.classList.add("ok"); b.classList.add("ok");
+      done++;
+      card.querySelector("[data-msg]").textContent = done + "/4 çift";
+      if (done === 4) { state.xp += 4; save(); toast("Dört çift tamam"); }
+      sel = null;
+    } else {
+      b.classList.add("bad");
+      setTimeout(() => b.classList.remove("bad"), 350);
+      sel.classList.remove("sel"); sel = null;
+    }
+  });
+}
+
+let marketItems = [];
+async function loadMarket(catId) {
+  const box = $("marketBox");
+  if (!box) return;
+  box.innerHTML = `<p class="muted">Konu listesi ve sözlük sorgulanıyor…</p>`;
+  const d = await discover("topic", catId);
+  if (d.error) { box.innerHTML = `<p class="muted">${esc(d.error)}</p>`; return; }
+  const fresh = (d.cands || []).filter(c => /^[a-z]{4,16}$/.test(c.word) && !state.words.some(w => w.en === c.word)).slice(0, 8);
+  const results = await Promise.all(fresh.map(enrich));
+  marketItems = results.filter(r => r.word).map(r => r.word);
+  if (!marketItems.length) { box.innerHTML = `<p class="muted">Bu konuda yeni kelime kalmadı. Başka konu dene.</p>`; return; }
+  const opts = [...CATS.map(c => c.label), "Felsefe", "Genel"];
+  box.innerHTML = marketItems.map((w, i) => `<label class="row" style="cursor:pointer">
+      <span><input type="checkbox" data-mi="${i}" checked> <strong>${esc(w.en)}</strong> <span class="muted">${esc(w.tr)}</span></span>
+      <select data-mcat="${i}">${opts.map(c => `<option ${c === w.cat ? "selected" : ""}>${esc(c)}</option>`).join("")}</select>
+    </label>`).join("") + `<button class="primary" id="marketAdd" style="margin-top:10px">Seçilenleri sözlüğe ekle</button>`;
+  $("marketAdd").onclick = () => {
+    let n = 0;
+    box.querySelectorAll("[data-mi]:checked").forEach(ch => {
+      const i = +ch.dataset.mi;
+      const w = marketItems[i];
+      if (!w || state.words.some(x => x.en === w.en)) return;
+      const cat = box.querySelector(`[data-mcat="${i}"]`).value;
+      state.words.push(normalize({ ...w, id: nextId(), cat, source: "web" }));
+      n++;
+    });
+    save();
+    toast(n ? `${n} kelime eklendi` : "Yeni kelime seçilmedi");
+    renderers.library();
+  };
+}
+
+function mountMarket() {
+  const el = $("tab-library");
+  if (!el || $("marketCard")) return;
+  const card = document.createElement("div");
+  card.className = "card";
+  card.id = "marketCard";
+  card.innerHTML = `<strong>Kelime pazarı</strong>
+    <p class="muted">Datamuse bir konu önerir, sözlük anlamı doğrular, çeviri Türkçesini getirir. İşaretlediklerini istediğin sınıfa eklersin.</p>
+    <div class="chips2" id="marketCats">${CATS.map(c => `<button class="mode" data-mkt="${c.id}">${esc(c.label)}</button>`).join("")}</div>
+    <div id="marketBox"><p class="muted">Bir konu seç.</p></div>`;
+  el.insertBefore(card, el.firstChild);
+  card.querySelectorAll("[data-mkt]").forEach(b => b.onclick = () => loadMarket(b.dataset.mkt));
+}
+
+const _lib0 = renderers.library;
+renderers.library = function (note) { _lib0(note); mountMarket(); };
+const _path0 = renderers.path;
+renderers.path = function () {
+  _path0();
+  mountMatch($("tab-path"), "Basamak eşleştirmesi", "Dört kelimeyi Türkçe karşılığıyla eşle. Tur bitince biter.", fourPairs());
+};
+const _jour0 = renderers.journal;
+renderers.journal = function () {
+  _jour0();
+  mountMatch($("tab-journal"), "Bugünkü karışanlar", "En çok yanıldığın kelimeler. Dört çift, süre yok.", fourPairs(w => w.wrong > 0));
+};
+const _room0 = renderRoom;
+renderRoom = function () {
+  _room0();
+  mountMatch($("tab-room"), "Raftaki kelimeler", "Favorilerin ya da sakin bir dörtlü. Eşleştir, notu sonra yaz.", fourPairs(w => w.favorite));
+};    
+function saveState() { save(); }
+
+function stampBorn(w) {
+  if (!w) return;
+  if (!w.born) w.born = dayKey();
+  w.next = Math.min(w.next || Date.now(), Date.now());
+}
+
+const _addFromWeb0 = addFromWeb;
+addFromWeb = async function (en) {
+  await _addFromWeb0(en);
+  stampBorn(state.words.find(x => x.en === en));
+  save();
+};
+
+function beginWords(words, focus) {
+  const list = [...new Map(words.filter(Boolean).map(w => [w.id, w])).values()].slice(0, state.settings.sessionLen || 10);
+  if (list.length < 2) { toast("Bu tur için en az 2 kelime gerek"); return; }
+  const queue = [];
+  let prev = null;
+  for (const w of list) {
+    const q = buildQuestion(w, prev, focus || "karisik");
+    queue.push(q);
+    prev = q.type;
+  }
+  session = {
+    queue, i: 0, correct: 0, wrong: 0,
+    hearts: state.settings.hearts ? 3 : Infinity,
+    started: Date.now(), t0: Date.now(), xp0: state.xp, mastered0: masteredCount(),
+    answered: null, done: false, early: false, focus: focus || "karisik",
+    phase: state.settings.confidence ? "confidence" : "answer"
+  };
+  state.totals.sessions++;
+  save();
+  showTab("session");
+}
+
+function wordsBorn(day) { return state.words.filter(w => w.born === day); }
+function yesterdayKey() { const d = new Date(); d.setDate(d.getDate() - 1); return dayKey(d); }
+
+function fourPairs(prefer) {
+  let pool = state.words.filter(w => w.en && w.tr);
+  if (prefer) { const hit = pool.filter(prefer); if (hit.length >= 4) pool = hit; }
+  return shuffle(pool).slice(0, 4).map(w => ({ a: w.en, b: w.tr }));
+}
+
+function mountMatch(el, title, lead, pairs) {
+  if (!el || pairs.length < 4 || el.querySelector("[data-lexmatch]")) return;
+  const card = document.createElement("div");
+  card.className = "card";
+  card.dataset.lexmatch = "1";
+  const L = shuffle(pairs.map((p, i) => ({ i, t: p.a })));
+  const R = shuffle(pairs.map((p, i) => ({ i, t: p.b })));
+  card.innerHTML = `<strong>${esc(title)}</strong><p class="muted">${esc(lead)}</p>
+    <div class="grid">
+      <div>${L.map(x => `<button class="tile" data-side="l" data-i="${x.i}">${esc(x.t)}</button>`).join("")}</div>
+      <div>${R.map(x => `<button class="tile" data-side="r" data-i="${x.i}">${esc(x.t)}</button>`).join("")}</div>
+    </div><p class="muted" data-msg>0/4 çift</p>`;
+  el.appendChild(card);
+  let sel = null, done = 0;
+  card.querySelectorAll(".tile").forEach(b => b.onclick = () => {
+    if (b.disabled) return;
+    if (!sel) { sel = b; b.classList.add("sel"); return; }
+    if (sel.dataset.side === b.dataset.side) { sel.classList.remove("sel"); sel = b; b.classList.add("sel"); return; }
+    if (sel.dataset.i === b.dataset.i) {
+      sel.disabled = b.disabled = true;
+      sel.classList.remove("sel"); sel.classList.add("ok"); b.classList.add("ok");
+      done++;
+      card.querySelector("[data-msg]").textContent = done + "/4 çift";
+      if (done === 4) { state.xp += 4; save(); toast("Dört çift tamam"); }
+      sel = null;
+    } else {
+      b.classList.add("bad");
+      setTimeout(() => b.classList.remove("bad"), 350);
+      sel.classList.remove("sel"); sel = null;
+    }
+  });
+}
+
+let marketItems = [];
+async function loadMarket(catId) {
+  const box = $("marketBox");
+  if (!box) return;
+  box.innerHTML = `<p class="muted">Konu listesi ve sözlük sorgulanıyor…</p>`;
+  const d = await discover("topic", catId);
+  if (d.error) { box.innerHTML = `<p class="muted">${esc(d.error)}</p>`; return; }
+  const fresh = (d.cands || []).filter(c => /^[a-z]{4,16}$/.test(c.word) && !state.words.some(w => w.en === c.word)).slice(0, 8);
+  const results = await Promise.all(fresh.map(enrich));
+  marketItems = results.filter(r => r.word).map(r => r.word);
+  if (!marketItems.length) { box.innerHTML = `<p class="muted">Bu konuda yeni kelime kalmadı.</p>`; return; }
+  const opts = [...new Set([...CATS.map(c => c.label), "Felsefe", "Genel"])];
+  box.innerHTML = marketItems.map((w, i) => `<label class="row" style="cursor:pointer">
+      <span><input type="checkbox" data-mi="${i}" checked> <strong>${esc(w.en)}</strong> <span class="muted">${esc(w.tr)}</span></span>
+      <select data-mcat="${i}">${opts.map(c => `<option ${c === w.cat ? "selected" : ""}>${esc(c)}</option>`).join("")}</select>
+    </label>`).join("") + `<button class="primary" id="marketAdd" style="margin-top:10px">Seçilenleri sözlüğe ekle</button>`;
+  $("marketAdd").onclick = () => {
+    let n = 0;
+    box.querySelectorAll("[data-mi]:checked").forEach(ch => {
+      const i = +ch.dataset.mi;
+      const w = marketItems[i];
+      if (!w || state.words.some(x => x.en === w.en)) return;
+      const cat = box.querySelector(`[data-mcat="${i}"]`).value;
+      const item = normalize({ ...w, id: nextId(), cat, source: "web" });
+      stampBorn(item);
+      state.words.push(item);
+      n++;
+    });
+    save();
+    toast(n ? `${n} kelime eklendi` : "Yeni kelime seçilmedi");
+    renderLibrary();
+  };
+}
+
+function mountMarket() {
+  const el = $("tab-library");
+  if (!el || $("marketCard")) return;
+  const card = document.createElement("div");
+  card.className = "card";
+  card.id = "marketCard";
+  card.innerHTML = `<strong>Kelime pazarı</strong>
+    <p class="muted">Konu seç, gelenleri işaretle, sınıfını değiştir, ekle.</p>
+    <div class="chips2">${CATS.map(c => `<button class="mode" data-mkt="${c.id}">${esc(c.label)}</button>`).join("")}</div>
+    <div id="marketBox"><p class="muted">Bir konu seç.</p></div>`;
+  el.insertBefore(card, el.firstChild);
+  card.querySelectorAll("[data-mkt]").forEach(b => b.onclick = () => loadMarket(b.dataset.mkt));
+}
+
+function mountClassTrain() {
+  const el = $("tab-library");
+  if (!el || $("classTrain")) return;
+  const cats = [...new Set(state.words.map(w => w.cat))].sort();
+  const card = document.createElement("div");
+  card.className = "card";
+  card.id = "classTrain";
+  card.innerHTML = `<strong>Sınıfla çalış</strong><div class="chips2" style="margin-top:8px">${cats.map(c => `<button class="ghost" data-catgo="${esc(c)}">${esc(c)}</button>`).join("")}</div>`;
+  el.appendChild(card);
+  card.querySelectorAll("[data-catgo]").forEach(b => b.onclick = () => beginWords(state.words.filter(w => w.cat === b.dataset.catgo), "karisik"));
+}
+
+let morphIdx = 0;
+function morphCards() {
+  const map = new Map();
+  state.words.forEach(w => analyze(w).parts.forEach(p => {
+    if (!p.info || !p.f) return;
+    const key = p.type + ":" + p.f;
+    if (!map.has(key)) map.set(key, { key, f: p.f, tr: p.info.tr || "", ex: [] });
+    const c = map.get(key);
+    if (c.ex.length < 3) c.ex.push(w.en);
+  }));
+  return [...map.values()];
+}
+function renderMorphMini() {
+  const box = $("morphDeck");
+  if (!box) return;
+  state.settings.knownMorphs = state.settings.knownMorphs || [];
+  const cards = morphCards();
+  if (!cards.length) { box.innerHTML = `<p class="muted">Kök bilgisi olan kelime yok.</p>`; return; }
+  morphIdx = morphIdx % cards.length;
+  const c = cards[morphIdx];
+  const known = state.settings.knownMorphs.includes(c.key);
+  box.innerHTML = `<div class="card" style="margin-top:10px"><p class="muted">${morphIdx + 1}/${cards.length} · bilinen ${state.settings.knownMorphs.length}</p>
+    <div class="word">${esc(c.f)}</div><p>${esc(c.tr)}</p><p class="muted">${c.ex.map(esc).join(", ")}</p>
+    <div class="actions"><button class="ghost" id="mPrev">Önceki</button><button class="primary" id="mKnown">${known ? "Geri al" : "Biliyorum"}</button><button class="ghost" id="mNext">Sonraki</button></div></div>`;
+  $("mPrev").onclick = () => { morphIdx = (morphIdx - 1 + cards.length) % cards.length; renderMorphMini(); };
+  $("mNext").onclick = () => { morphIdx = (morphIdx + 1) % cards.length; renderMorphMini(); };
+  $("mKnown").onclick = () => {
+    const arr = state.settings.knownMorphs;
+    const i = arr.indexOf(c.key);
+    if (i >= 0) arr.splice(i, 1); else { arr.push(c.key); state.xp += 2; }
+    save();
+    morphIdx = (morphIdx + 1) % cards.length;
+    renderMorphMini();
+  };
+}
+
+renderers.today = renderToday;
+renderers.path = renderPath;
+renderers.learn = renderLearn;
+renderers.library = renderLibrary;
+renderers.journal = renderJournal;
+renderers.stats = renderStats;
+renderers.settings = renderSettings;
+renderers.session = renderSession;
+
+const _today = renderers.today;
+renderers.today = function () {
+  _today();
+  const el = $("tab-today");
+  if (!el || $("bornBar")) return;
+  const today = wordsBorn(dayKey());
+  const yest = wordsBorn(yesterdayKey());
+  const bar = document.createElement("div");
+  bar.className = "card";
+  bar.id = "bornBar";
+  bar.innerHTML = `<strong>Yeni kelimeler</strong>
+    <div class="actions" style="margin-top:8px">
+      <button class="primary" id="bornToday" ${today.length < 2 ? "disabled" : ""}>Bugün eklenenler (${today.length})</button>
+      <button class="ghost" id="bornYest" ${yest.length < 2 ? "disabled" : ""}>Dünün kelimeleri, tersinden (${yest.length})</button>
+    </div><div id="yestHost"></div>`;
+  el.insertBefore(bar, el.firstChild);
+  $("bornToday").onclick = () => beginWords(today, "meaning");
+  $("bornYest").onclick = () => mountMatch($("yestHost"), "Dün, tersinden", "Türkçe solda, İngilizce sağda.", yest.slice(0, 4).map(w => ({ a: w.tr, b: w.en })));
+};
+renderToday = renderers.today;
+
+const _path = renderers.path;
+renderers.path = function () {
+  _path();
+  mountMatch($("tab-path"), "Basamak eşleştirmesi", "Dört kelime. Tur bitince biter.", fourPairs());
+};
+renderPath = renderers.path;
+
+const _learn = renderers.learn;
+renderers.learn = function () {
+  _learn();
+  const el = $("tab-learn");
+  if (!el || $("smartLearn")) return;
+  const card = document.createElement("div");
+  card.className = "card";
+  card.id = "smartLearn";
+  card.innerHTML = `<strong>Akıllı turlar</strong>
+    <div class="actions" style="margin-top:8px">
+      <button class="ghost" id="goCloze">Kendi cümlesinden boşluk</button>
+      <button class="ghost" id="goConf">Karışan çiftler</button>
+      <button class="ghost" id="goMorph">Kök destesi</button>
+    </div><div id="morphDeck"></div>`;
+  el.appendChild(card);
+  $("goCloze").onclick = () => beginWords(state.words.filter(w => w.example && wordRe(w).test(w.example)), "cloze");
+  $("goConf").onclick = () => {
+    const bag = [];
+    const seen = new Set();
+    state.words.forEach(w => {
+      const mates = findConfusables(w);
+      if (!mates.length || seen.has(w.id)) return;
+      seen.add(w.id); bag.push(w);
+      mates.forEach(m => { if (!seen.has(m.id)) { seen.add(m.id); bag.push(m); } });
+    });
+    beginWords(bag, "meaning");
+  };
+  $("goMorph").onclick = renderMorphMini;
+};
+renderLearn = renderers.learn;
+
+const _lib = renderers.library;
+renderers.library = function (note) {
+  _lib(note);
+  mountMarket();
+  mountClassTrain();
+};
+renderLibrary = renderers.library;
+
+const _jour = renderers.journal;
+renderers.journal = function () {
+  _jour();
+  mountMatch($("tab-journal"), "Bugünkü karışanlar", "En çok yanıldığın dört kelime.", fourPairs(w => w.wrong > 0));
+};
+renderJournal = renderers.journal;
+
+const _stats = renderers.stats;
+renderers.stats = function () {
+  _stats();
+  const el = $("tab-stats");
+  const card = [...el.querySelectorAll(".card")].find(c => c.textContent.includes("En zayıf"));
+  if (!card) return;
+  const rows = state.words.filter(w => w.last).sort((a, b) => strengthOf(a) - strengthOf(b)).slice(0, 5);
+  card.innerHTML = `<strong>En zayıf 5 kelime</strong><p class="muted">Satıra basınca sözlükte açılır.</p>` +
+    (rows.length ? rows.map(w => `<button class="wordbtn" data-weak="${w.id}"><strong>${esc(w.en)}</strong> <span class="muted">${esc(w.tr)} · %${strengthOf(w)}</span></button>`).join("") : `<p class="muted">Henüz veri yok.</p>`);
+  card.querySelectorAll("[data-weak]").forEach(b => b.onclick = () => { showTab("library"); openDetail(+b.dataset.weak); });
+};
+renderStats = renderers.stats;
+
+const _set = renderers.settings;
+renderers.settings = function () {
+  _set();
+  const el = $("tab-settings");
+  if (!el || $("hideImages")) return;
+  const card = document.createElement("div");
+  card.className = "card";
+  card.innerHTML = `<div class="toggle"><span>Kartta rastgele resim gösterme</span><input type="checkbox" id="hideImages" ${state.settings.hideImages ? "checked" : ""}></div>`;
+  el.insertBefore(card, el.firstChild);
+  $("hideImages").onchange = e => { state.settings.hideImages = e.target.checked; save(); };
+};
+renderSettings = renderers.settings;
+
+const _detail = renderDetail;
+renderDetail = function () {
+  _detail();
+  if (state.settings.hideImages) document.querySelectorAll(".dw-image-wrap").forEach(n => { n.style.display = "none"; });
+  const w = state.words.find(x => x.id === detailId);
+  const host = $("libPane")?.querySelector(".dw-content") || $("detailBody")?.querySelector(".dw-content");
+  if (!w || !host || host.querySelector("#askCloze")) return;
+  const b = document.createElement("button");
+  b.className = "ghost";
+  b.id = "askCloze";
+  b.textContent = "Bu cümleden sor";
+  b.onclick = () => beginWords([w, ...state.words.filter(x => x.id !== w.id && x.example)], "cloze");
+  host.appendChild(b);
+};
+
+const _room = renderRoom;
+renderRoom = function () {
+  _room();
+  mountMatch($("tab-room"), "Raftaki kelimeler", "Favorilerin. Yoksa rastgele dört kelime.", fourPairs(w => w.favorite));
+};    
 </script>
 </body>
 </html>
