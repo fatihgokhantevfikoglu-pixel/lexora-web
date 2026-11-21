@@ -1563,7 +1563,7 @@ function showTab(tab) {
 
 const renderers = {
   today: renderToday, path: renderPath, learn: renderLearn, library: renderLibrary, classes: renderClasses,
-  philo: renderPhilo, journal: renderJournal, stats: renderStats, settings: renderSettings,
+  philo: renderPhilo, journal: renderJournal, stats: renderStats, look: renderLook, settings: renderSettings,
   session: renderSession
 };
 
@@ -2413,6 +2413,76 @@ const BADGES = [
   { id: "philo", name: "Alıntıcı (3 alıntı)", ok: () => state.quotes.length >= 3 }
 ];
 
+function bt(type) {
+  return state.totals.byType[type] || { n: 0, c: 0 };
+}
+
+function calibGap() {
+  const expected = { 1: 0.3, 2: 0.6, 3: 0.9 };
+  let n = 0, gap = 0;
+  for (const k of [1, 2, 3]) {
+    const x = state.totals.calib[k];
+    if (!x || !x.n) continue;
+    n += x.n;
+    gap += x.n * ((x.c / x.n) - expected[k]);
+  }
+  return n ? gap / n : null;
+}
+
+function calibText() {
+  const g = calibGap();
+  if (g == null) return "Henüz yeterli güven tahmini yok.";
+  if (Math.abs(g) <= 0.1) return "Tahminlerin gerçek doğruluğuna yakın.";
+  return g > 0 ? "Kendini olduğundan emin görüyorsun." : "Bildiğinden daha az emin görünüyorsun.";
+}
+
+function renderLook() {
+  const el = $("tab-look");
+  const u = state.ui;
+  const themeBtns = Object.entries(THEMES).map(([k, t]) =>
+    `<button class="theme ${u.theme === k ? "on" : ""}" data-theme="${k}" style="background:${t.bg};color:${t.text};border-color:${t.primary}">${esc(t.name)}</button>`
+  ).join("");
+  const accents = ACCENTS.map(c =>
+    `<button class="swatch ${u.accent === c ? "on" : ""}" data-accent="${c}" style="background:${c || "transparent"}" aria-label="Vurgu rengi"></button>`
+  ).join("");
+  const opt = (obj, val) => Object.keys(obj).map(k => `<option value="${k}" ${k === val ? "selected" : ""}>${k}</option>`).join("");
+  el.innerHTML = `
+    <div class="card">
+      <strong>Tema</strong>
+      <div class="themes">${themeBtns}</div>
+    </div>
+    <div class="card">
+      <strong>Vurgu rengi</strong>
+      <div class="swatches">${accents}</div>
+    </div>
+    <div class="card">
+      <div class="toggle"><span>Yazı tipi</span><select id="uiFont">${opt(FONTS, u.font)}</select></div>
+      <div class="toggle"><span>Yazı boyutu</span><select id="uiSize">${opt(SIZES, u.size)}</select></div>
+      <div class="toggle"><span>Köşe</span><select id="uiRadius">${opt(RADII, u.radius)}</select></div>
+      <div class="toggle"><span>Yoğunluk</span>
+        <select id="uiDensity">
+          <option value="rahat" ${u.density === "rahat" ? "selected" : ""}>rahat</option>
+          <option value="kompakt" ${u.density === "kompakt" ? "selected" : ""}>kompakt</option>
+        </select>
+      </div>
+      <div class="toggle"><span>Geçiş</span>
+        <select id="uiMotion">
+          <option value="kayma" ${u.motion === "kayma" ? "selected" : ""}>kayma</option>
+          <option value="solma" ${u.motion === "solma" ? "selected" : ""}>solma</option>
+          <option value="yok" ${u.motion === "yok" ? "selected" : ""}>yok</option>
+        </select>
+      </div>
+      <div class="toggle"><span>Hareketi azalt</span><input type="checkbox" id="uiReduce" ${u.reduce ? "checked" : ""}></div>
+    </div>`;
+  el.querySelectorAll("[data-theme]").forEach(b => b.onclick = () => { state.ui.theme = b.dataset.theme; save(); applyUi(); renderLook(); });
+  el.querySelectorAll("[data-accent]").forEach(b => b.onclick = () => { state.ui.accent = b.dataset.accent; save(); applyUi(); renderLook(); });
+  $("uiFont").onchange = e => { state.ui.font = e.target.value; save(); applyUi(); };
+  $("uiSize").onchange = e => { state.ui.size = e.target.value; save(); applyUi(); };
+  $("uiRadius").onchange = e => { state.ui.radius = e.target.value; save(); applyUi(); };
+  $("uiDensity").onchange = e => { state.ui.density = e.target.value; save(); applyUi(); renderLook(); };
+  $("uiMotion").onchange = e => { state.ui.motion = e.target.value; save(); applyUi(); };
+  $("uiReduce").onchange = e => { state.ui.reduce = e.target.checked; save(); applyUi(); };
+}    
 // ---------- Ayarlar ----------
 function renderSettings() {
   const el = $("tab-settings");
