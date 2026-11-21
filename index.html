@@ -196,12 +196,96 @@
   #webHits { margin: 8px 0 12px; }
   #webHits .row { gap: 10px; flex-wrap: wrap; }
   #webHits .ghost { flex: 0 0 auto; }
+/* ===== Yeni Tema Yüzey Stilleri & Atmosfer ===== */
+  :root[data-surface="glass"] .card {
+    background: color-mix(in srgb, var(--surface) 76%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  }
+  :root[data-surface="paper"] .card {
+    box-shadow: 0 3px 0 var(--border), 0 8px 20px rgba(0, 0, 0, 0.06);
+    background-image: radial-gradient(color-mix(in srgb, var(--text) 4%, transparent) 1px, transparent 0);
+    background-size: 18px 18px;
+  }
+
+  /* ===== Üst Başlık Profil & Ambiyans Çubuğu ===== */
+  .header-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 600;
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 4px 11px; border-radius: 999px; cursor: pointer;
+    color: var(--text); transition: transform .15s, border-color .2s;
+  }
+  .header-pill:hover { border-color: var(--primary); transform: translateY(-1px); }
+  .header-pill.active-amb { border-color: var(--primary); background: color-mix(in srgb, var(--primary) 14%, var(--surface)); color: var(--primary); }
+
+  /* ===== Yüzen +XP & Kombo Parçacıkları ===== */
+  .xp-float {
+    position: fixed; pointer-events: none; z-index: 9999;
+    font-weight: 800; font-size: 15px; color: var(--ok);
+    text-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    animation: floatUpXp 0.95s cubic-bezier(.16,.84,.44,1) forwards;
+  }
+  .xp-float.combo { color: #f59e0b; font-size: 17px; }
+  @keyframes floatUpXp {
+    0%   { opacity: 0; transform: translate(-50%, 6px) scale(0.8); }
+    20%  { opacity: 1; transform: translate(-50%, -6px) scale(1.08); }
+    100% { opacity: 0; transform: translate(-50%, -48px) scale(0.95); }
+  }
+  #fxCanvas { position: fixed; inset: 0; pointer-events: none; z-index: 9998; }
+
+  /* ===== 3B Kart Eğimi & Parlama ===== */
+  .tilt-card { transform-style: preserve-3d; transition: transform 0.14s ease-out, box-shadow 0.2s ease; will-change: transform; }
+  :root[data-reduce="1"] .tilt-card { transform: none !important; }
+
+  /* ===== Profil Kartı & Avatar Seçici ===== */
+  .profile-banner {
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 14%, var(--surface)), var(--surface));
+    border: 1.5px solid color-mix(in srgb, var(--primary) 35%, var(--border));
+  }
+  .avatar-circle {
+    width: 56px; height: 56px; border-radius: 50%;
+    display: grid; place-items: center; font-size: 28px;
+    background: var(--bg); border: 2px solid var(--primary); flex-shrink: 0;
+  }
+  .avatar-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  .avatar-opt {
+    width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--border);
+    background: var(--bg); font-size: 20px; cursor: pointer; display: grid; place-items: center;
+  }
+  .avatar-opt.on { border-color: var(--primary); background: color-mix(in srgb, var(--primary) 16%, var(--surface)); transform: scale(1.08); }
+
+  /* ===== Akıllı İstatistik Komutları & Kalıcılık Hunisi ===== */
+  .smart-cmd {
+    display: flex; justify-content: space-between; align-items: center; gap: 10px;
+    padding: 12px 14px; border-radius: 12px; margin-bottom: 8px;
+    border: 1px solid color-mix(in srgb, var(--primary) 35%, var(--border));
+    background: color-mix(in srgb, var(--primary) 7%, var(--surface));
+  }
+  .funnel-bar { display: flex; height: 18px; border-radius: 999px; overflow: hidden; background: var(--border); margin: 10px 0; }
+  .funnel-seg { height: 100%; transition: width .4s ease; }
+
+  /* ===== Yüzen Kelime Evreni (Canvas) ===== */
+  .universe-wrap { position: relative; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); background: radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--primary) 14%, var(--bg)), var(--bg) 78%); }
+  #wordUniverseCanvas { display: block; width: 100%; height: 430px; touch-action: none; cursor: grab; }
+  #wordUniverseCanvas:active { cursor: grabbing; }
+  .universe-hud {
+    position: absolute; bottom: 10px; left: 10px; right: 10px;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;
+    pointer-events: none; font-size: 12px; color: var(--muted);
+  }
+  .universe-pill { background: color-mix(in srgb, var(--surface) 85%, transparent); padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); backdrop-filter: blur(6px); }    
 </style>
 </head>
 <body>
+<canvas id="fxCanvas"></canvas>
 <header>
   <span>Lexora 2.0</span>
+  <button class="header-pill" id="profilePill" title="Profili Düzenle"></button>
   <span class="streak-badge" id="streakBadge"></span>
+  <button class="header-pill" id="ambientBtn" title="Odak Ambiyansı (Kahverengi Gürültü)">🎧 Odak</button>
 </header>
 <nav aria-label="Ana menü">
   <button data-tab="today" class="active"><span aria-hidden="true">🏠</span>Bugün</button>
@@ -2765,6 +2849,643 @@ function renderSettings() {
   };
 }
 
+// =====================================================================
+// LEXORA 2.5 — İdeal Sürüm Eklenti Paketi (7 Modül Tam Entegrasyon)
+// =====================================================================
+
+// 1. DURUM & PROFİL YÜKSELTME
+const _origUpgradeState = upgradeState;
+upgradeState = function(s) {
+  s = _origUpgradeState(s);
+  s.settings = { sound: true, haptics: true, ...s.settings };
+  s.ui = { surface: "flat", ...s.ui };
+  s.profile = {
+    name: "Bilge Okur",
+    avatar: "🦉",
+    goalTag: "YDS & Akademik İngilizce",
+    title: "oto",
+    ...(s.profile || {})
+  };
+  return s;
+};
+state = upgradeState(state);
+
+const AVATARS = ["🦉", "🧭", "📜", "⚗️", "🏛️", "🌿", "🔭", "♟️", "🦊", "✨"];
+const TITLES = [
+  { id: "oto", label: "Otomatik (Seviyeye Göre)", minXp: 0 },
+  { id: "cirak", label: "Çırak Okur", minXp: 0 },
+  { id: "kok", label: "Kök Avcısı", minXp: 150 },
+  { id: "kavram", label: "Kavram Mimarı", minXp: 500 },
+  { id: "diyalektik", label: "Diyalektik Ustası", minXp: 1200 },
+  { id: "filozof", label: "Dil Filozofu", minXp: 2500 }
+];
+
+function resolvedTitle() {
+  const p = state.profile || {};
+  if (p.title && p.title !== "oto") {
+    const found = TITLES.find(t => t.id === p.title);
+    if (found && state.xp >= found.minXp) return found.label;
+  }
+  return [...TITLES].filter(t => t.id !== "oto" && state.xp >= t.minXp).pop()?.label || "Çırak Okur";
+}
+
+function updateProfilePill() {
+  const pill = $("profilePill");
+  if (!pill) return;
+  const p = state.profile;
+  pill.innerHTML = `<span>${esc(p.avatar)}</span><span>${esc(p.name)}</span>`;
+  pill.onclick = () => showTab("settings");
+}
+
+// 2. TEMALARDA ÇEŞİTLİLİK & YÜZEY STİLLERİ
+Object.assign(THEMES, {
+  parsomen: { name: "Parşömen", dark: false, bg: "#f4ecd8", surface: "#fbf6e9", text: "#2c2216", muted: "#6e5d49", primary: "#8c4a27", border: "#dfd3bc", ok: "#2e6f40", bad: "#a63232", okbg: "#dcead9", badbg: "#f5d6d6" },
+  siber:    { name: "Siber Gece", dark: true,  bg: "#070b19", surface: "#0f172a", text: "#e2e8f0", muted: "#94a3b8", primary: "#38bdf8", border: "#1e293b", ok: "#10b981", bad: "#f43f5e", okbg: "#064e3b", badbg: "#881337" },
+  gunbatimi:{ name: "Gün Batımı", dark: false, bg: "#fff5f0", surface: "#ffffff", text: "#3b1710", muted: "#7c4a3e", primary: "#d94e1f", border: "#fed7aa", ok: "#15803d", bad: "#b91c1c", okbg: "#dcfce7", badbg: "#fee2e2" },
+  aurora:   { name: "Kuzey Işıkları", dark: true, bg: "#09151e", surface: "#112432", text: "#ecfdf5", muted: "#88b3c8", primary: "#2dd4bf", border: "#1e3a4c", ok: "#34d399", bad: "#fb7185", okbg: "#065f46", badbg: "#881337" }
+});
+
+const _origApplyUi = applyUi;
+applyUi = function() {
+  _origApplyUi();
+  document.documentElement.dataset.surface = state.ui.surface || "flat";
+  updateProfilePill();
+};
+
+// 3. MOTİVE EDİCİ SESLER & ODAK AMBİYANSI (WEB AUDIO API)
+let audioCtx = null;
+let ambientNode = null;
+let ambientOn = false;
+let sessionCombo = 0;
+
+function getAudio() {
+  if (!audioCtx) {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (AC) audioCtx = new AC();
+  }
+  if (audioCtx && audioCtx.state === "suspended") audioCtx.resume().catch(() => {});
+  return audioCtx;
+}
+
+function playTone(freqs, dur = 0.14, type = "sine", gainVal = 0.12) {
+  if (!state.settings.sound) return;
+  const ctx = getAudio();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  freqs.forEach((f, idx) => {
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(f, now + idx * 0.065);
+    g.gain.setValueAtTime(0.001, now + idx * 0.065);
+    g.gain.exponentialRampToValueAtTime(gainVal, now + idx * 0.065 + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.065 + dur);
+    osc.connect(g); g.connect(ctx.destination);
+    osc.start(now + idx * 0.065);
+    osc.stop(now + idx * 0.065 + dur + 0.02);
+  });
+}
+
+const SFX = {
+  ok: (combo = 1) => {
+    const shift = Math.min(combo - 1, 6) * 28;
+    playTone([523.25 + shift, 659.25 + shift, 783.99 + shift], 0.16, "triangle", 0.11);
+  },
+  bad: () => playTone([220, 185], 0.18, "sawtooth", 0.07),
+  flip: () => playTone([420], 0.06, "sine", 0.05),
+  fanfare: () => playTone([523.25, 659.25, 783.99, 1046.5], 0.26, "triangle", 0.14)
+};
+
+function toggleAmbient() {
+  const btn = $("ambientBtn");
+  const ctx = getAudio();
+  if (!ctx) { toast("Tarayıcı ses motorunu desteklemiyor"); return; }
+  if (ambientOn && ambientNode) {
+    ambientNode.disconnect();
+    ambientNode = null;
+    ambientOn = false;
+    btn?.classList.remove("active-amb");
+    if (btn) btn.textContent = "🎧 Odak";
+    toast("Odak ambiyansı kapatıldı");
+    return;
+  }
+  const bufferSize = 2 * ctx.sampleRate;
+  const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const output = noiseBuffer.getChannelData(0);
+  let lastOut = 0.0;
+  for (let i = 0; i < bufferSize; i++) {
+    const white = Math.random() * 2 - 1;
+    output[i] = (lastOut + (0.02 * white)) / 1.02;
+    lastOut = output[i];
+    output[i] *= 2.8;
+  }
+  const srcNode = ctx.createBufferSource();
+  srcNode.buffer = noiseBuffer;
+  srcNode.loop = true;
+  const gainNode = ctx.createGain();
+  gainNode.gain.value = 0.08;
+  srcNode.connect(gainNode);
+  gainNode.connect(ctx.destination);
+  srcNode.start(0);
+  ambientNode = gainNode;
+  ambientOn = true;
+  btn?.classList.add("active-amb");
+  if (btn) btn.textContent = "🌊 Odak Açık";
+  toast("Kahverengi gürültü odak modu aktif");
+}
+$("ambientBtn")?.addEventListener("click", toggleAmbient);
+
+function haptic(ms) {
+  if (state.settings.haptics && navigator.vibrate) navigator.vibrate(ms);
+}
+
+// 4. KONFETİ & YÜZEN +XP / 3B KART TİLT EFEKTLERİ
+function spawnXpFloat(text, isCombo = false) {
+  if (state.ui.reduce) return;
+  const el = document.createElement("div");
+  el.className = "xp-float" + (isCombo ? " combo" : "");
+  el.textContent = text;
+  el.style.left = (46 + Math.random() * 8) + "%";
+  el.style.top = "44%";
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1000);
+}
+
+function launchConfetti(count = 55) {
+  if (state.ui.reduce) return;
+  const canvas = $("fxCanvas");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const colors = ["#6d28d9", "#10b981", "#f59e0b", "#38bdf8", "#f43f5e", "#a78bfa"];
+  const pieces = Array.from({ length: count }, () => ({
+    x: canvas.width * (0.2 + Math.random() * 0.6),
+    y: canvas.height * 0.35,
+    vx: (Math.random() - 0.5) * 11,
+    vy: -Math.random() * 10 - 3,
+    size: 5 + Math.random() * 6,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    rot: Math.random() * Math.PI * 2,
+    vrot: (Math.random() - 0.5) * 0.25
+  }));
+  let frame = 0;
+  function step() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.vy += 0.35; p.rot += p.vrot;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+      ctx.restore();
+    });
+    if (++frame < 75) requestAnimationFrame(step);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  requestAnimationFrame(step);
+}
+
+// 3B Kart Eğimi Dinleyicisi
+document.addEventListener("pointermove", e => {
+  if (state.ui.reduce) return;
+  const card = e.target.closest(".flashcard-inner");
+  if (!card) return;
+  const r = card.getBoundingClientRect();
+  const dx = (e.clientX - r.left) / r.width - 0.5;
+  const dy = (e.clientY - r.top) / r.height - 0.5;
+  card.classList.add("tilt-card");
+  card.style.transform = `perspective(700px) rotateY(${(dx * 10).toFixed(1)}deg) rotateX(${(-dy * 10).toFixed(1)}deg)`;
+});
+document.addEventListener("pointerout", e => {
+  const card = e.target.closest(".flashcard-inner");
+  if (card) card.style.transform = "";
+});
+
+// Oturum ve Rozet Geri Bildirim Kancaları
+const _origCheckBadges = checkBadges;
+checkBadges = function() {
+  const before = state.badges.length;
+  _origCheckBadges();
+  if (state.badges.length > before) {
+    SFX.fanfare();
+    launchConfetti(65);
+    haptic([25, 40, 25]);
+  }
+};
+
+const _origStartSession = startSession;
+startSession = function(opts = {}) {
+  sessionCombo = 0;
+  _origStartSession(opts);
+};
+
+const _origResolveAnswer = resolveAnswer;
+resolveAnswer = function(q, ok, pickedId, typed) {
+  const prevLvl = levelInfo().L;
+  const prevToday = todayStats().answers;
+  _origResolveAnswer(q, ok, pickedId, typed);
+  if (ok) {
+    sessionCombo++;
+    SFX.ok(sessionCombo);
+    haptic(15);
+    spawnXpFloat(sessionCombo >= 3 ? `+10 XP · 🔥 ${sessionCombo}x` : "+10 XP", sessionCombo >= 3);
+  } else {
+    sessionCombo = 0;
+    SFX.bad();
+    haptic([35, 30, 35]);
+  }
+  if (levelInfo().L > prevLvl || (prevToday < state.settings.goal && todayStats().answers >= state.settings.goal)) {
+    SFX.fanfare();
+    launchConfetti(70);
+  }
+};
+
+// 5. İSTATİSTİKLERLE BAĞLANTILI AKILLI ÇALIŞMA KOMUTLARI
+function buildSmartCommands() {
+  const cmds = [];
+  const typeNames = { meaning: "Anlam", morph: "Kök Analizi", cloze: "Cümle", colloc: "Bağlaç & Kalıp", speak: "Telaffuz", listen: "Dinleme", produce: "Yazma", dictation: "Dikte" };
+  let worstType = null, worstAcc = 101;
+  Object.keys(typeNames).forEach(k => {
+    const x = bt(k);
+    if (x.n >= 3) {
+      const a = Math.round((x.c / x.n) * 100);
+      if (a < worstAcc) { worstAcc = a; worstType = k; }
+    }
+  });
+  if (worstType && worstAcc < 70) {
+    cmds.push({
+      id: "cmdWeakType",
+      title: `🎯 Zayıf Halka: ${typeNames[worstType]} (%${worstAcc})`,
+      desc: "Bu soru türünde doğruluk oranın düşük. 5 soruluk telafi turu başlat.",
+      btn: "Telafi Turu",
+      run: () => startSession({ len: 5, focus: worstType })
+    });
+  }
+  const fading = state.words.filter(w => w.last && strengthOf(w) < 35);
+  if (fading.length >= 3) {
+    cmds.push({
+      id: "cmdFading",
+      title: `⏳ Unutma Eşiği: ${fading.length} kelime zayıfladı`,
+      desc: "Hafıza gücü %35 altına inen kelimeleri kalıcı belleğe geri çek.",
+      btn: "Kurtarma Başlat",
+      run: () => startSession({ len: Math.min(8, fading.length), onlyWeak: true })
+    });
+  }
+  const avgSec = state.totals.msCount ? (state.totals.ms / state.totals.msCount / 1000) : 0;
+  if (avgSec > 4.2) {
+    cmds.push({
+      id: "cmdSpeed",
+      title: `⚡ Refleks Hızlandırma (Ort. ${avgSec.toFixed(1)} sn)`,
+      desc: "Kelime tanıma hızını artırmak için hızlı eşleştirme turuna geç.",
+      btn: "Eşleştirme Aç",
+      run: () => { showTab("learn"); }
+    });
+  }
+  return cmds;
+}
+
+const _origRenderToday = renderToday;
+renderToday = function() {
+  _origRenderToday();
+  const el = $("tab-today");
+  const cmds = buildSmartCommands();
+  if (!cmds.length || !el) return;
+  const box = document.createElement("div");
+  box.className = "card";
+  box.innerHTML = `<strong>🧭 Akıllı Çalışma Reçetesi</strong><p class="muted" style="margin:4px 0 10px;">İstatistiklerine göre önerilen anlık eylemler:</p>` +
+    cmds.map(c => `<div class="smart-cmd"><div><strong>${esc(c.title)}</strong><div class="muted" style="font-size:13px;">${esc(c.desc)}</div></div><button class="primary" data-scmd="${c.id}" style="white-space:nowrap;">${esc(c.btn)}</button></div>`).join("");
+  el.insertBefore(box, el.children[1]);
+  cmds.forEach(c => {
+    const b = box.querySelector(`[data-scmd="${c.id}"]`);
+    if (b) b.onclick = c.run;
+  });
+};
+
+// 6. GELİŞMİŞ GELİŞİM TAKİBİ (KALICILIK HUNİSİ + KATEGORİ HAKİMİYETİ + KOMUTLAR)
+const _origRenderStats = renderStats;
+renderStats = function() {
+  _origRenderStats();
+  const el = $("tab-stats");
+  if (!el) return;
+  const words = state.words;
+  const wNew = words.filter(w => !w.last).length;
+  const wLearn = words.filter(w => w.last && !w.mastered && strengthOf(w) < 60).length;
+  const wConsol = words.filter(w => w.last && !w.mastered && strengthOf(w) >= 60).length;
+  const wMast = words.filter(w => w.mastered).length;
+  const tot = Math.max(1, words.length);
+
+  // Kategori hakimiyet çubukları
+  const catMap = {};
+  words.forEach(w => {
+    const c = catMap[w.cat] || (catMap[w.cat] = { total: 0, sumStr: 0 });
+    c.total++;
+    c.sumStr += w.last ? strengthOf(w) : 0;
+  });
+  const catBars = Object.entries(catMap)
+    .map(([k, v]) => ({ k, pct: Math.round(v.sumStr / v.total), n: v.total }))
+    .sort((a, b) => b.pct - a.pct)
+    .map(c => `<div style="margin:8px 0;"><div class="row" style="border:0;padding:0;"><span>${esc(c.k)} <span class="muted">(${c.n})</span></span><span class="muted">%${c.pct}</span></div><div class="progress"><div style="width:${c.pct}%"></div></div></div>`)
+    .join("");
+
+  const cmds = buildSmartCommands();
+  const advCard = document.createElement("div");
+  advCard.className = "card";
+  advCard.innerHTML = `
+    <strong>🔬 Hafıza Kalıcılık Hunisi & Kategori Hakimiyeti</strong>
+    <div class="funnel-bar" title="Yeni / Öğreniliyor / Pekiştiriliyor / Ustalaşıldı">
+      <div class="funnel-seg" style="width:${(wNew/tot*100).toFixed(1)}%;background:#94a3b8;" title="Yeni: ${wNew}"></div>
+      <div class="funnel-seg" style="width:${(wLearn/tot*100).toFixed(1)}%;background:#f59e0b;" title="Öğreniliyor: ${wLearn}"></div>
+      <div class="funnel-seg" style="width:${(wConsol/tot*100).toFixed(1)}%;background:#38bdf8;" title="Pekiştiriliyor: ${wConsol}"></div>
+      <div class="funnel-seg" style="width:${(wMast/tot*100).toFixed(1)}%;background:#16a34a;" title="Ustalaşıldı: ${wMast}"></div>
+    </div>
+    <div class="muted" style="font-size:12px;display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px;">
+      <span>⚪ Yeni: <strong>${wNew}</strong></span>
+      <span>🟠 Öğreniliyor: <strong>${wLearn}</strong></span>
+      <span>🔵 Pekiştiriliyor: <strong>${wConsol}</strong></span>
+      <span>🟢 Ustalaşıldı: <strong>${wMast}</strong></span>
+    </div>
+    ${cmds.length ? `<div style="margin-bottom:14px;">${cmds.map(c => `<div class="smart-cmd"><div><strong>${esc(c.title)}</strong><div class="muted" style="font-size:12px;">${esc(c.desc)}</div></div><button class="primary" data-statcmd="${c.id}">${esc(c.btn)}</button></div>`).join("")}</div>` : ""}
+    <strong>Kategori Bazlı Ortalama Hafıza Gücü</strong>
+    ${catBars}
+  `;
+  el.insertBefore(advCard, el.children[1]);
+  cmds.forEach(c => {
+    const b = advCard.querySelector(`[data-statcmd="${c.id}"]`);
+    if (b) b.onclick = c.run;
+  });
+};
+
+// 7. YÜZEN KELİME EVRENİ (İNTERAKTİF FİZİK SİMÜLASYONU)
+let classViewMode = "list"; // "list" | "universe"
+let universeFilter = "all";
+let universeRaf = null;
+
+const _origRenderClasses = renderClasses;
+renderClasses = function() {
+  if (universeRaf) { cancelAnimationFrame(universeRaf); universeRaf = null; }
+  if (classViewMode === "list") {
+    _origRenderClasses();
+    const el = $("tab-classes");
+    const firstCard = el?.querySelector(".card");
+    if (firstCard) {
+      const bar = document.createElement("div");
+      bar.className = "tool-tabs";
+      bar.style.marginTop = "10px";
+      bar.innerHTML = `<button class="active" id="cvList">📋 Liste Görünümü</button><button id="cvUniv">🌌 Yüzen Kelime Evreni</button>`;
+      firstCard.appendChild(bar);
+      $("cvUniv").onclick = () => { classViewMode = "universe"; renderClasses(); };
+    }
+    return;
+  }
+
+  const el = $("tab-classes");
+  const cats = ["all", ...new Set(state.words.map(w => w.cat))];
+  el.innerHTML = `
+    <div class="card">
+      <div class="row" style="border:0;padding:0;">
+        <strong>🌌 Yüzen Kelime Evreni</strong>
+        <span class="muted">${state.words.length} Gökcismi</span>
+      </div>
+      <div class="tool-tabs" style="margin-top:8px;">
+        <button id="cvList">📋 Liste Görünümü</button>
+        <button class="active" id="cvUniv">🌌 Yüzen Kelime Evreni</button>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+        <select id="univCat" aria-label="Evren filtresi">
+          ${cats.map(c => `<option value="${esc(c)}" ${c === universeFilter ? "selected" : ""}>${c === "all" ? "Tüm Kategoriler" : esc(c)}</option>`).join("")}
+          <option value="__hard" ${universeFilter === "__hard" ? "selected" : ""}>🔥 Sadece Zor Kelimeler</option>
+          <option value="__master" ${universeFilter === "__master" ? "selected" : ""}>⭐ Ustalaşılanlar</option>
+        </select>
+      </div>
+    </div>
+    <div class="universe-wrap">
+      <canvas id="wordUniverseCanvas"></canvas>
+      <div class="universe-hud">
+        <span class="universe-pill">Sürükle · Çarpıştır · Dokunarak Detay Aç</span>
+        <span class="universe-pill">Çizgiler: Ortak Kök Bağlantısı</span>
+      </div>
+    </div>
+  `;
+  $("cvList").onclick = () => { classViewMode = "list"; renderClasses(); };
+  $("univCat").onchange = e => { universeFilter = e.target.value; renderClasses(); };
+  startWordUniverse();
+};
+
+function startWordUniverse() {
+  const canvas = $("wordUniverseCanvas");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const rect = canvas.getBoundingClientRect();
+  const W = rect.width || 600;
+  const H = 430;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  ctx.scale(dpr, dpr);
+
+  const palette = ["#8b5cf6", "#0ea5e9", "#10b981", "#f59e0b", "#ec4899", "#14b8a6", "#f97316"];
+  const catColor = {};
+  let ci = 0;
+
+  const nodes = state.words.map(w => {
+    if (!catColor[w.cat]) catColor[w.cat] = palette[ci++ % palette.length];
+    const str = w.last ? strengthOf(w) : 15;
+    const r = 16 + (str / 100) * 18;
+    const rootPart = analyze(w).parts.find(p => p.type === "root");
+    return {
+      w,
+      r,
+      x: r + Math.random() * (W - r * 2),
+      y: r + Math.random() * (H - r * 2),
+      vx: (Math.random() - 0.5) * 0.7,
+      vy: (Math.random() - 0.5) * 0.7,
+      color: catColor[w.cat],
+      root: rootPart ? rootPart.f : null
+    };
+  });
+
+  let dragNode = null, dragMoved = false, downPos = { x: 0, y: 0 };
+
+  function getPos(e) {
+    const b = canvas.getBoundingClientRect();
+    return { x: e.clientX - b.left, y: e.clientY - b.top };
+  }
+
+  canvas.onpointerdown = e => {
+    const p = getPos(e);
+    downPos = p; dragMoved = false;
+    for (let i = nodes.length - 1; i >= 0; i--) {
+      const n = nodes[i];
+      if (Math.hypot(p.x - n.x, p.y - n.y) <= n.r + 4) {
+        dragNode = n;
+        canvas.setPointerCapture(e.pointerId);
+        break;
+      }
+    }
+  };
+  canvas.onpointermove = e => {
+    if (!dragNode) return;
+    const p = getPos(e);
+    if (Math.hypot(p.x - downPos.x, p.y - downPos.y) > 5) dragMoved = true;
+    dragNode.vx = (p.x - dragNode.x) * 0.25;
+    dragNode.vy = (p.y - dragNode.y) * 0.25;
+    dragNode.x = Math.max(dragNode.r, Math.min(W - dragNode.r, p.x));
+    dragNode.y = Math.max(dragNode.r, Math.min(H - dragNode.r, p.y));
+  };
+  canvas.onpointerup = () => {
+    if (dragNode && !dragMoved) {
+      SFX.flip();
+      openDetail(dragNode.w.id);
+    }
+    dragNode = null;
+  };
+
+  const isMatch = n => {
+    if (universeFilter === "all") return true;
+    if (universeFilter === "__hard") return isHard(n.w);
+    if (universeFilter === "__master") return !!n.w.mastered;
+    return n.w.cat === universeFilter;
+  };
+
+  function tick() {
+    ctx.clearRect(0, 0, W, H);
+    // Aynı köke sahip kelimeler arasında takımyıldızı çizgisi
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const a = nodes[i], b = nodes[j];
+        if (a.root && a.root === b.root) {
+          const dist = Math.hypot(a.x - b.x, a.y - b.y);
+          if (dist < 190) {
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.strokeStyle = `rgba(167, 139, 250, ${(1 - dist / 190) * 0.45})`;
+            ctx.lineWidth = 1.2;
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    // Fizik & çarpışma
+    for (let i = 0; i < nodes.length; i++) {
+      const n = nodes[i];
+      if (n !== dragNode) {
+        n.x += n.vx; n.y += n.vy;
+        n.vx *= 0.995; n.vy *= 0.995;
+        if (Math.hypot(n.vx, n.vy) < 0.18) {
+          n.vx += (Math.random() - 0.5) * 0.06;
+          n.vy += (Math.random() - 0.5) * 0.06;
+        }
+        if (n.x < n.r) { n.x = n.r; n.vx *= -0.8; }
+        if (n.x > W - n.r) { n.x = W - n.r; n.vx *= -0.8; }
+        if (n.y < n.r) { n.y = n.r; n.vy *= -0.8; }
+        if (n.y > H - n.r) { n.y = H - n.r; n.vy *= -0.8; }
+      }
+      for (let j = i + 1; j < nodes.length; j++) {
+        const m = nodes[j];
+        const dx = m.x - n.x, dy = m.y - n.y;
+        const d = Math.hypot(dx, dy) || 1;
+        const minD = n.r + m.r + 4;
+        if (d < minD) {
+          const overlap = (minD - d) * 0.5;
+          const nx = dx / d, ny = dy / d;
+          if (n !== dragNode) { n.x -= nx * overlap; n.y -= ny * overlap; }
+          if (m !== dragNode) { m.x += nx * overlap; m.y += ny * overlap; }
+        }
+      }
+
+      const active = isMatch(n);
+      ctx.save();
+      ctx.globalAlpha = active ? 1 : 0.22;
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fillStyle = n.color + "33";
+      ctx.fill();
+      ctx.lineWidth = n.w.mastered ? 2.5 : 1.5;
+      ctx.strokeStyle = n.color;
+      ctx.stroke();
+
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--text").trim() || "#1e1b4b";
+      ctx.font = `600 ${Math.max(10, Math.round(n.r * 0.44))}px system-ui, sans-serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(n.w.en, n.x, n.y);
+      ctx.restore();
+    }
+    universeRaf = requestAnimationFrame(tick);
+  }
+  universeRaf = requestAnimationFrame(tick);
+}
+
+// 8. KULLANICI PROFİLİ ÖZELLEŞTİRME & YÜZEY/SES AYARLARI (TERCİHLER SEKMESİ)
+const _origRenderSettings = renderSettings;
+renderSettings = function() {
+  _origRenderSettings();
+  const el = $("tab-settings");
+  if (!el) return;
+  const p = state.profile;
+  const li = levelInfo();
+
+  const profileCard = document.createElement("div");
+  profileCard.className = "card profile-banner";
+  profileCard.innerHTML = `
+    <div class="avatar-circle">${esc(p.avatar)}</div>
+    <div style="flex:1;min-width:200px;">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <strong style="font-size:18px;">${esc(p.name)}</strong>
+        <span class="q-badge">${esc(resolvedTitle())}</span>
+      </div>
+      <div class="muted" style="margin-top:2px;">🎯 ${esc(p.goalTag)} · Seviye ${li.L} (${state.xp} XP) · ${masteredCount()} Ustalaşılan</div>
+      <div class="avatar-grid">
+        ${AVATARS.map(av => `<button class="avatar-opt ${p.avatar === av ? "on" : ""}" data-av="${av}">${av}</button>`).join("")}
+      </div>
+      <div class="grid" style="margin-top:10px;">
+        <input id="profName" value="${esc(p.name)}" placeholder="Kullanıcı adın">
+        <input id="profGoal" value="${esc(p.goalTag)}" placeholder="Çalışma odağın (örn. YDS)">
+      </div>
+      <div class="toggle" style="margin-top:8px;">
+        <span>Ünvan seçimi</span>
+        <select id="profTitle">
+          ${TITLES.map(t => `<option value="${t.id}" ${p.title === t.id ? "selected" : ""} ${state.xp < t.minXp ? "disabled" : ""}>${esc(t.label)}${t.minXp ? ` (${t.minXp} XP)` : ""}</option>`).join("")}
+        </select>
+      </div>
+    </div>
+  `;
+  el.insertBefore(profileCard, el.firstChild);
+
+  profileCard.querySelectorAll("[data-av]").forEach(b => b.onclick = () => {
+    state.profile.avatar = b.dataset.av;
+    save(); updateProfilePill(); renderSettings();
+  });
+  $("profName").onchange = e => { state.profile.name = e.target.value.trim() || "Bilge Okur"; save(); updateProfilePill(); renderSettings(); };
+  $("profGoal").onchange = e => { state.profile.goalTag = e.target.value.trim() || "Akademik İngilizce"; save(); renderSettings(); };
+  $("profTitle").onchange = e => { state.profile.title = e.target.value; save(); renderSettings(); };
+
+  // Tema kartına yüzey stili ve ses/titreşim kontrolleri ekle
+  const themeCard = el.children[1];
+  if (themeCard) {
+    const extra = document.createElement("div");
+    extra.innerHTML = `
+      <div class="toggle"><span>Kart yüzey stili</span>
+        <select id="uiSurface">
+          <option value="flat" ${(state.ui.surface || "flat") === "flat" ? "selected" : ""}>Düz (Flat)</option>
+          <option value="glass" ${state.ui.surface === "glass" ? "selected" : ""}>Cam Efekti (Glass)</option>
+          <option value="paper" ${state.ui.surface === "paper" ? "selected" : ""}>Kağıt Dokulu (Paper)</option>
+        </select>
+      </div>
+      <div class="toggle"><span>Motive edici ses efektleri</span><input type="checkbox" id="setSound" ${state.settings.sound ? "checked" : ""}></div>
+      <div class="toggle"><span>Dokunsal titreşim (mobil)</span><input type="checkbox" id="setHaptics" ${state.settings.haptics ? "checked" : ""}></div>
+    `;
+    themeCard.appendChild(extra);
+    $("uiSurface").onchange = e => { state.ui.surface = e.target.value; save(); applyUi(); };
+    $("setSound").onchange = e => { state.settings.sound = e.target.checked; if (e.target.checked) SFX.ok(1); save(); };
+    $("setHaptics").onchange = e => { state.settings.haptics = e.target.checked; haptic(20); save(); };
+  }
+};    
+    
 // ---------- Başlatma ----------
 document.querySelectorAll("nav button").forEach(b => b.onclick = () => showTab(b.dataset.tab));
 // Kelime ekleme butonları
