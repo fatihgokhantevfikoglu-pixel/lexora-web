@@ -171,6 +171,9 @@
   .dw-stat-box { flex: 1; background: var(--bg); border-radius: 12px; padding: 12px; text-align: center; border: 1px solid var(--border); }
   .dw-stat-val { font-size: 20px; font-weight: 800; color: var(--primary); }
   .dw-stat-lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; margin-top: 2px; }    
+  .actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .actions .primary, .actions .ghost { min-height: 46px; }
+  .iconrow { display: flex; gap: 8px; align-items: center; }    
 </style>
 </head>
 <body>
@@ -247,6 +250,31 @@
     <div style="display:flex; gap:10px; margin-top:20px;">
       <button class="primary" id="saveNewWordBtn" style="flex:1;">Kaydet</button>
       <button class="ghost" id="cancelAddWord">İptal</button>
+    </div>
+  </div>
+</dialog> 
+<dialog id="editWordDialog">
+  <div style="padding:20px;">
+    <h2 style="margin-top:0;">Kelimeyi düzenle</h2>
+    <div style="display:grid; gap:12px;">
+      <div><label class="muted">İngilizce</label><input type="text" id="editEn" style="width:100%;"></div>
+      <div><label class="muted">Türkçe</label><input type="text" id="editTr" style="width:100%;"></div>
+      <div><label class="muted">Örnek cümle</label><input type="text" id="editExample" style="width:100%;"></div>
+      <div><label class="muted">Kategori</label>
+        <select id="editCat" style="width:100%;">
+          <option>Genel</option><option>Duygu</option><option>Karakter</option>
+          <option>Toplum</option><option>Doğa</option><option>Felsefe</option><option>Akademik</option>
+        </select>
+      </div>
+      <div><label class="muted">Seviye</label>
+        <select id="editLevel" style="width:100%;">
+          <option>A2</option><option>B1</option><option>B2</option><option>C1</option>
+        </select>
+      </div>
+    </div>
+    <div class="actions" style="margin-top:20px;">
+      <button class="primary" id="saveEditWordBtn">Kaydet</button>
+      <button class="ghost" id="cancelEditWord">İptal</button>
     </div>
   </div>
 </dialog>    
@@ -579,7 +607,8 @@ const CACHE_KEY = "lexora_cache_v1";
 const WORD_DEFAULTS = {
   tr: "", def: "", example: "", syn: [], ant: [], examples: [], hook: "", phonetic: "", audio: "", origin: "",
   pos: "diğer", cat: "Genel", level: "B2", source: "seed",
-  ease: 2.5, interval: 0, next: 0, last: 0, correct: 0, wrong: 0, mastered: false
+  ease: 2.5, interval: 0, next: 0, last: 0, correct: 0, wrong: 0, mastered: false,
+  favorite: false
 };
 
 function stripEmpty(o) {
@@ -1026,6 +1055,44 @@ function nextId() {
   return Math.max(0, ...state.words.map(w => w.id)) + 1;
 }
 
+function openEditWord(w) {
+  $("editEn").value = w.en;
+  $("editTr").value = w.tr;
+  $("editExample").value = w.example || "";
+  $("editCat").value = w.cat || "Genel";
+  $("editLevel").value = w.level || "B2";
+  $("editWordDialog").dataset.id = w.id;
+  $("editWordDialog").showModal();
+}
+
+function saveEditedWord() {
+  const id = +$("editWordDialog").dataset.id;
+  const w = state.words.find(x => x.id === id);
+  if (!w) return;
+  const en = $("editEn").value.trim().toLowerCase();
+  const tr = $("editTr").value.trim();
+  if (!en || !tr) { toast("İngilizce ve Türkçe zorunlu"); return; }
+  w.en = en;
+  w.tr = tr;
+  w.example = $("editExample").value.trim();
+  w.cat = $("editCat").value;
+  w.level = $("editLevel").value;
+  save();
+  $("editWordDialog").close();
+  renderDetail();
+  if (currentTab === "library") renderLibrary();
+  toast("Kelime güncellendi");
+}
+
+function deleteWord(w) {
+  if (!confirm(`"${w.en}" silinsin mi?`)) return;
+  state.words = state.words.filter(x => x.id !== w.id);
+  save();
+  $("detail").close();
+  if (currentTab === "library") renderLibrary();
+  if (currentTab === "today") renderToday();
+  toast("Kelime silindi");
+}    
 // ===================== Kelime Ekleme =====================
 function openAddWord() {
   $("newEn").value = "";
@@ -1228,7 +1295,7 @@ function pickRight(rightId) {
 
 // ===================== Oturum =====================
 // ===================== Sözlük =====================
-const lib = { q: "", pos: "hepsi", cat: "hepsi", level: "hepsi", sort: "alpha", hard: false, mode: "topic", topic: "emotion" };
+const lib = { q: "", pos: "hepsi", cat: "hepsi", level: "hepsi", sort: "alpha", hard: false, fav: false, mode: "topic", topic: "emotion" };
 
 function diffScore(w) {
   return (LEVELS.indexOf(w.level) + 1) * 10 + w.en.length + (w.wrong > w.correct ? 15 : 0);
@@ -1241,7 +1308,8 @@ function filteredWords() {
     (lib.pos === "hepsi" || w.pos === lib.pos) &&
     (lib.cat === "hepsi" || w.cat === lib.cat) &&
     (lib.level === "hepsi" || w.level === lib.level) &&
-    (!lib.hard || isHard(w))
+    (!lib.hard || isHard(w)) &&
+    (!lib.fav || w.favorite)
   );
   const sorters = {
     alpha: (a, b) => a.en.localeCompare(b.en),
@@ -1255,7 +1323,7 @@ function filteredWords() {
 function wordRowCompact(w) {
   const s = w.last ? strengthOf(w) : null;
   return `<button class="wordbtn" data-open="${w.id}">
-    <span><strong>${esc(w.en)}</strong> <span class="muted">${esc(w.tr)}</span>${isHard(w) ? ' <span class="badge-hard">⚠ zor</span>' : ""}</span>
+    <span>${w.favorite ? "⭐ " : ""}<strong>${esc(w.en)}</strong> <span class="muted">${esc(w.tr)}</span>${isHard(w) ? ' <span class="badge-hard">⚠ zor</span>' : ""}</span>
     <span class="muted" style="white-space:nowrap">${esc(w.pos)} · ${s == null ? "yeni" : `<span class="strength"><div style="width:${s}%"></div></span>`}</span>
   </button>`;
 }
@@ -1281,6 +1349,7 @@ function renderLibrary(note = "") {
         ${sel("libLevel", [["hepsi", "Tüm seviyeler"], ...LEVELS.map(l => [l, l])], lib.level)}
         ${sel("libSort", [["alpha", "A-Z"], ["strength", "Güç (düşük önce)"], ["difficulty", "Zorluk"], ["recent", "Son eklenen"]], lib.sort)}
         <button class="ghost" id="libHard">${lib.hard ? "Tümünü göster" : "Sadece zorlar"}</button>
+        <button class="ghost" id="libFav">${lib.fav ? "Tüm kelimeler" : "Sadece favoriler"}</button>        
       </div>
     </div>
     <div class="card" style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
@@ -1308,6 +1377,7 @@ function renderLibrary(note = "") {
   $("libLevel").onchange = e => { lib.level = e.target.value; drawList(); };
   $("libSort").onchange = e => { lib.sort = e.target.value; drawList(); };
   $("libHard").onclick = () => { lib.hard = !lib.hard; renderLibrary(); };
+  $("libFav").onclick = () => { lib.fav = !lib.fav; renderLibrary(); };    
   $("fMode").onchange = e => { lib.mode = e.target.value; };
   $("fTopic").onchange = e => { lib.topic = e.target.value; };
   $("fetchBtn").onclick = () => fetchWords(lib.mode, lib.topic);
@@ -1358,8 +1428,12 @@ function renderDetail() {
             ${w.phonetic ? `<span class="muted">${esc(w.phonetic)}</span>` : ""}
           </div>
         </div>
-        <button class="icon" id="dPlay" aria-label="Dinle" style="font-size:24px; background:var(--primary); color:#fff; border:none; border-radius:50%; width:48px; height:48px; box-shadow: 0 4px 12px rgba(109,40,217,0.3);">🔊</button>
-      </div>
+        <div class="iconrow">
+          <button class="icon" id="dFav" aria-label="Favori">${w.favorite ? "⭐" : "☆"}</button>
+          <button class="icon" id="dEdit" aria-label="Düzenle">✎</button>
+          <button class="icon" id="dDel" aria-label="Sil">🗑</button>
+          <button class="icon" id="dPlay" aria-label="Dinle" style="font-size:24px; background:var(--primary); color:#fff; border:none; border-radius:50%; width:48px; height:48px;">🔊</button>
+        </div>
 
       <div class="dw-sec">
         <div class="dw-tr">${esc(w.tr)}</div>
@@ -1418,6 +1492,15 @@ function renderDetail() {
   $("dPlay").onclick = () => {
     if (w.audio) new Audio(w.audio).play().catch(() => speak(w.en));
     else speak(w.en);
+  $("dFav").onclick = () => {
+    w.favorite = !w.favorite;
+    save();
+    renderDetail();
+    if (currentTab === "library") renderLibrary();
+    toast(w.favorite ? "Favorilere eklendi" : "Favorilerden çıkarıldı");
+  };
+  $("dEdit").onclick = () => openEditWord(w);
+  $("dDel").onclick = () => deleteWord(w);      
   };
 }
 
@@ -1602,11 +1685,13 @@ function renderToday() {
       <div style="font-size:15px; margin-bottom:14px; color:var(--muted);">
         ${due > 0 ? `Bugün <strong style="color:var(--primary)">${due} kelime</strong> tekrar bekliyor` : "Bugün tekrar bekleyen kelime yok 🎉"}
       </div>
-      <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+      <div class="actions">
         <button class="primary" id="startSes" style="min-width:160px; font-size:16px; padding:14px 20px;">
           ${due > 0 ? "Şimdi Tekrar Et" : "Karışık Oturum Başlat"}
         </button>
         <button class="ghost" id="startHard">Zorlar</button>
+        <button class="ghost" id="startWeak">Zayıflar</button>
+        <button class="ghost" id="startFav">Favoriler</button>
         <button class="ghost" id="startMatch">Eşleştirme</button>
       </div>
       <div style="margin-top:14px;">
@@ -1637,6 +1722,8 @@ function renderToday() {
 
   $("startSes").onclick = () => startSession();
   $("startHard").onclick = () => startSession({ onlyHard: true });
+  $("startWeak").onclick = () => startSession({ onlyWeak: true });
+  $("startFav").onclick = () => startSession({ onlyFavorite: true });    
   $("startMatch").onclick = () => { learnFocus = "match"; showTab("learn"); };
   if (gotw) $("wotd").onclick = () => openDetail(gotw.id);
 }
@@ -1698,7 +1785,10 @@ const producedOk = (w, text) => { const t = String(text || "").trim(); return wo
 
 function startSession(opts = {}) {
   const len = opts.len || state.settings.sessionLen;
-  const words = pickSessionWords(len, !!opts.onlyHard);
+  let words;
+  if (opts.onlyFavorite) words = state.words.filter(w => w.favorite).slice(0, len);
+  else if (opts.onlyWeak) words = state.words.filter(w => w.last && (w.wrong > w.correct || strengthOf(w) < 40)).slice(0, len);
+  else words = pickSessionWords(len, !!opts.onlyHard);
   if (words.length < 2) { toast("Oturum için yeterli kelime yok"); return; }
   const focus = opts.focus || "karisik";
   const queue = [];
@@ -2564,6 +2654,8 @@ document.addEventListener("click", e => {
 });
 $("saveNewWordBtn")?.addEventListener("click", saveNewWord);
 $("cancelAddWord")?.addEventListener("click", () => $("addWordDialog").close());    
+$("saveEditWordBtn")?.addEventListener("click", saveEditedWord);
+$("cancelEditWord")?.addEventListener("click", () => $("editWordDialog").close());    
 applyUi();
 updateStreakBadge();
 showTab("today");
