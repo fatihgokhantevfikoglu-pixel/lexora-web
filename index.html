@@ -277,6 +277,164 @@
     pointer-events: none; font-size: 12px; color: var(--muted);
   }
   .universe-pill { background: color-mix(in srgb, var(--surface) 85%, transparent); padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); backdrop-filter: blur(6px); }    
+
+  /* =====================================================================
+     LEXORA 3.0 — SENTEZ & YENİ NESİL ÖZELLİK STİLLERİ
+     ===================================================================== */
+  .tool-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tool-tabs button { min-height: 36px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; font-size: 13px; font-weight: 600; transition: all .15s; }
+  .tool-tabs button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .q-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: color-mix(in srgb, var(--primary) 15%, var(--surface)); color: var(--primary); border: 1px solid color-mix(in srgb, var(--primary) 35%, var(--border)); }
+
+  /* Zen / Odak Modu */
+  body.zen-mode header, body.zen-mode nav { opacity: 0.14; transition: opacity .25s; }
+  body.zen-mode header:hover, body.zen-mode nav:hover { opacity: 1; }
+  body.zen-mode .zen-hide { display: none !important; }
+  #zenFloatBtn { position: fixed; top: calc(10px + env(safe-area-inset-top, 0px)); right: 12px; z-index: 30; display: none; }
+  body.zen-mode #zenFloatBtn { display: inline-flex; }
+
+  /* Leech (İnatçı Kelime) Rozeti */
+  .badge-leech { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 999px; background: var(--badbg); color: var(--bad); border: 1px solid color-mix(in srgb, var(--bad) 40%, transparent); margin-left: 5px; }
+
+  /* Karıştırılan Çiftler & Tıklanabilir Kavram Ağı Bağları */
+  .confusable-box { background: color-mix(in srgb, #f59e0b 12%, var(--surface)); border: 1px solid color-mix(in srgb, #f59e0b 45%, var(--border)); border-radius: 12px; padding: 10px 12px; margin-top: 8px; }
+  .net-node-btn { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; margin: 3px 4px 3px 0; border-radius: 999px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 13px; cursor: pointer; transition: all .15s; }
+  .net-node-btn:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-1px); }
+  .net-node-btn.in-dict { border-color: color-mix(in srgb, var(--primary) 45%, var(--border)); font-weight: 600; }
+
+  /* Pasaj Okuyucu (Readwise İlhamı) */
+  .reader-text { font-size: 18px; line-height: 1.85; padding: 16px; border-radius: 12px; background: var(--bg); border: 1px solid var(--border); user-select: text; }
+  .r-tok { cursor: pointer; border-radius: 4px; padding: 1px 2px; transition: background .15s, color .15s; }
+  .r-tok:hover { background: color-mix(in srgb, var(--primary) 22%, transparent); }
+  .r-tok.known { border-bottom: 2px solid var(--ok); }
+  .r-tok.due-tok { border-bottom: 2px dashed #f59e0b; background: rgba(245, 158, 11, 0.12); }
+  .r-tok.sel-tok { background: var(--primary); color: #fff; }
+  .reader-popover { margin-top: 12px; padding: 14px; border-radius: 12px; border: 1.5px solid var(--primary); background: var(--surface); animation: inF .2s ease; }
+
+  /* 60 Saniye Refleks Sprint & Oturum İçi Hızlı Not */
+  .sprint-hud { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 12px; background: linear-gradient(90deg, color-mix(in srgb, var(--primary) 16%, var(--surface)), var(--surface)); border: 1px solid color-mix(in srgb, var(--primary) 35%, var(--border)); margin-bottom: 12px; }
+  .sprint-timer { font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--primary); }
+  .sprint-timer.urgent { color: var(--bad); animation: pulseUrgent .6s infinite alternate; }
+  @keyframes pulseUrgent { from { transform: scale(1); } to { transform: scale(1.08); } }
+  .quick-note-bar { display: flex; gap: 6px; margin-top: 10px; align-items: center; }
+  .quick-note-bar input { flex: 1; min-height: 38px; font-size: 14px; }
+
+  /* Niyet Zamanlayıcısı (Forest İlhamı) */
+  .intent-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding: 10px 14px; border-radius: 12px; background: color-mix(in srgb, var(--ok) 11%, var(--surface)); border: 1px solid color-mix(in srgb, var(--ok) 35%, var(--border)); margin-bottom: 12px; }
+
+  /* Yedek Uyarı Bannerı & Hata Gözden Geçirme */
+  .backup-banner { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; border-left: 4px solid #f59e0b; background: color-mix(in srgb, #f59e0b 10%, var(--surface)); }
+  .review-err-item { padding: 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); margin-bottom: 8px; text-align: left; }
+
+  /* Kısayol Yardım Tablosu */
+  .kbd { display: inline-block; padding: 2px 7px; font-size: 12px; font-family: ui-monospace, monospace; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; box-shadow: 0 1px 0 var(--border); font-weight: 700; }
+/* ===== LEXORA 4.0 — TAM KONTROL, YOLCULUK, GERÇEK HAYAT & ÖZEL BAŞARIMLAR ===== */
+.signature-seal {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 18%, var(--surface)), var(--surface));
+  border: 1px solid color-mix(in srgb, var(--primary) 42%, var(--border));
+  color: var(--text);
+}
+
+/* Özelleştirilebilir Yüzen Eylem Butonu */
+#quickFloatFab {
+  position: fixed;
+  z-index: 28;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 16px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--primary) 50%, var(--border));
+  background: var(--primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+#quickFloatFab:hover { transform: translateY(-2px); }
+#quickFloatFab.pos-br { right: 16px; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); }
+#quickFloatFab.pos-bl { left: 16px; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); }
+#quickFloatFab.pos-tr { right: 16px; top: calc(64px + env(safe-area-inset-top, 0px)); }
+#quickFloatFab.pos-tl { left: 16px; top: calc(64px + env(safe-area-inset-top, 0px)); }
+#quickFloatFab.fab-hidden { display: none !important; }
+
+#zenFloatBtn.pos-br { top: auto; left: auto; right: 16px; bottom: calc(70px + env(safe-area-inset-bottom, 0px)); }
+#zenFloatBtn.pos-bl { top: auto; right: auto; left: 16px; bottom: calc(70px + env(safe-area-inset-bottom, 0px)); }
+#zenFloatBtn.pos-tr { bottom: auto; left: auto; right: 12px; top: calc(10px + env(safe-area-inset-top, 0px)); }
+#zenFloatBtn.pos-tl { bottom: auto; right: auto; left: 12px; top: calc(10px + env(safe-area-inset-top, 0px)); }
+
+/* Gerçek Hayat Kartları */
+.real-card {
+  border-left: 4px solid var(--primary);
+  background: var(--surface);
+  transition: transform 0.15s ease;
+}
+.real-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--primary) 14%, var(--bg));
+  color: var(--primary);
+}
+.word-chip-en {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  margin: 3px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.word-chip-en:hover { border-color: var(--primary); color: var(--primary); }
+
+/* Özel Başarım Töreni & Kartları */
+.ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.ach-card {
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  opacity: 0.62;
+  transition: all 0.2s ease;
+}
+.ach-card.unlocked {
+  opacity: 1;
+  border-color: color-mix(in srgb, var(--primary) 55%, var(--border));
+  background: linear-gradient(145deg, color-mix(in srgb, var(--primary) 10%, var(--surface)), var(--surface));
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+.ach-tier {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+.tier-bronze { background: #fde68a; color: #78350f; }
+.tier-silver { background: #e2e8f0; color: #1e293b; }
+.tier-gold { background: #fef08a; color: #854d0e; }
+.tier-legend { background: var(--primary); color: #fff; }
 </style>
 </head>
 <body>
@@ -296,6 +454,7 @@
   <button data-tab="philo"><span aria-hidden="true">📜</span>Felsefe</button>
   <button data-tab="journal"><span aria-hidden="true">📝</span>Günlük</button>
   <button data-tab="stats"><span aria-hidden="true">📊</span>İstatistik</button>
+  <button data-tab="realworld"><span aria-hidden="true">🌍</span>Gerçek Hayat</button>
   <button data-tab="look"><span aria-hidden="true">🎨</span>Görünüm</button>
   <button data-tab="settings"><span aria-hidden="true">⚙️</span>Ayarlar</button>
 </nav>
@@ -309,6 +468,7 @@
   <section id="tab-journal" class="hidden"></section>
   <section id="tab-stats" class="hidden"></section>
   <section id="tab-look" class="hidden"></section>
+  <section id="tab-realworld" class="hidden"></section>
   <section id="tab-settings" class="hidden"></section>
   <section id="tab-session" class="hidden"></section>
 </main>
@@ -384,6 +544,71 @@
     </div>
   </div>
 </dialog>    
+
+<button class="header-pill" id="zenFloatBtn" title="Odak (Zen) Modundan Çık">🧘 Odak Modu Açık</button>
+
+<dialog id="readerDialog">
+  <div style="padding:20px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+      <h2 style="margin:0; font-size:20px;">📖 Pasajdan Kelime Avcısı</h2>
+      <button class="icon" id="closeReaderDlg" aria-label="Kapat">✕</button>
+    </div>
+    <p class="muted" style="margin-top:0;">İngilizce bir metin yapıştır veya hazır felsefi/akademik pasajlardan birini yükle. Bilmediğin kelimeye dokun, sözlükteki kelimeler otomatik vurgulanır.</p>
+    <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;">
+      <button class="ghost" id="samplePassage1" style="font-size:12px;">Örnek 1: Spinoza & Etik</button>
+      <button class="ghost" id="samplePassage2" style="font-size:12px;">Örnek 2: Akademik YDS</button>
+      <button class="ghost" id="clearPassageBtn" style="font-size:12px;">Temizle</button>
+    </div>
+    <textarea id="readerInput" placeholder="İngilizce paragrafı buraya yapıştır..." style="min-height:84px;"></textarea>
+    <div style="display:flex; gap:8px; margin-top:8px;">
+      <button class="primary" id="analyzePassageBtn">Metni Çözümle</button>
+    </div>
+    <div id="readerStage" style="margin-top:14px;"></div>
+  </div>
+</dialog>
+
+<dialog id="intentDialog">
+  <div style="padding:20px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+      <h2 style="margin:0; font-size:20px;">⏱️ Odak Oturumu Niyeti</h2>
+      <button class="icon" id="closeIntentDlg" aria-label="Kapat">✕</button>
+    </div>
+    <p class="muted">Çalışma bloğun için net bir niyet ve süre belirle. Tamamlandığında odak dakikan istatistiklere işlenir.</p>
+    <div style="display:grid; gap:10px; margin-top:10px;">
+      <div>
+        <label class="muted">Niyetin ne?</label>
+        <input type="text" id="intentGoalInput" placeholder="Örn: 10 dk kök analizi ve zor kelimeler" style="width:100%;">
+      </div>
+      <div>
+        <label class="muted">Süre (dakika)</label>
+        <select id="intentMinsSelect" style="width:100%;">
+          <option value="5">5 dakika (Hızlı Isınma)</option>
+          <option value="10" selected>10 dakika (Odak Bloğu)</option>
+          <option value="15">15 dakika (Derin Çalışma)</option>
+          <option value="25">25 dakika (Pomodoro)</option>
+        </select>
+      </div>
+      <div>
+        <label class="muted">Başlangıç Rotası</label>
+        <select id="intentRouteSelect" style="width:100%;">
+          <option value="session">Akıllı Karma Oturum</option>
+          <option value="hard">İnatçı & Zor Kelimeler Oturumu</option>
+          <option value="sprint">60 Saniye Refleks Turu</option>
+          <option value="reader">Pasaj Okuyucu</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:flex; gap:8px; margin-top:16px;">
+      <button class="primary" id="startIntentBtn" style="flex:1;">Niyeti Başlat</button>
+      <button class="ghost" id="cancelIntentBtn">Vazgeç</button>
+    </div>
+  </div>
+</dialog>
+<button id="quickFloatFab" class="pos-br" title="Hızlı İngilizce Kelime Oturumu">⚡ Hızlı Pratik</button>
+
+<dialog id="achievementModal">
+  <div style="padding:24px; text-align:center;" id="achievementModalBody"></div>
+</dialog>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <script>
 
@@ -3486,6 +3711,1179 @@ renderSettings = function() {
   }
 };    
     
+
+// =====================================================================
+// LEXORA 3.0 — KAPSAMLI SENTEZ & ÖZELLİKLER ARASI KÖPRÜ MOTORU
+// =====================================================================
+
+// 1. DURUM GENİŞLETME (Leech, Bağlam Cümlesi, Odak Dakikası, Yedek Takibi, Zen Modu)
+const _prevUpgrade3 = upgradeState;
+upgradeState = function(s) {
+  s = _prevUpgrade3(s);
+  s.settings = { leechThreshold: 4, backupReminderStep: 25, ...s.settings };
+  s.totals = { focusMinutes: 0, focusSessions: 0, sprintBest: 0, passagesRead: 0, ...s.totals };
+  s.meta = { lastBackupAt: null, answersSinceBackup: 0, wordsSinceBackup: 0, ...(s.meta || {}) };
+  s.ui = { zen: false, ...s.ui };
+  s.words.forEach(w => {
+    w.contextQuotes = w.contextQuotes || []; // Readwise bağlam cümleleri
+    w.confusables = w.confusables || [];     // Karıştırılan çiftler
+    w.leechClearedAt = w.leechClearedAt || 0;
+  });
+  return s;
+};
+state = upgradeState(state);
+
+// 2. LEECH (İNATÇI KELİME) & KÖR NOKTA & KARIŞTIRILAN ÇİFTLER ANALİZİ
+const isLeech = w => {
+  const th = state.settings.leechThreshold || 4;
+  return w.wrong >= th && w.wrong > w.correct && !w.mastered;
+};
+
+const isBlindSpot = w => {
+  if (!w.last) return true; // Hiç açılmamış/çalışılmamış
+  return (Date.now() - w.last) > 14 * DAY && !w.mastered;
+};
+
+function findConfusables(w) {
+  const manual = (w.confusables || []).map(en => state.words.find(x => x.en === en)).filter(Boolean);
+  const auto = state.words.filter(x => {
+    if (x.id === w.id) return false;
+    if (manual.some(m => m.id === x.id)) return false;
+    const d = levenshtein(w.en.toLowerCase(), x.en.toLowerCase());
+    const samePrefix = w.en.length >= 4 && x.en.length >= 4 && w.en.slice(0, 3).toLowerCase() === x.en.slice(0, 3).toLowerCase();
+    return (d <= 2 && Math.abs(w.en.length - x.en.length) <= 2) || (samePrefix && d <= 3);
+  }).slice(0, 4);
+  return [...manual, ...auto];
+}
+
+// 3. ZEN (ODAK) MODU & ÜST ÇUBUK HIZLI ARAÇLAR
+function applyZenMode() {
+  document.body.classList.toggle("zen-mode", !!state.ui.zen);
+  const zb = $("zenBtn");
+  if (zb) {
+    zb.classList.toggle("active-amb", !!state.ui.zen);
+    zb.textContent = state.ui.zen ? "🧘 Zen Açık" : "🧘 Odak";
+  }
+}
+
+function toggleZenMode() {
+  state.ui.zen = !state.ui.zen;
+  save();
+  applyZenMode();
+  toast(state.ui.zen ? "Odak (Zen) modu açıldı — menüler sadeleştirildi" : "Normal görünüme dönüldü");
+}
+
+(function injectHeaderTools() {
+  const hdr = document.querySelector("header");
+  if (!hdr) return;
+  const readerBtn = document.createElement("button");
+  readerBtn.className = "header-pill";
+  readerBtn.id = "openReaderHeaderBtn";
+  readerBtn.title = "Metinden Kelime Çıkar (Readwise Modu)";
+  readerBtn.textContent = "📖 Pasaj";
+  readerBtn.onclick = () => openPassageReader();
+
+  const zenBtn = document.createElement("button");
+  zenBtn.className = "header-pill";
+  zenBtn.id = "zenBtn";
+  zenBtn.title = "Dikkat Dağıtıcıları Gizle (Zen Modu)";
+  zenBtn.textContent = "🧘 Odak";
+  zenBtn.onclick = toggleZenMode;
+
+  hdr.appendChild(readerBtn);
+  hdr.appendChild(zenBtn);
+  $("zenFloatBtn")?.addEventListener("click", toggleZenMode);
+  applyZenMode();
+})();
+
+// 4. FOREST & TOGGL İLHAMI: NİYET ZAMANLAYICISI (OTURUM NİYETİ & ODAK SAYACI)
+let activeIntent = null; // { goal, mins, endAt, startedAt, intervalId }
+
+function openIntentModal() {
+  $("intentGoalInput").value = "";
+  $("intentDialog").showModal();
+  setTimeout(() => $("intentGoalInput").focus(), 50);
+}
+
+function startFocusIntent() {
+  const goal = ($("intentGoalInput").value || "").trim() || "Derin Kelime & Kavram Çalışması";
+  const mins = parseInt($("intentMinsSelect").value, 10) || 10;
+  const route = $("intentRouteSelect").value;
+  if (activeIntent?.intervalId) clearInterval(activeIntent.intervalId);
+
+  activeIntent = {
+    goal,
+    mins,
+    startedAt: Date.now(),
+    endAt: Date.now() + mins * 60 * 1000,
+    intervalId: setInterval(tickFocusIntent, 1000)
+  };
+  $("intentDialog").close();
+  SFX.ok(2);
+  toast(`⏱️ Niyet başladı: "${goal}" (${mins} dk)`);
+  renderIntentBanner();
+
+  if (route === "session") startSession();
+  else if (route === "hard") startSession({ onlyHard: true });
+  else if (route === "sprint") startReflexSprint();
+  else if (route === "reader") openPassageReader();
+}
+
+function tickFocusIntent() {
+  if (!activeIntent) return;
+  const rem = activeIntent.endAt - Date.now();
+  if (rem <= 0) {
+    completeFocusIntent(true);
+    return;
+  }
+  const el = $("intentCountdown");
+  if (el) {
+    const m = Math.floor(rem / 60000);
+    const s = Math.floor((rem % 60000) / 1000);
+    el.textContent = `${pad(m)}:${pad(s)}`;
+  }
+}
+
+function completeFocusIntent(natural = true) {
+  if (!activeIntent) return;
+  clearInterval(activeIntent.intervalId);
+  const elapsedMins = Math.max(1, Math.round((Date.now() - activeIntent.startedAt) / 60000));
+  const logged = natural ? activeIntent.mins : elapsedMins;
+  state.totals.focusMinutes = (state.totals.focusMinutes || 0) + logged;
+  state.totals.focusSessions = (state.totals.focusSessions || 0) + 1;
+  const today = dayKey();
+  const h = state.history[today] || (state.history[today] = { answers: 0, correct: 0, xp: 0, ms: 0 });
+  h.focusMins = (h.focusMins || 0) + logged;
+  const bonusXp = logged * 3;
+  state.xp += bonusXp;
+  h.xp += bonusXp;
+  activeIntent = null;
+  save();
+  checkBadges();
+  updateStreakBadge();
+  renderIntentBanner();
+  SFX.fanfare();
+  launchConfetti(60);
+  toast(`🌿 Odak bloğu tamamlandı! +${logged} dk ve +${bonusXp} XP kaydedildi`);
+}
+
+function renderIntentBanner() {
+  let bar = $("globalIntentBar");
+  if (!activeIntent) {
+    if (bar) bar.remove();
+    return;
+  }
+  if (!bar) {
+    bar = document.createElement("div");
+    bar.id = "globalIntentBar";
+    bar.className = "intent-bar";
+    const main = document.querySelector("main");
+    main.insertBefore(bar, main.firstChild);
+  }
+  const rem = Math.max(0, activeIntent.endAt - Date.now());
+  const m = Math.floor(rem / 60000);
+  const s = Math.floor((rem % 60000) / 1000);
+  bar.innerHTML = `
+    <div>
+      <strong>🌱 Aktif Niyet:</strong> ${esc(activeIntent.goal)}
+      <span class="q-badge" id="intentCountdown" style="margin-left:6px;">${pad(m)}:${pad(s)}</span>
+    </div>
+    <div style="display:flex;gap:6px;">
+      <button class="ghost" id="finishIntentEarlyBtn" style="min-height:32px;padding:4px 10px;font-size:12px;">✓ Tamamla</button>
+      <button class="ghost" id="cancelActiveIntentBtn" style="min-height:32px;padding:4px 10px;font-size:12px;color:var(--bad);border-color:var(--bad);">✕</button>
+    </div>
+  `;
+  $("finishIntentEarlyBtn").onclick = () => completeFocusIntent(false);
+  $("cancelActiveIntentBtn").onclick = () => {
+    clearInterval(activeIntent.intervalId);
+    activeIntent = null;
+    renderIntentBanner();
+    toast("Odak zamanlayıcısı iptal edildi");
+  };
+}
+
+$("closeIntentDlg")?.addEventListener("click", () => $("intentDialog").close());
+$("cancelIntentBtn")?.addEventListener("click", () => $("intentDialog").close());
+$("startIntentBtn")?.addEventListener("click", startFocusIntent);
+
+// 5. READWISE & KINDLE İLHAMI: PASAJDAN BAĞLAMIYLA KELİME ÇIKARMA
+const SAMPLE_PASSAGES = [
+  "True freedom does not consist in mere caprice, but in acting according to the necessity of one's own rational nature. When human consciousness overcomes alienation through diligent reflection, apparent contradictions dissolve into a higher synthesis of wisdom and virtue.",
+  "Although contemporary empirical studies demonstrate a strong correlation between cognitive resilience and sustained intellectual curiosity, many researchers remain skeptical of deterministic claims that neglect the role of social context and deliberate practice."
+];
+
+function openPassageReader(prefillText = "") {
+  if (prefillText) $("readerInput").value = prefillText;
+  $("readerDialog").showModal();
+  if ($("readerInput").value.trim()) renderPassageStage($("readerInput").value);
+}
+
+function renderPassageStage(rawText) {
+  const stage = $("readerStage");
+  const text = String(rawText || "").trim();
+  if (!text) {
+    stage.innerHTML = `<p class="muted">Çözümlemek için yukarıya İngilizce bir metin girin.</p>`;
+    return;
+  }
+  state.totals.passagesRead = (state.totals.passagesRead || 0) + 1;
+  save();
+
+  // Metni cümlelere ve kelimelere ayır
+  const sentences = text.match(/[^.!?]+[.!?]*/g) || [text];
+  const wordMap = new Map(state.words.map(w => [w.en.toLowerCase(), w]));
+
+  const html = sentences.map((sent, sIdx) => {
+    const tokens = sent.split(/([a-zA-Z]{2,})/g);
+    return tokens.map(tok => {
+      if (/^[a-zA-Z]{2,}$/.test(tok)) {
+        const low = tok.toLowerCase();
+        const found = wordMap.get(low);
+        const cls = found ? (isDue(found) ? "r-tok due-tok" : "r-tok known") : "r-tok";
+        return `<span class="${cls}" data-rtok="${esc(low)}" data-rsent="${sIdx}">${esc(tok)}</span>`;
+      }
+      return esc(tok);
+    }).join("");
+  }).join("");
+
+  const knownInText = [...new Set((text.toLowerCase().match(/[a-z]{2,}/g) || []).filter(w => wordMap.has(w)))];
+
+  stage.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:8px;">
+      <span class="muted" style="font-size:12px;">🟢 Sözlükte var · 🟠 Tekrarı gelmiş · Tıklayarak incele/ekle</span>
+      ${knownInText.length >= 2 ? `<button class="ghost" id="practicePassageWordsBtn" style="min-height:32px;padding:4px 10px;font-size:12px;">🧠 Bu Metindeki ${knownInText.length} Kelimeyle Oturum Aç</button>` : ""}
+    </div>
+    <div class="reader-text" id="readerTokensBox">${html}</div>
+    <div id="readerPopover"></div>
+  `;
+
+  if ($("practicePassageWordsBtn")) {
+    $("practicePassageWordsBtn").onclick = () => {
+      const targetWords = knownInText.map(k => wordMap.get(k)).filter(Boolean);
+      $("readerDialog").close();
+      startCustomWordSession(targetWords, "Pasaj Kelimeleri Oturumu");
+    };
+  }
+
+  stage.querySelectorAll("[data-rtok]").forEach(span => {
+    span.onclick = async () => {
+      stage.querySelectorAll(".sel-tok").forEach(x => x.classList.remove("sel-tok"));
+      span.classList.add("sel-tok");
+      const low = span.dataset.rtok;
+      const sent = sentences[+span.dataset.rsent]?.trim() || text;
+      const pop = $("readerPopover");
+      const existing = state.words.find(w => w.en.toLowerCase() === low);
+
+      if (existing) {
+        pop.innerHTML = `
+          <div class="reader-popover">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
+              <div><strong style="font-size:19px;">${esc(existing.en)}</strong> <span class="pos">${esc(existing.pos)}</span> → <strong style="color:var(--primary)">${esc(existing.tr)}</strong></div>
+              <div style="display:flex;gap:6px;">
+                <button class="icon" id="rSpeakBtn" title="Dinle">🔊</button>
+                <button class="ghost" id="rSaveCtxBtn">+ Bu Cümleyi Bağlam Olarak Kaydet</button>
+                <button class="ghost" id="rOpenDetBtn">Detay</button>
+              </div>
+            </div>
+            <p class="muted" style="margin:6px 0 0;font-size:13px;">Bağlam: “${esc(sent)}”</p>
+          </div>`;
+        $("rSpeakBtn").onclick = () => speak(existing.en);
+        $("rOpenDetBtn").onclick = () => { $("readerDialog").close(); openDetail(existing.id); };
+        $("rSaveCtxBtn").onclick = () => {
+          existing.contextQuotes = existing.contextQuotes || [];
+          if (!existing.contextQuotes.some(q => q.text === sent)) {
+            existing.contextQuotes.push({ text: sent, date: dayKey() });
+            if (!existing.example) existing.example = sent;
+            save();
+            toast(`Bağlam cümlesi "${existing.en}" kartına işlendi`);
+          } else {
+            toast("Bu bağlam cümlesi zaten kayıtlı");
+          }
+        };
+      } else {
+        pop.innerHTML = `<div class="reader-popover"><p class="muted"><strong>${esc(low)}</strong> için sözlük ve çeviri sorgulanıyor...</p></div>`;
+        const [d, tr] = await Promise.all([lookupDict(low), translateTr(low)]);
+        const trVal = tr?.value || "";
+        const defVal = d && !d.error ? d.def : "";
+        pop.innerHTML = `
+          <div class="reader-popover">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
+              <div>
+                <strong style="font-size:19px;">${esc(low)}</strong>
+                ${trVal ? ` → <strong style="color:var(--primary)">${esc(trVal)}</strong>` : `<span class="muted"> (çeviri bulunamadı)</span>`}
+              </div>
+              <div style="display:flex;gap:6px;">
+                <button class="icon" id="rSpeakNewBtn">🔊</button>
+                <button class="primary" id="rAddWithCtxBtn">+ Bağlam Cümlesiyle Sözlüğe Ekle</button>
+              </div>
+            </div>
+            ${defVal ? `<p style="margin:6px 0;font-size:14px;">${esc(defVal)}</p>` : ""}
+            <p class="muted" style="margin:4px 0 0;font-size:13px;">Alıntı Bağlamı: “${esc(sent)}”</p>
+          </div>`;
+        $("rSpeakNewBtn").onclick = () => speak(low);
+        $("rAddWithCtxBtn").onclick = () => {
+          const nw = normalize({
+            id: nextId(),
+            en: low,
+            tr: trVal || "(anlam eklenecek)",
+            def: defVal,
+            pos: d && !d.error ? (d.pos || "diğer") : "diğer",
+            cat: "Akademik",
+            level: "C1",
+            example: sent,
+            examples: [sent, ...(d?.examples || [])].slice(0, 4),
+            syn: d?.syn || [],
+            ant: d?.ant || [],
+            phonetic: d?.phonetic || "",
+            audio: d?.audio || "",
+            origin: d?.origin || "",
+            source: "reader"
+          });
+          nw.contextQuotes = [{ text: sent, date: dayKey() }];
+          state.words.push(nw);
+          state.meta.wordsSinceBackup = (state.meta.wordsSinceBackup || 0) + 1;
+          save();
+          checkBadges();
+          SFX.ok(1);
+          toast(`"${low}" bağlam cümlesiyle sözlüğe eklendi!`);
+          renderPassageStage(text);
+        };
+      }
+    };
+  });
+}
+
+$("closeReaderDlg")?.addEventListener("click", () => $("readerDialog").close());
+$("samplePassage1")?.addEventListener("click", () => { $("readerInput").value = SAMPLE_PASSAGES[0]; renderPassageStage(SAMPLE_PASSAGES[0]); });
+$("samplePassage2")?.addEventListener("click", () => { $("readerInput").value = SAMPLE_PASSAGES[1]; renderPassageStage(SAMPLE_PASSAGES[1]); });
+$("clearPassageBtn")?.addEventListener("click", () => { $("readerInput").value = ""; $("readerStage").innerHTML = ""; });
+$("analyzePassageBtn")?.addEventListener("click", () => renderPassageStage($("readerInput").value));
+
+// 6. DUOLINGO İLHAMI: 60 SANİYE REFLEKS TURU (SPRINT)
+let sprint = null;
+
+function startReflexSprint() {
+  const pool = shuffle(state.words.filter(w => w.tr));
+  if (pool.length < 4) { toast("Refleks turu için en az 4 kelime gerekli"); return; }
+  if (sprint?.timerId) clearInterval(sprint.timerId);
+  sprint = {
+    endAt: Date.now() + 60000,
+    score: 0,
+    wrong: 0,
+    streak: 0,
+    bestStreak: 0,
+    current: null,
+    done: false,
+    timerId: setInterval(tickReflexSprint, 250)
+  };
+  nextSprintQuestion();
+  showTab("session");
+}
+
+function nextSprintQuestion() {
+  if (!sprint || sprint.done) return;
+  const w = state.words[Math.floor(Math.random() * state.words.length)];
+  const opts = shuffle([w, ...pickDistractors(w, "tr", 3)]);
+  sprint.current = { w, opts };
+  renderSprint();
+}
+
+function tickReflexSprint() {
+  if (!sprint || sprint.done) return;
+  const rem = sprint.endAt - Date.now();
+  if (rem <= 0) {
+    finishReflexSprint();
+    return;
+  }
+  const el = $("sprintClock");
+  if (el) {
+    const sec = Math.ceil(rem / 1000);
+    el.textContent = `${sec} sn`;
+    el.classList.toggle("urgent", sec <= 10);
+  }
+}
+
+function answerReflexSprint(pickedId) {
+  if (!sprint || sprint.done || !sprint.current) return;
+  const q = sprint.current;
+  const ok = pickedId === q.w.id;
+  recordAnswer(q.w, ok, 900, "sprint");
+  if (ok) {
+    sprint.score++;
+    sprint.streak++;
+    sprint.bestStreak = Math.max(sprint.bestStreak, sprint.streak);
+    SFX.ok(Math.min(sprint.streak, 6));
+    haptic(12);
+    spawnXpFloat(sprint.streak >= 3 ? `+10 XP · ⚡${sprint.streak}x` : "+10 XP", sprint.streak >= 3);
+  } else {
+    sprint.wrong++;
+    sprint.streak = 0;
+    SFX.bad();
+    haptic([25, 20, 25]);
+  }
+  nextSprintQuestion();
+}
+
+function finishReflexSprint() {
+  if (!sprint || sprint.done) return;
+  sprint.done = true;
+  clearInterval(sprint.timerId);
+  const isRecord = sprint.score > (state.totals.sprintBest || 0);
+  if (isRecord) state.totals.sprintBest = sprint.score;
+  save();
+  checkBadges();
+  SFX.fanfare();
+  if (isRecord && sprint.score > 0) launchConfetti(65);
+  renderSprint();
+}
+
+function renderSprint() {
+  const el = $("tab-session");
+  if (!sprint) return;
+  if (sprint.done) {
+    const ref = sprint;
+    sprint = null;
+    el.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <p style="font-size:44px;margin:0;">⚡</p>
+        <h2 style="margin:6px 0;">60 Saniye Refleks Turu Bitti!</h2>
+        <div class="grid" style="margin-top:12px;">
+          <div class="card"><div class="muted">Doğru Skor</div><div class="stat" style="color:var(--ok)">${ref.score}</div></div>
+          <div class="card"><div class="muted">Rekorun</div><div class="stat">${state.totals.sprintBest || ref.score}</div></div>
+          <div class="card"><div class="muted">En İyi Seri</div><div class="stat">${ref.bestStreak}x</div></div>
+          <div class="card"><div class="muted">Yanlış</div><div class="stat" style="color:var(--bad)">${ref.wrong}</div></div>
+        </div>
+        <div class="actions" style="margin-top:14px;">
+          <button class="primary" id="sprintAgainBtn">Tekrar Yarış (60 sn)</button>
+          <button class="ghost" id="sprintHomeBtn">Bugün'e Dön</button>
+        </div>
+      </div>`;
+    $("sprintAgainBtn").onclick = startReflexSprint;
+    $("sprintHomeBtn").onclick = () => showTab("today");
+    return;
+  }
+
+  const sec = Math.max(0, Math.ceil((sprint.endAt - Date.now()) / 1000));
+  const q = sprint.current;
+  el.innerHTML = `
+    <div class="sprint-hud">
+      <div><strong>⚡ Refleks Sprint</strong> <span class="q-badge">Skor: ${sprint.score}</span> ${sprint.streak >= 2 ? `<span class="q-badge">🔥 ${sprint.streak}x</span>` : ""}</div>
+      <div class="sprint-timer ${sec <= 10 ? "urgent" : ""}" id="sprintClock">${sec} sn</div>
+    </div>
+    <div class="card">
+      <p class="muted" style="margin-top:0;">En hızlı doğru karşılığı seç!</p>
+      <div class="word" style="font-size:30px;margin-bottom:14px;">${esc(q.w.en)} <span class="pos">${esc(q.w.pos)}</span></div>
+      <div class="col">
+        ${q.opts.map((o, idx) => `<button class="tile" data-spopt="${o.id}"><span class="kbd" style="margin-right:8px;">${idx + 1}</span>${esc(o.tr)}</button>`).join("")}
+      </div>
+    </div>
+    <div style="text-align:center;"><button class="ghost" id="stopSprintBtn">Turu Bitir</button></div>
+  `;
+  el.querySelectorAll("[data-spopt]").forEach(b => b.onclick = () => answerReflexSprint(+b.dataset.spopt));
+  $("stopSprintBtn").onclick = finishReflexSprint;
+}
+
+// 7. ÖZEL KELİME LİSTESİYLE OTURUM BAŞLATICI (KÖPRÜ FONKSİYON)
+function startCustomWordSession(wordList, label = "Özel Oturum") {
+  const unique = [...new Map(wordList.map(w => [w.id, w])).values()];
+  if (unique.length < 2) { toast("Oturum için en az 2 kelime gerekli"); return; }
+  const queue = [];
+  let prev = null;
+  for (const w of unique) {
+    const q = buildQuestion(w, prev, "karisik");
+    queue.push(q);
+    prev = q.type;
+  }
+  session = {
+    queue, i: 0, correct: 0, wrong: 0,
+    hearts: state.settings.hearts ? 3 : Infinity,
+    started: Date.now(), t0: Date.now(), xp0: state.xp, mastered0: masteredCount(),
+    answered: null, done: false, early: false, focus: "karisik",
+    label, wrongItems: [],
+    phase: state.settings.confidence ? "confidence" : "answer"
+  };
+  sessionCombo = 0;
+  state.totals.sessions++;
+  save();
+  showTab("session");
+}
+
+// 8. OTURUM İÇİ HIZLI NOT/ETİKET, LEECH UYARISI & OTURUM SONU HATA GÖZDEN GEÇİRME
+const _prevStartSession3 = startSession;
+startSession = function(opts = {}) {
+  sprint = null;
+  if (opts.onlyLeech) {
+    const leeches = state.words.filter(isLeech);
+    if (leeches.length < 2) { toast("En az 2 inatçı (leech) kelime olmalı"); return; }
+    return startCustomWordSession(leeches.slice(0, state.settings.sessionLen), "İnatçı Kelimeler (Leech) Kurtarma");
+  }
+  if (opts.onlyBlind) {
+    const blinds = state.words.filter(isBlindSpot);
+    if (blinds.length < 2) { toast("Kör noktada bekleyen yeterli kelime yok"); return; }
+    return startCustomWordSession(shuffle(blinds).slice(0, state.settings.sessionLen), "Kör Nokta Taraması");
+  }
+  _prevStartSession3(opts);
+  if (session) session.wrongItems = [];
+};
+
+const _prevResolveAnswer3 = resolveAnswer;
+resolveAnswer = function(q, ok, pickedId, typed) {
+  _prevResolveAnswer3(q, ok, pickedId, typed);
+  state.meta.answersSinceBackup = (state.meta.answersSinceBackup || 0) + 1;
+  save();
+  if (!ok && session) {
+    session.wrongItems = session.wrongItems || [];
+    const useTr = q.type === "meaning" || q.type === "morph";
+    session.wrongItems.push({
+      w: q.w,
+      type: q.type,
+      picked: typed != null ? typed : labelOf(q, pickedId, useTr),
+      correct: useTr ? q.w.tr : q.w.en
+    });
+  }
+};
+
+const _prevFeedbackHtml3 = feedbackHtml;
+feedbackHtml = function(q) {
+  const base = _prevFeedbackHtml3(q);
+  const w = q.w;
+  const ans = session.answered;
+  const leechWarn = (!ans.ok && isLeech(w))
+    ? `<div class="confusable-box" style="border-color:var(--bad);background:var(--badbg);margin-bottom:8px;">
+         <strong>🩸 İnatçı Kelime (Leech) Uyarısı:</strong> Bu kelimede <strong>${w.wrong}</strong> kez hata yaptın. Aşağıya kendine özel akılda kalıcı bir çağrışım notu bırak!
+       </div>`
+    : "";
+  const ctxQuote = (w.contextQuotes && w.contextQuotes.length)
+    ? `<p class="muted" style="font-size:13px;margin:6px 0;">📖 <strong>Pasaj Bağlamın:</strong> “${esc(w.contextQuotes[w.contextQuotes.length - 1].text)}”</p>`
+    : "";
+  const quickNoteUi = `
+    <div class="quick-note-bar">
+      <input type="text" id="quickNoteInput" placeholder="⚡ Hızlı çağrışım / eş anlam notu ekle (oturumdan çıkmadan)..." aria-label="Hızlı kelime notu">
+      <button class="ghost" id="saveQuickNoteBtn" style="min-height:38px;padding:6px 12px;">Not Ekle</button>
+    </div>
+    ${w.notes?.length ? `<p class="muted" style="font-size:12px;margin:4px 0 0;">Son notun: “${esc(w.notes[w.notes.length - 1].text)}”</p>` : ""}
+  `;
+  return base.replace('<div class="card">', `<div class="card">${leechWarn}`).replace('<button class="primary" id="nextQ"', `${ctxQuote}${quickNoteUi}<button class="primary" id="nextQ"`);
+};
+
+const _prevBindSession3 = bindSession;
+bindSession = function(q) {
+  _prevBindSession3(q);
+  const qBtn = $("saveQuickNoteBtn");
+  const qInp = $("quickNoteInput");
+  if (qBtn && qInp) {
+    const saveQn = () => {
+      const txt = qInp.value.trim();
+      if (!txt) { toast("Önce kısa bir not yaz"); return; }
+      q.w.notes = q.w.notes || [];
+      q.w.notes.push({ d: dayKey(), text: txt });
+      if (!q.w.hook) q.w.hook = txt;
+      save();
+      qInp.value = "";
+      SFX.ok(1);
+      toast(`"${q.w.en}" kartına not eklendi`);
+    };
+    qBtn.onclick = saveQn;
+    qInp.onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); saveQn(); } };
+  }
+};
+
+const _prevRenderSession3 = renderSession;
+renderSession = function() {
+  if (sprint) return renderSprint();
+  _prevRenderSession3();
+};
+
+const _prevRenderSummary3 = renderSummary;
+renderSummary = function() {
+  _prevRenderSummary3();
+  const el = $("tab-session");
+  const s = session;
+  if (!el || !s || !s.wrongItems || !s.wrongItems.length) return;
+  const typeNames = { meaning: "Anlam", morph: "Kök", cloze: "Cümle", listen: "Dinleme", produce: "Yazma", dictation: "Dikte" };
+  const reviewBox = document.createElement("div");
+  reviewBox.className = "card";
+  reviewBox.innerHTML = `
+    <strong>🔍 Oturum Hata Gözden Geçirme (${s.wrongItems.length} Hata)</strong>
+    <p class="muted" style="margin:4px 0 10px;">Soğumadan hatalarını incele ve sadece yanlış yaptıklarınla telafi turu aç:</p>
+    ${s.wrongItems.map(item => `
+      <div class="review-err-item">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <strong>${esc(item.w.en)}</strong>
+          <span class="pos">${esc(typeNames[item.type] || item.type)}</span>
+        </div>
+        <div style="font-size:13px;margin-top:4px;">
+          <span style="color:var(--bad)">Senin yanıtın: ${esc(item.picked || "—")}</span> · 
+          <span style="color:var(--ok)">Doğrusu: <strong>${esc(item.correct)}</strong></span>
+        </div>
+      </div>
+    `).join("")}
+    <button class="primary" id="retryWrongSessionBtn" style="width:100%;margin-top:6px;">🔁 Sadece Bu ${s.wrongItems.length} Yanlışı Tekrar Et</button>
+  `;
+  el.appendChild(reviewBox);
+  $("retryWrongSessionBtn").onclick = () => {
+    startCustomWordSession(s.wrongItems.map(x => x.w), "Hata Telafi Oturumu");
+  };
+};
+
+// 9. GENİŞLETİLMİŞ KLAVYE KISAYOLLARI (R: Ses, H: İpucu, /: Sözlük Arama, Esc: Zen Çıkış)
+document.addEventListener("keydown", e => {
+  if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+
+  // Global kısayollar
+  if (e.key === "/") {
+    e.preventDefault();
+    showTab("library");
+    setTimeout(() => $("libQ")?.focus(), 60);
+    return;
+  }
+  if (e.key === "Escape" && state.ui.zen && !$("detail")?.open && !$("readerDialog")?.open) {
+    toggleZenMode();
+    return;
+  }
+
+  // Sprint kısayolları (1-4)
+  if (currentTab === "session" && sprint && !sprint.done && /^[1-4]$/.test(e.key)) {
+    const o = sprint.current?.opts?.[+e.key - 1];
+    if (o) answerReflexSprint(o.id);
+    return;
+  }
+
+  // Eşleştirme ipucu (H)
+  if (currentTab === "learn" && learnFocus === "match" && (e.key === "h" || e.key === "H")) {
+    $("hintBtn")?.click();
+    return;
+  }
+
+  // Oturum içi R (Tekrar Dinle) ve H (İpucu / Kök Aç)
+  if (state.settings.keys && currentTab === "session" && session && !session.done) {
+    const q = sessionQ();
+    if (!q) return;
+    if (e.key === "r" || e.key === "R") {
+      e.preventDefault();
+      speak(q.w.en);
+      toast(`🔊 "${q.w.en}" seslendirildi`);
+    } else if (e.key === "h" || e.key === "H") {
+      e.preventDefault();
+      if ($("typeHint")) $("typeHint").click();
+      else toast(`💡 İpucu: ${hookOf(q.w) || q.w.pos + " · " + q.w.level}`);
+    }
+  }
+});
+
+// 10. DETAY PENCERESİ YÜKSELTMESİ: ÇİFT YÖNLÜ KAVRAM AĞI, KARIŞTIRILAN ÇİFTLER, BAĞLAM CÜMLELERİ & İNATÇI YÖNETİMİ
+const _prevRenderDetail3 = renderDetail;
+renderDetail = function() {
+  _prevRenderDetail3();
+  const w = state.words.find(x => x.id === detailId);
+  if (!w) return;
+  const inline = currentTab === "library" && $("libPane");
+  const host = inline ? $("libPane") : $("detailBody");
+  const content = host?.querySelector(".dw-content");
+  if (!content) return;
+
+  // Başlığa Leech / Kör Nokta etiketi ekle
+  const sub = content.querySelector(".dw-sub");
+  if (sub) {
+    if (isLeech(w)) sub.innerHTML += `<span class="badge-leech">🩸 İnatçı Kelime</span>`;
+    else if (isBlindSpot(w)) sub.innerHTML += `<span class="q-badge">👁️ Kör Nokta</span>`;
+  }
+
+  // Çift Yönlü Kavram & Kök Ağı + Karıştırılan Çiftler + Bağlam Cümleleri
+  const confusables = findConfusables(w);
+  const rootParts = analyze(w).parts.filter(p => p.type === "root" && p.info);
+  const sameRootWords = state.words.filter(x => x.id !== w.id && analyze(x).parts.some(p => p.type === "root" && rootParts.some(rp => rp.f === p.f)));
+  const synWords = (w.syn || []).map(s => ({ label: s, obj: state.words.find(x => x.en.toLowerCase() === s.toLowerCase()) }));
+  const antWords = (w.ant || []).map(a => ({ label: a, obj: state.words.find(x => x.en.toLowerCase() === a.toLowerCase()) }));
+
+  const bridgeSec = document.createElement("div");
+  bridgeSec.className = "dw-sec";
+  bridgeSec.innerHTML = `
+    <div class="dw-sec-title">🕸️ Çift Yönlü Kavram & Kök Ağı</div>
+    <p class="muted" style="font-size:12px;margin-top:0;">Bağlı bir kavrama dokunarak doğrudan o düğüme atla veya sözlüğe ekle:</p>
+    <div style="margin-bottom:6px;">
+      ${sameRootWords.map(x => `<button class="net-node-btn in-dict" data-jumpid="${x.id}">🌿 ${esc(x.en)} <small class="muted">(${esc(x.tr)})</small></button>`).join("")}
+      ${synWords.map(s => s.obj
+        ? `<button class="net-node-btn in-dict" data-jumpid="${s.obj.id}">≈ ${esc(s.label)}</button>`
+        : `<button class="net-node-btn" data-quickadd="${esc(s.label)}">+ ≈ ${esc(s.label)}</button>`).join("")}
+      ${antWords.map(a => a.obj
+        ? `<button class="net-node-btn in-dict" data-jumpid="${a.obj.id}">≠ ${esc(a.label)}</button>`
+        : `<button class="net-node-btn" data-quickadd="${esc(a.label)}">+ ≠ ${esc(a.label)}</button>`).join("")}
+      ${(!sameRootWords.length && !synWords.length && !antWords.length) ? `<span class="muted" style="font-size:13px;">Henüz ağ bağlantısı yok.</span>` : ""}
+    </div>
+
+    ${confusables.length ? `
+      <div class="confusable-box">
+        <strong style="font-size:13px;">⚠️ Sık Karıştırılabilecek Çiftler</strong>
+        <div style="margin-top:6px;">
+          ${confusables.map(c => `<button class="net-node-btn in-dict" data-jumpid="${c.id}"><strong>${esc(c.en)}</strong> → ${esc(c.tr)}</button>`).join("")}
+        </div>
+      </div>` : ""}
+
+    ${(w.contextQuotes && w.contextQuotes.length) ? `
+      <div style="margin-top:12px;">
+        <div class="dw-sec-title">📑 Okunan Pasajlardan Bağlamlar (${w.contextQuotes.length})</div>
+        ${w.contextQuotes.map(q => `<blockquote class="quote" style="font-size:14px;margin-bottom:6px;">“${esc(q.text)}” <small class="muted">(${esc(q.date)})</small></blockquote>`).join("")}
+      </div>` : ""}
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+      <button class="ghost" id="dPracticeClusterBtn" style="font-size:13px;">🧠 Bu Kelime ve Ağıyla Oturum Başlat</button>
+      ${isLeech(w) ? `<button class="ghost" id="dClearLeechBtn" style="font-size:13px;color:var(--ok);border-color:var(--ok);">✓ İnatçı İşaretini Sıfırla</button>` : ""}
+    </div>
+  `;
+
+  content.insertBefore(bridgeSec, content.lastElementChild);
+
+  bridgeSec.querySelectorAll("[data-jumpid]").forEach(b => b.onclick = () => openDetail(+b.dataset.jumpid));
+  bridgeSec.querySelectorAll("[data-quickadd]").forEach(b => b.onclick = () => addFromWeb(b.dataset.quickadd));
+  $("dPracticeClusterBtn").onclick = () => {
+    const cluster = [w, ...sameRootWords, ...confusables, ...synWords.map(s => s.obj).filter(Boolean)];
+    if (!inline) $("detail").close();
+    if (cluster.length >= 2) startCustomWordSession(cluster.slice(0, 8), `"${w.en}" Kavram Kümesi`);
+    else startSession();
+  };
+  if ($("dClearLeechBtn")) {
+    $("dClearLeechBtn").onclick = () => {
+      w.wrong = Math.max(0, w.correct);
+      w.leechClearedAt = Date.now();
+      save();
+      renderDetail();
+      toast("İnatçı kelime sayacı sıfırlandı");
+    };
+  }
+};
+
+// 11. SÖZLÜK YÜKSELTMESİ: LEECH & KÖR NOKTA FİLTRELERİ + PASAJ OKUYUCU KÖPRÜSÜ
+const _prevFilteredWords3 = filteredWords;
+filteredWords = function() {
+  let ws = _prevFilteredWords3();
+  if (lib.leechOnly) ws = ws.filter(isLeech);
+  if (lib.blindOnly) ws = ws.filter(isBlindSpot);
+  return ws;
+};
+
+const _prevWordRowCompact3 = wordRowCompact;
+wordRowCompact = function(w) {
+  let html = _prevWordRowCompact3(w);
+  if (isLeech(w)) {
+    html = html.replace('⚠ zor</span>', '🩸 inatçı</span>');
+  } else if (isBlindSpot(w) && !w.last) {
+        html = html.replace('</span>\n    <span class="muted"', ' <span class="muted" style="font-size:11px;">· yeni</span></span>\n    <span class="muted"');
+  }
+  return html;
+};
+
+const _prevRenderLibrary3 = renderLibrary;
+renderLibrary = function(note = "") {
+  _prevRenderLibrary3(note);
+  const el = $("tab-library");
+  const filters = el?.querySelector(".filters");
+  if (filters) {
+    const leechBtn = document.createElement("button");
+    leechBtn.className = "ghost";
+    leechBtn.textContent = lib.leechOnly ? "Tüm kelimeler" : `🩸 İnatçılar (${state.words.filter(isLeech).length})`;
+    leechBtn.onclick = () => { lib.leechOnly = !lib.leechOnly; lib.blindOnly = false; renderLibrary(); };
+
+    const blindBtn = document.createElement("button");
+    blindBtn.className = "ghost";
+    blindBtn.textContent = lib.blindOnly ? "Tüm kelimeler" : `👁️ Kör Nokta (${state.words.filter(isBlindSpot).length})`;
+    blindBtn.onclick = () => { lib.blindOnly = !lib.blindOnly; lib.leechOnly = false; renderLibrary(); };
+
+    const passBtn = document.createElement("button");
+    passBtn.className = "ghost";
+    passBtn.textContent = "📖 Metinden Kelime Çıkar";
+    passBtn.onclick = () => openPassageReader();
+
+    filters.appendChild(leechBtn);
+    filters.appendChild(blindBtn);
+    filters.appendChild(passBtn);
+  }
+};
+
+// 12. ÖĞREN MERKEZİ YÜKSELTMESİ: REFLEKS SPRINT & İNATÇI/KÖR NOKTA OTURUMLARI
+const _prevRenderLearn3 = renderLearn;
+renderLearn = function() {
+  _prevRenderLearn3();
+  const el = $("tab-learn");
+  const firstCard = el?.querySelector(".card");
+  if (!firstCard) return;
+  const leechCount = state.words.filter(isLeech).length;
+  const blindCount = state.words.filter(isBlindSpot).length;
+  const extraBar = document.createElement("div");
+  extraBar.style.cssText = "display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px dashed var(--border);";
+  extraBar.innerHTML = `
+    <button class="primary" id="launchSprintBtn" style="background:linear-gradient(135deg, var(--primary), #ec4899);">⚡ 60 Sn Refleks Turu</button>
+    <button class="ghost" id="launchLeechBtn">🩸 İnatçı Kelimeler (${leechCount})</button>
+    <button class="ghost" id="launchBlindBtn">👁️ Kör Nokta Taraması (${blindCount})</button>
+    <button class="ghost" id="launchIntentFromLearnBtn">⏱️ Niyetli Odak Oturumu</button>
+  `;
+  firstCard.appendChild(extraBar);
+  $("launchSprintBtn").onclick = startReflexSprint;
+  $("launchLeechBtn").onclick = () => startSession({ onlyLeech: true });
+  $("launchBlindBtn").onclick = () => startSession({ onlyBlind: true });
+  $("launchIntentFromLearnBtn").onclick = openIntentModal;
+};
+
+// 13. BUGÜN SEKMESİ YÜKSELTMESİ: YEDEK HATIRLATICI, NİYET BAŞLATICI & REFLEKS BUTONU
+const _prevRenderToday3 = renderToday;
+renderToday = function() {
+  _prevRenderToday3();
+  const el = $("tab-today");
+  if (!el) return;
+
+  // Otomatik Yedek Hatırlatıcısı
+  const ansSince = state.meta?.answersSinceBackup || 0;
+  const wordsSince = state.meta?.wordsSinceBackup || 0;
+  if (ansSince >= 30 || wordsSince >= 8) {
+    const warn = document.createElement("div");
+    warn.className = "card backup-banner";
+    warn.innerHTML = `
+      <div>
+        <strong>💾 Yedekleme Hatırlatıcısı</strong>
+        <div class="muted" style="font-size:13px;">Son yedeğinden bu yana <strong>${ansSince} cevap</strong> ve <strong>${wordsSince} yeni kelime</strong> birikti.</div>
+      </div>
+      <button class="primary" id="todayQuickBackupBtn" style="white-space:nowrap;">JSON Yedeği Al</button>
+    `;
+    el.insertBefore(warn, el.firstChild);
+    $("todayQuickBackupBtn").onclick = () => { exportData(); renderToday(); };
+  }
+
+  // Hızlı Eylemler Çubuğuna Niyet ve Refleks Ekle
+  const actionsDiv = el.querySelector(".actions");
+  if (actionsDiv) {
+    const sprintBtn = document.createElement("button");
+    sprintBtn.className = "ghost";
+    sprintBtn.textContent = "⚡ 60sn Refleks";
+    sprintBtn.onclick = startReflexSprint;
+
+    const intentBtn = document.createElement("button");
+    intentBtn.className = "ghost";
+    intentBtn.textContent = "⏱️ Niyet Başlat";
+    intentBtn.onclick = openIntentModal;
+
+    const readerBtn = document.createElement("button");
+    readerBtn.className = "ghost";
+    readerBtn.textContent = "📖 Pasaj Oku";
+    readerBtn.onclick = () => openPassageReader();
+
+    actionsDiv.appendChild(sprintBtn);
+    actionsDiv.appendChild(intentBtn);
+    actionsDiv.appendChild(readerBtn);
+  }
+};
+
+// 14. KELİME EVRENİ YÜKSELTMESİ: KÖK TAKIMYILDIZI ODAK MODU & SEÇİLİ KÜRE BİLGİ PANELİ
+const _prevStartWordUniverse3 = startWordUniverse;
+startWordUniverse = function() {
+  const canvas = $("wordUniverseCanvas");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const rect = canvas.getBoundingClientRect();
+  const W = rect.width || 600;
+  const H = 430;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  ctx.scale(dpr, dpr);
+
+  const palette = ["#8b5cf6", "#0ea5e9", "#10b981", "#f59e0b", "#ec4899", "#14b8a6", "#f97316"];
+  const catColor = {};
+  let ci = 0;
+
+  const nodes = state.words.map(w => {
+    if (!catColor[w.cat]) catColor[w.cat] = palette[ci++ % palette.length];
+    const str = w.last ? strengthOf(w) : 15;
+    const r = 16 + (str / 100) * 18;
+    const rootPart = analyze(w).parts.find(p => p.type === "root");
+    return {
+      w, r,
+      x: r + Math.random() * (W - r * 2),
+      y: r + Math.random() * (H - r * 2),
+      vx: (Math.random() - 0.5) * 0.65,
+      vy: (Math.random() - 0.5) * 0.65,
+      color: catColor[w.cat],
+      root: rootPart ? rootPart.f : null
+    };
+  });
+
+  let dragNode = null, dragMoved = false, downPos = { x: 0, y: 0 };
+  let focusedNode = null; // Takımyıldızı odak düğümü
+
+  // Evren üstüne odak bilgi çubuğu ekle
+  const wrap = canvas.parentElement;
+  let focusHud = wrap.querySelector("#univFocusHud");
+  if (!focusHud) {
+    focusHud = document.createElement("div");
+    focusHud.id = "univFocusHud";
+    focusHud.style.cssText = "position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap;pointer-events:auto;";
+    wrap.appendChild(focusHud);
+  }
+
+  function updateFocusHud() {
+    if (!focusedNode) {
+      focusHud.innerHTML = `<span class="universe-pill">✨ Bir küreye tıkla: Kök takımyıldızını öne çıkar · Çift tıkla: Detay aç</span>`;
+      return;
+    }
+    const mates = nodes.filter(n => n !== focusedNode && ((focusedNode.root && n.root === focusedNode.root) || n.w.cat === focusedNode.w.cat));
+    focusHud.innerHTML = `
+      <span class="universe-pill" style="border-color:var(--primary);font-weight:700;">
+        🔭 Odak: ${esc(focusedNode.w.en)} (${focusedNode.root ? "Kök: " + esc(focusedNode.root) : esc(focusedNode.w.cat)}) · ${mates.length + 1} düğüm
+      </span>
+      <div style="display:flex;gap:6px;">
+        <button class="primary" id="univOpenDetBtn" style="min-height:30px;padding:4px 10px;font-size:12px;">Detay Aç</button>
+        <button class="ghost" id="univTrainClusterBtn" style="min-height:30px;padding:4px 10px;font-size:12px;background:var(--surface);">🧠 Takımyıldızını Çalış</button>
+        <button class="ghost" id="univClearFocusBtn" style="min-height:30px;padding:4px 10px;font-size:12px;background:var(--surface);">✕</button>
+      </div>
+    `;
+    $("univOpenDetBtn").onclick = () => openDetail(focusedNode.w.id);
+    $("univTrainClusterBtn").onclick = () => startCustomWordSession([focusedNode.w, ...mates.map(m => m.w)].slice(0, 8), `${focusedNode.w.en} Takımyıldızı`);
+    $("univClearFocusBtn").onclick = () => { focusedNode = null; updateFocusHud(); };
+  }
+  updateFocusHud();
+
+  function getPos(e) {
+    const b = canvas.getBoundingClientRect();
+    return { x: e.clientX - b.left, y: e.clientY - b.top };
+  }
+
+  canvas.onpointerdown = e => {
+    const p = getPos(e);
+    downPos = p; dragMoved = false;
+    for (let i = nodes.length - 1; i >= 0; i--) {
+      const n = nodes[i];
+      if (Math.hypot(p.x - n.x, p.y - n.y) <= n.r + 4) {
+        dragNode = n;
+        canvas.setPointerCapture(e.pointerId);
+        break;
+      }
+    }
+  };
+  canvas.onpointermove = e => {
+    if (!dragNode) return;
+    const p = getPos(e);
+    if (Math.hypot(p.x - downPos.x, p.y - downPos.y) > 5) dragMoved = true;
+    dragNode.vx = (p.x - dragNode.x) * 0.25;
+    dragNode.vy = (p.y - dragNode.y) * 0.25;
+    dragNode.x = Math.max(dragNode.r, Math.min(W - dragNode.r, p.x));
+    dragNode.y = Math.max(dragNode.r, Math.min(H - dragNode.r, p.y));
+  };
+  canvas.onpointerup = () => {
+    if (dragNode && !dragMoved) {
+      SFX.flip();
+      if (focusedNode === dragNode) {
+        openDetail(dragNode.w.id);
+      } else {
+        focusedNode = dragNode;
+        updateFocusHud();
+      }
+    } else if (!dragNode && !dragMoved && focusedNode) {
+      focusedNode = null;
+      updateFocusHud();
+    }
+    dragNode = null;
+  };
+
+  const isFilterMatch = n => {
+    if (universeFilter === "all") return true;
+    if (universeFilter === "__hard") return isHard(n.w) || isLeech(n.w);
+    if (universeFilter === "__master") return !!n.w.mastered;
+    return n.w.cat === universeFilter;
+  };
+
+  const isConstellationMatch = n => {
+    if (!focusedNode) return true;
+    if (n === focusedNode) return true;
+    if (focusedNode.root && n.root === focusedNode.root) return true;
+    return n.w.cat === focusedNode.w.cat;
+  };
+
+  function tick() {
+    ctx.clearRect(0, 0, W, H);
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const a = nodes[i], b = nodes[j];
+        if (a.root && a.root === b.root) {
+          const dist = Math.hypot(a.x - b.x, a.y - b.y);
+          const highlighted = focusedNode && (a.root === focusedNode.root);
+          if (dist < (highlighted ? 340 : 190)) {
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.strokeStyle = highlighted ? "rgba(167, 139, 250, 0.85)" : `rgba(167, 139, 250, ${(1 - dist / 190) * 0.4})`;
+            ctx.lineWidth = highlighted ? 2.2 : 1.1;
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    for (let i = 0; i < nodes.length; i++) {
+      const n = nodes[i];
+      if (n !== dragNode) {
+        n.x += n.vx; n.y += n.vy;
+        n.vx *= 0.995; n.vy *= 0.995;
+        if (Math.hypot(n.vx, n.vy) < 0.16) {
+          n.vx += (Math.random() - 0.5) * 0.05;
+          n.vy += (Math.random() - 0.5) * 0.05;
+        }
+        if (n.x < n.r) { n.x = n.r; n.vx *= -0.8; }
+        if (n.x > W - n.r) { n.x = W - n.r; n.vx *= -0.8; }
+        if (n.y < n.r) { n.y = n.r; n.vy *= -0.8; }
+        if (n.y > H - n.r) { n.y = H - n.r; n.vy *= -0.8; }
+      }
+      for (let j = i + 1; j < nodes.length; j++) {
+        const m = nodes[j];
+        const dx = m.x - n.x, dy = m.y - n.y;
+        const d = Math.hypot(dx, dy) || 1;
+        const minD = n.r + m.r + 4;
+        if (d < minD) {
+          const overlap = (minD - d) * 0.5;
+          const nx = dx / d, ny = dy / d;
+          if (n !== dragNode) { n.x -= nx * overlap; n.y -= ny * overlap; }
+          if (m !== dragNode) { m.x += nx * overlap; m.y += ny * overlap; }
+        }
+      }
+
+      const active = isFilterMatch(n) && isConstellationMatch(n);
+      ctx.save();
+      ctx.globalAlpha = active ? 1 : 0.16;
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fillStyle = n === focusedNode ? n.color + "66" : n.color + "33";
+      ctx.fill();
+      ctx.lineWidth = n === focusedNode ? 3.5 : (n.w.mastered ? 2.5 : 1.5);
+      ctx.strokeStyle = n.color;
+      ctx.stroke();
+
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--text").trim() || "#1e1b4b";
+      ctx.font = `600 ${Math.max(10, Math.round(n.r * 0.44))}px system-ui, sans-serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(n.w.en, n.x, n.y);
+      ctx.restore();
+    }
+    universeRaf = requestAnimationFrame(tick);
+  }
+  universeRaf = requestAnimationFrame(tick);
+};
+
+// 15. YEDEKLEME YÜKSELTMESİ: GÜVENLİ YEDEK BİRLEŞTİRME & ZAMAN DAMGASI
+const _prevExportData3 = exportData;
+exportData = function() {
+  state.meta = state.meta || {};
+  state.meta.lastBackupAt = new Date().toISOString();
+  state.meta.answersSinceBackup = 0;
+  state.meta.wordsSinceBackup = 0;
+  save();
+  _prevExportData3();
+  toast("JSON yedeği indirildi ve yedek sayacı sıfırlandı");
+};
+
+async function mergeImportData(file) {
+  if (!file) return;
+  try {
+    const obj = JSON.parse(await file.text());
+    const st = obj.state || obj;
+    if (!Array.isArray(st.words)) throw new Error("bad");
+    const byEn = new Map(state.words.map(w => [w.en.toLowerCase(), w]));
+    let added = 0, updated = 0;
+    for (const rawW of st.words) {
+      const incoming = normalize(rawW);
+      const key = incoming.en.toLowerCase();
+      const cur = byEn.get(key);
+      if (!cur) {
+        incoming.id = nextId();
+        state.words.push(incoming);
+        byEn.set(key, incoming);
+        added++;
+      } else {
+        // Daha yüksek ilerlemeyi koru, notları ve bağlam cümlelerini birleştir
+        cur.correct = Math.max(cur.correct, incoming.correct);
+        cur.wrong = Math.max(cur.wrong, incoming.wrong);
+        cur.interval = Math.max(cur.interval, incoming.interval);
+        cur.mastered = cur.mastered || incoming.mastered;
+        cur.favorite = cur.favorite || incoming.favorite;
+        if (!cur.tr && incoming.tr) cur.tr = incoming.tr;
+        if (!cur.example && incoming.example) cur.example = incoming.example;
+        const noteSet = new Set((cur.notes || []).map(n => n.text));
+        (incoming.notes || []).forEach(n => { if (!noteSet.has(n.text)) cur.notes.push(n); });
+        const ctxSet = new Set((cur.contextQuotes || []).map(q => q.text));
+        (incoming.contextQuotes || []).forEach(q => { if (!ctxSet.has(q.text)) cur.contextQuotes.push(q); });
+        updated++;
+      }
+    }
+    state.xp = Math.max(state.xp, st.xp || 0);
+    state.longest = Math.max(state.longest, st.longest || 0);
+    state.badges = [...new Set([...state.badges, ...(st.badges || [])])];
+    save();
+    renderSettings();
+    updateStreakBadge();
+    toast(`Birleştirme tamamlandı: +${added} yeni kelime, ${updated} kelime güncellendi`);
+  } catch (e) {
+    toast("Birleştirme başarısız: Geçersiz JSON dosyası");
+  }
+}
+
+// 16. AYARLAR & İSTATİSTİK YÜKSELTMESİ (KLAVYE REHBERİ, ODAK DAKİKASI, BİRLEŞTİRİCİ)
+const _prevRenderStats3 = renderStats;
+renderStats = function() {
+  _prevRenderStats3();
+  const el = $("tab-stats");
+  const firstGrid = el?.querySelector(".grid");
+  if (firstGrid) {
+    const fCard = document.createElement("div");
+    fCard.className = "card";
+    fCard.innerHTML = `<div class="muted">Odak Süresi</div><div class="stat">${state.totals.focusMinutes || 0} dk</div>`;
+    const sCard = document.createElement("div");
+    sCard.className = "card";
+    sCard.innerHTML = `<div class="muted">Refleks Rekor</div><div class="stat">${state.totals.sprintBest || 0}</div>`;
+    firstGrid.appendChild(fCard);
+    firstGrid.appendChild(sCard);
+  }
+};
+
+const _prevRenderSettings3 = renderSettings;
+renderSettings = function() {
+  _prevRenderSettings3();
+  const el = $("tab-settings");
+  if (!el) return;
+
+  // Veri yedeği kartına "Mevcut İlerlemeyle Birleştir" ve son yedek bilgisi ekle
+  const cards = [...el.querySelectorAll(".card")];
+  const backupCard = cards.find(c => c.textContent.includes("Veri yedeği"));
+  if (backupCard) {
+    const lastStr = state.meta?.lastBackupAt ? new Date(state.meta.lastBackupAt).toLocaleString("tr-TR") : "Henüz yedek alınmadı";
+    const info = document.createElement("p");
+    info.className = "muted";
+    info.style.fontSize = "12px";
+    info.textContent = `Son yedek: ${lastStr} · Yedekten beri: ${state.meta?.answersSinceBackup || 0} cevap`;
+    backupCard.appendChild(info);
+
+    const btnRow = backupCard.querySelector("div");
+    if (btnRow) {
+      const mergeLbl = document.createElement("label");
+      mergeLbl.className = "ghost";
+      mergeLbl.style.cssText = "display:inline-flex;align-items:center;padding:8px 14px;border-radius:10px;cursor:pointer;";
+      mergeLbl.innerHTML = `İlerlemeyle birleştir <input type="file" id="mergeImportFile" accept="application/json" class="hidden">`;
+      btnRow.appendChild(mergeLbl);
+      $("mergeImportFile").onchange = e => mergeImportData(e.target.files[0]);
+    }
+  }
+
+  // Klavye kısayolları rehber kartı ekle
+  const kbdCard = document.createElement("div");
+  kbdCard.className = "card";
+  kbdCard.innerHTML = `
+    <strong>⌨️ Hızlı Klavye Kısayolları</strong>
+    <div class="row"><span>Oturum / Sprint şık seçimi</span><span><span class="kbd">1</span> – <span class="kbd">4</span></span></div>
+    <div class="row"><span>Sonraki soruya geç</span><span><span class="kbd">Enter</span> veya <span class="kbd">Space</span></span></div>
+    <div class="row"><span>Kelimeyi tekrar dinle</span><span><span class="kbd">R</span></span></div>
+    <div class="row"><span>İpucu göster</span><span><span class="kbd">H</span></span></div>
+    <div class="row"><span>Sözlükte hızlı arama</span><span><span class="kbd">/</span></span></div>
+    <div class="row"><span>Odak (Zen) modundan çık</span><span><span class="kbd">Esc</span></span></div>
+  `;
+  el.insertBefore(kbdCard, el.lastElementChild);
+};
+
 // ---------- Başlatma ----------
 document.querySelectorAll("nav button").forEach(b => b.onclick = () => showTab(b.dataset.tab));
 // Kelime ekleme butonları
@@ -3499,6 +4897,505 @@ $("cancelEditWord")?.addEventListener("click", () => $("editWordDialog").close()
 applyUi();
 updateStreakBadge();
 showTab("today");
+// =====================================================================
+// LEXORA 4.0 — TAM KONTROL, İNGİLİZCE ODAK, GERÇEK HAYAT & YOLCULUK
+// =====================================================================
+
+// 1. DURUM & PROFİL İMZASI (Fatih Gökhan VAYVAYLI)
+const _prevUpgrade4 = upgradeState;
+upgradeState = function(s) {
+  s = _prevUpgrade4(s);
+  s.profile = {
+    name: "Fatih Gökhan VAYVAYLI",
+    signature: "Fatih Gökhan VAYVAYLI",
+    avatar: "🧭",
+    goalTag: "YDS & Akademik İngilizce Yolculuğu",
+    title: "oto",
+    ...(s.profile || {})
+  };
+  if (!s.profile.name || s.profile.name === "Bilge Okur") {
+    s.profile.name = "Fatih Gökhan VAYVAYLI";
+  }
+  s.profile.signature = "Fatih Gökhan VAYVAYLI";
+
+  s.settings = {
+    srsPace: "normal",       // "yavas" | "normal" | "hizli"
+    autoSpeakPrompt: false,
+    showCollocations: true,
+    showWordFamily: true,
+    dailyNewCap: 10,
+    ...(s.settings || {})
+  };
+
+  s.ui = {
+    fabPos: "pos-br",        // "pos-br" | "pos-bl" | "pos-tr" | "pos-tl"
+    fabVisible: true,
+    fabAction: "session",    // "session" | "sprint" | "reader" | "realworld"
+    ...(s.ui || {})
+  };
+
+  s.realWorldLogs = s.realWorldLogs || [];
+  s.badgeDates = s.badgeDates || {};
+  return s;
+};
+state = upgradeState(state);
+
+if (!TAB_ORDER.includes("realworld")) {
+  TAB_ORDER.splice(5, 0, "realworld");
+}
+renderers.realworld = renderRealWorld;
+
+// 2. PASAJ OKUYUCU REGEX DÜZELTMESİ (Kelime sınırları tam uyumlu)
+const _origRenderPassageStage = renderPassageStage;
+renderPassageStage = function(rawText) {
+  const stage = $("readerStage");
+  const text = String(rawText || "").trim();
+  if (!text) {
+    stage.innerHTML = `<p class="muted">Çözümlemek için yukarıya İngilizce bir metin girin.</p>`;
+    return;
+  }
+  state.totals.passagesRead = (state.totals.passagesRead || 0) + 1;
+  save();
+
+  const sentences = text.match(/[^.!?]+[.!?]*/g) || [text];
+  const wordMap = new Map(state.words.map(w => [w.en.toLowerCase(), w]));
+
+  const html = sentences.map((sent, sIdx) => {
+    const tokens = sent.split(/(\b[a-zA-Z]{2,}\b)/g);
+    return tokens.map(tok => {
+      if (/^[a-zA-Z]{2,}$/.test(tok)) {
+        const low = tok.toLowerCase();
+        const found = wordMap.get(low);
+        const cls = found ? (isDue(found) ? "r-tok due-tok" : "r-tok known") : "r-tok";
+        return `<span class="${cls}" data-rtok="${esc(low)}" data-rsent="${sIdx}">${esc(tok)}</span>`;
+      }
+      return esc(tok);
+    }).join("");
+  }).join("");
+
+  const knownInText = [...new Set((text.toLowerCase().match(/\b[a-z]{2,}\b/g) || []).filter(w => wordMap.has(w)))];
+
+  stage.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:8px;">
+      <span class="muted" style="font-size:12px;">🟢 Sözlükte var · 🟠 Tekrarı gelmiş · Tıklayarak İngilizce bağlamı ve anlamı incele</span>
+      ${knownInText.length >= 2 ? `<button class="ghost" id="practicePassageWordsBtn" style="min-height:32px;padding:4px 10px;font-size:12px;">🧠 Metindeki ${knownInText.length} Kelimeyle Oturum Aç</button>` : ""}
+    </div>
+    <div class="reader-text" id="readerTokensBox">${html}</div>
+    <div id="readerPopover"></div>
+  `;
+
+  if ($("practicePassageWordsBtn")) {
+    $("practicePassageWordsBtn").onclick = () => {
+      const targetWords = knownInText.map(k => wordMap.get(k)).filter(Boolean);
+      $("readerDialog").close();
+      startCustomWordSession(targetWords, "Pasaj Kelimeleri Oturumu");
+    };
+  }
+
+  stage.querySelectorAll("[data-rtok]").forEach(span => {
+    span.onclick = async () => {
+      stage.querySelectorAll(".sel-tok").forEach(x => x.classList.remove("sel-tok"));
+      span.classList.add("sel-tok");
+      const low = span.dataset.rtok;
+      const sent = sentences[+span.dataset.rsent]?.trim() || text;
+      const pop = $("readerPopover");
+      const existing = state.words.find(w => w.en.toLowerCase() === low);
+
+      if (existing) {
+        pop.innerHTML = `
+          <div class="reader-popover">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
+              <div><strong style="font-size:19px;">${esc(existing.en)}</strong> <span class="pos">${esc(existing.pos)}</span> → <strong style="color:var(--primary)">${esc(existing.tr)}</strong></div>
+              <div style="display:flex;gap:6px;">
+                <button class="icon" id="rSpeakBtn" title="Telaffuzu Dinle">🔊</button>
+                <button class="ghost" id="rSaveCtxBtn">+ Gerçek Bağlam Olarak Kaydet</button>
+                <button class="ghost" id="rOpenDetBtn">Detay</button>
+              </div>
+            </div>
+            <p class="muted" style="margin:6px 0 0;font-size:13px;">Bağlam: “${esc(sent)}”</p>
+          </div>`;
+        $("rSpeakBtn").onclick = () => speak(existing.en);
+        $("rOpenDetBtn").onclick = () => { $("readerDialog").close(); openDetail(existing.id); };
+        $("rSaveCtxBtn").onclick = () => {
+          existing.contextQuotes = existing.contextQuotes || [];
+          if (!existing.contextQuotes.some(q => q.text === sent)) {
+            existing.contextQuotes.push({ text: sent, date: dayKey() });
+            if (!existing.example) existing.example = sent;
+            save();
+            toast(`Bağlam cümlesi "${existing.en}" kartına işlendi`);
+          } else {
+            toast("Bu bağlam cümlesi zaten kayıtlı");
+          }
+        };
+      } else {
+        pop.innerHTML = `<div class="reader-popover"><p class="muted"><strong>${esc(low)}</strong> için İngilizce sözlük ve çeviri sorgulanıyor...</p></div>`;
+        const [d, tr] = await Promise.all([lookupDict(low), translateTr(low)]);
+        const trVal = tr?.value || "";
+        const defVal = d && !d.error ? d.def : "";
+        pop.innerHTML = `
+          <div class="reader-popover">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
+              <div>
+                <strong style="font-size:19px;">${esc(low)}</strong>
+                ${trVal ? ` → <strong style="color:var(--primary)">${esc(trVal)}</strong>` : `<span class="muted"> (çeviri bulunamadı)</span>`}
+              </div>
+              <div style="display:flex;gap:6px;">
+                <button class="icon" id="rSpeakNewBtn">🔊</button>
+                <button class="primary" id="rAddWithCtxBtn">+ Bağlamıyla Sözlüğe Ekle</button>
+              </div>
+            </div>
+            ${defVal ? `<p style="margin:6px 0;font-size:14px;">${esc(defVal)}</p>` : ""}
+            <p class="muted" style="margin:4px 0 0;font-size:13px;">Alıntı Bağlamı: “${esc(sent)}”</p>
+          </div>`;
+        $("rSpeakNewBtn").onclick = () => speak(low);
+        $("rAddWithCtxBtn").onclick = () => {
+          const nw = {
+            id: "u_" + Date.now(),
+            en: low,
+            tr: trVal || low,
+            pos: d?.pos || "noun",
+            level: "B2",
+            cat: "Gerçek Hayat",
+            def: defVal,
+            example: sent,
+            contextQuotes: [{ text: sent, date: dayKey() }],
+            notes: [],
+            syn: d?.syn || [],
+            ant: d?.ant || [],
+            interval: 0, ease: 2.5, next: Date.now(), correct: 0, wrong: 0, last: 0, mastered: false, source: "reader"
+          };
+          state.words.unshift(nw);
+          save();
+          toast(`"${low}" bağlam cümlesiyle sözlüğe eklendi`);
+          renderPassageStage(rawText);
+        };
+      }
+    };
+  });
+};
+
+// 3. KISMEN ÖZELLEŞTİRİLEBİLİR YÜZEN BUTONLAR (FAB & ZEN)
+function applyFloatingLayout() {
+  const fab = $("quickFloatFab");
+  const zen = $("zenFloatBtn");
+  const pos = state.ui.fabPos || "pos-br";
+  const allPos = ["pos-br", "pos-bl", "pos-tr", "pos-tl"];
+
+  if (fab) {
+    fab.classList.remove(...allPos, "fab-hidden");
+    fab.classList.add(pos);
+    if (!state.ui.fabVisible) fab.classList.add("fab-hidden");
+    const labels = {
+      session: "⚡ Hızlı Kelime Turu",
+      sprint: "⏱️ 60sn Refleks",
+      reader: "📖 Pasaj Avcısı",
+      realworld: "🌍 Gerçek Hayat"
+    };
+    fab.textContent = labels[state.ui.fabAction] || "⚡ Hızlı Kelime Turu";
+  }
+  if (zen) {
+    zen.classList.remove(...allPos);
+    zen.classList.add(pos);
+  }
+}
+
+$("quickFloatFab")?.addEventListener("click", () => {
+  const act = state.ui.fabAction || "session";
+  if (act === "session") startSession({ len: 5 });
+  else if (act === "sprint") startReflexSprint();
+  else if (act === "reader") openPassageReader();
+  else if (act === "realworld") showTab("realworld");
+});
+
+const _prevApplyUi4 = applyUi;
+applyUi = function() {
+  _prevApplyUi4();
+  applyFloatingLayout();
+};
+
+// 4. GERÇEK HAYAT BAĞLANTISI MODÜLÜ
+const REAL_WORLD_SCENARIOS = [
+  {
+    domain: "Akademik Makale & YDS",
+    title: "Bilimsel Kanıt ve Yöntem Tartışması",
+    en: "While preliminary findings corroborate the hypothesis, researchers caution that extrapolating these results without longitudinal data would be premature.",
+    tr: "Ön bulgular hipotezi doğrulasa da araştırmacılar, boylamsal veriler olmadan bu sonuçları genellemenin erken olacağı konusunda uyarıyor.",
+    focusWords: ["preliminary", "corroborate", "hypothesis", "extrapolate", "longitudinal", "premature"],
+    usageTip: "'corroborate' akademik metinlerde neredeyse her zaman 'evidence / findings / theory' ile eşdizimli kullanılır."
+  },
+  {
+    domain: "Günlük Profesyonel İletişim",
+    title: "Toplantıda Belirsizliği Yönetmek",
+    en: "Rather than dwelling on past setbacks, we need to allocate our resources prudently and mitigate potential bottlenecks before the deadline.",
+    tr: "Geçmiş aksaklıklara takılıp kalmak yerine, kaynaklarımızı ihtiyatlı biçimde dağıtmalı ve son teslim tarihinden önce olası darboğazları hafifletmeliyiz.",
+    focusWords: ["dwell", "setback", "allocate", "prudently", "mitigate", "bottleneck"],
+    usageTip: "'mitigate risk / impact / bottleneck' iş ve proje dilinin en sık kullanılan kalıplarındandır."
+  },
+  {
+    domain: "Felsefe & Eleştirel Düşünce",
+    title: "Kavram ve Deneyim İlişkisi",
+    en: "To comprehend an idea genuinely is not merely to memorize its definition, but to discern how it operates within concrete human experience.",
+    tr: "Bir fikri sahiden kavramak yalnızca tanımını ezberlemek değil, onun somut insan deneyimi içinde nasıl işlediğini ayırt etmektir.",
+    focusWords: ["comprehend", "genuinely", "merely", "discern", "concrete"],
+    usageTip: "'discern' yüzeysel bakışla görülmeyen ince farkları akıl yoluyla ayırt etmeyi vurgular."
+  }
+];
+
+function renderRealWorld() {
+  const el = $("tab-realworld");
+  if (!el) return;
+  const wordMap = new Map(state.words.map(w => [w.en.toLowerCase(), w]));
+
+  const scenarioCards = REAL_WORLD_SCENARIOS.map((sc, idx) => `
+    <div class="card real-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
+        <span class="real-tag">${esc(sc.domain)}</span>
+        <button class="icon" data-rw-speak="${idx}" title="Cümleyi Dinle">🔊</button>
+      </div>
+      <h3 style="margin:8px 0 6px;font-size:17px;">${esc(sc.title)}</h3>
+      <p style="font-size:16px;line-height:1.65;margin:0 0 8px;">“${esc(sc.en)}”</p>
+      <p class="muted" style="font-size:14px;margin:0 0 10px;">${esc(sc.tr)}</p>
+      <div class="hook" style="margin-bottom:10px;">💡 <strong>Kullanım Notu:</strong> ${esc(sc.usageTip)}</div>
+      <div>
+        ${sc.focusWords.map(fw => {
+          const found = wordMap.get(fw.toLowerCase());
+          return `<button class="word-chip-en" data-rw-word="${esc(fw)}">${found ? "🟢" : "➕"} ${esc(fw)}${found ? ` · ${esc(found.tr)}` : ""}</button>`;
+        }).join("")}
+      </div>
+    </div>
+  `).join("");
+
+  const userLogsHtml = state.realWorldLogs.length
+    ? state.realWorldLogs.slice().reverse().map((log, i) => `
+        <div class="review-err-item">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span class="real-tag">${esc(log.source || "Gerçek Hayat Kaydı")}</span>
+            <small class="muted">${esc(log.date)}</small>
+          </div>
+          <p style="margin:6px 0 4px;font-size:15px;">“${esc(log.sentence)}”</p>
+          ${log.note ? `<p class="muted" style="margin:0;font-size:13px;">Not: ${esc(log.note)}</p>` : ""}
+        </div>
+      `).join("")
+    : `<p class="muted">Henüz gerçek hayattan bir İngilizce cümle kaydetmedin. Okuduğun bir makaleden, kitaptan veya izlediğin bir yapımdan cümle ekleyerek kendi canlı sözlüğünü kur.</p>`;
+
+  el.innerHTML = `
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+        <div>
+          <strong style="font-size:18px;">🌍 Gerçek Hayat & Canlı Bağlam Laboratuvarı</strong>
+          <p class="muted" style="margin:4px 0 0;">İngilizce sözcükleri soyut listelerden çıkar; gerçek cümlelerde, akademik metinlerde ve kendi yaşamında yakala.</p>
+        </div>
+        <button class="primary" id="rwOpenReaderBtn">📖 Kendi Metnini Çözümle</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <strong>✍️ Gerçek Hayatta Karşılaştığın Bir İngilizce Cümleyi Kaydet</strong>
+      <div style="display:grid;gap:8px;margin-top:8px;">
+        <input type="text" id="rwSourceInp" placeholder="Kaynak (örn: Makale, Dizi, YDS Denemesi, Kitap)">
+        <textarea id="rwSentenceInp" placeholder="Karşılaştığın İngilizce cümleyi buraya yapıştır..."></textarea>
+        <input type="text" id="rwNoteInp" placeholder="Hangi kelime dikkatini çekti veya ne öğrendin?">
+        <button class="primary" id="rwSaveLogBtn">Cümleyi Kaydet ve Kelimeleri Çözümle</button>
+      </div>
+    </div>
+
+    ${scenarioCards}
+
+    <div class="card">
+      <strong>🗂️ Senin Gerçek Hayat Arşivin (${state.realWorldLogs.length})</strong>
+      <div style="margin-top:10px;">${userLogsHtml}</div>
+    </div>
+  `;
+
+  $("rwOpenReaderBtn").onclick = () => openPassageReader();
+  el.querySelectorAll("[data-rw-speak]").forEach(btn => {
+    btn.onclick = () => speak(REAL_WORLD_SCENARIOS[+btn.dataset.rwSpeak].en);
+  });
+  el.querySelectorAll("[data-rw-word]").forEach(btn => {
+    btn.onclick = () => {
+      const w = btn.dataset.rwWord;
+      const found = state.words.find(x => x.en.toLowerCase() === w.toLowerCase());
+      if (found) openDetail(found.id);
+      else openPassageReader(w);
+    };
+  });
+  $("rwSaveLogBtn").onclick = () => {
+    const sentence = ($("rwSentenceInp").value || "").trim();
+    if (!sentence) { toast("Lütfen önce İngilizce bir cümle yaz"); return; }
+    const source = ($("rwSourceInp").value || "").trim() || "Kişisel Gözlem";
+    const note = ($("rwNoteInp").value || "").trim();
+    state.realWorldLogs.push({ sentence, source, note, date: dayKey() });
+    save();
+    toast("Gerçek hayat cümlen kaydedildi!");
+    renderRealWorld();
+    openPassageReader(sentence);
+  };
+}
+
+// 5. ÖZEL HİSSETTİREN BAŞARIMLAR & KUTLAMA TÖRENİ
+const SPECIAL_ACHIEVEMENTS = [
+  { id: "first", tier: "Bronz", title: "İlk Kıvılcım", desc: "İngilizce sözcük yolculuğundaki ilk doğru adım.", ok: () => state.totals.correct >= 1 },
+  { id: "ten", tier: "Bronz", title: "Onluk Çekirdek", desc: "10 farklı İngilizce kelimeyi hafızana kazıdın.", ok: () => learnedWords() >= 10 },
+  { id: "morph5", tier: "Gümüş", title: "Etimoloji Kâşifi", desc: "Kelimelerin kök ve ek mimarisini çözmeye başladın.", ok: () => learnedMorphs().length >= 5 },
+  { id: "streak7", tier: "Gümüş", title: "Yedi Günlük İrade", desc: "Zinciri kırmadan 7 gün boyunca dil disiplinini korudun.", ok: () => state.longest >= 7 },
+  { id: "real3", tier: "Gümüş", title: "Hayatın İçinden", desc: "Gerçek hayattan en az 3 İngilizce bağlam kaydı oluşturdun.", ok: () => (state.realWorldLogs?.length || 0) >= 3 },
+  { id: "master3", tier: "Altın", title: "Kalıcı Hafıza Mührü", desc: "3 kelimeyi uzun süreli belleğe (21+ gün aralığına) taşıdın.", ok: () => masteredCount() >= 3 },
+  { id: "perfect", tier: "Altın", title: "Kusursuz Odak", desc: "Tek bir hata bile yapmadan tam oturum tamamladın.", ok: () => state.totals.perfect >= 1 },
+  { id: "station3", tier: "Altın", title: "Anlama Eşiği", desc: "Yolculuk haritasında 3. gelişim basamağına ulaştın.", ok: () => stationsUnlocked() >= 3 },
+  { id: "xp500", tier: "Efsanevi", title: "Sözcük Mimarı (500 XP)", desc: "İstikrarlı çalışmayla 500 deneyim puanı barajını aştın.", ok: () => state.xp >= 500 },
+  { id: "writer", tier: "Efsanevi", title: "Aktif Üretici", desc: "Kelimeleri pasif tanımaktan çıkarıp 10 kez doğru ürettin.", ok: () => bt("produce").c >= 10 }
+];
+
+function showAchievementCeremony(ach) {
+  const dlg = $("achievementModal");
+  const body = $("achievementModalBody");
+  if (!dlg || !body) return;
+  body.innerHTML = `
+    <div style="font-size:46px;margin-bottom:8px;">🏆</div>
+    <span class="ach-tier tier-${ach.tier === "Efsanevi" ? "legend" : ach.tier === "Altın" ? "gold" : ach.tier === "Gümüş" ? "silver" : "bronze"}">${esc(ach.tier)} Başarım</span>
+    <h2 style="margin:10px 0 6px;font-size:24px;">${esc(ach.title)}</h2>
+    <p style="font-size:15px;line-height:1.5;margin:0 0 12px;">${esc(ach.desc)}</p>
+    <p class="muted" style="font-size:12px;margin-bottom:16px;">Yolcu: <strong>${esc(state.profile.signature)}</strong> · ${new Date().toLocaleDateString("tr-TR")}</p>
+    <button class="primary" id="closeAchModalBtn" style="width:100%;">Yolculuğa Devam Et</button>
+  `;
+  dlg.showModal();
+  $("closeAchModalBtn").onclick = () => dlg.close();
+}
+
+const _prevCheckBadges4 = checkBadges;
+checkBadges = function() {
+  _prevCheckBadges4();
+  for (const ach of SPECIAL_ACHIEVEMENTS) {
+    if (!state.badges.includes(ach.id) && ach.ok()) {
+      state.badges.push(ach.id);
+      state.badgeDates[ach.id] = new Date().toLocaleDateString("tr-TR");
+      save();
+      SFX.fanfare();
+      launchConfetti(80);
+      showAchievementCeremony(ach);
+    }
+  }
+};
+
+// 6. YOLCULUK VE GELİŞİM HİSSİNİ GÜÇLENDİRME ("Yol" Sekmesi)
+const _origRenderPath = renderPath;
+renderPath = function() {
+  _origRenderPath();
+  const el = $("tab-path");
+  if (!el) return;
+  const li = levelInfo();
+  const unlockedAchs = SPECIAL_ACHIEVEMENTS.filter(a => state.badges.includes(a.id)).length;
+  const banner = document.createElement("div");
+  banner.className = "card";
+  banner.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+      <div>
+        <strong style="font-size:18px;">🧭 İngilizce Sözcük Yolculuğun</strong>
+        <div class="muted">Seviye ${li.L} · ${resolvedTitle()} · ${masteredCount()}/${state.words.length} Ustalaşılan Kelime</div>
+      </div>
+      <span class="signature-seal">✍️ ${esc(state.profile.signature)}</span>
+    </div>
+    <div class="progress"><div style="width:${li.pct}%"></div></div>
+    <p class="muted" style="margin:6px 0 12px;">Bir sonraki seviyeye <strong>${li.next - state.xp} XP</strong> kaldı · Özel Başarımlar: <strong>${unlockedAchs}/${SPECIAL_ACHIEVEMENTS.length}</strong></p>
+    <div class="ach-grid">
+      ${SPECIAL_ACHIEVEMENTS.map(a => {
+        const ok = state.badges.includes(a.id);
+        return `<div class="ach-card ${ok ? "unlocked" : ""}">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <span class="ach-tier tier-${a.tier === "Efsanevi" ? "legend" : a.tier === "Altın" ? "gold" : a.tier === "Gümüş" ? "silver" : "bronze"}">${esc(a.tier)}</span>
+            <span>${ok ? "🏅" : "🔒"}</span>
+          </div>
+          <strong>${esc(a.title)}</strong>
+          <p class="muted" style="font-size:12px;margin:4px 0 0;">${esc(a.desc)}</p>
+          ${ok && state.badgeDates[a.id] ? `<div class="muted" style="font-size:11px;margin-top:6px;">Kazanıldı: ${esc(state.badgeDates[a.id])}</div>` : ""}
+        </div>`;
+      }).join("")}
+    </div>
+  `;
+  el.insertBefore(banner, el.firstChild);
+};
+
+// 7. TAM KONTROL AYARLARI & İMZA GÖRÜNÜMÜ
+const _prevRenderSettings4 = renderSettings;
+renderSettings = function() {
+  _prevRenderSettings4();
+  const el = $("tab-settings");
+  if (!el) return;
+
+  // Profil kartına kalıcı imza mührü ekle
+  const profBanner = el.querySelector(".profile-banner");
+  if (profBanner && !profBanner.querySelector(".signature-seal")) {
+    const seal = document.createElement("div");
+    seal.style.marginTop = "8px";
+    seal.innerHTML = `<span class="signature-seal">✍️ İmza: ${esc(state.profile.signature)}</span>`;
+    profBanner.lastElementChild.appendChild(seal);
+  }
+
+  // Tam Kontrol & Yüzen Buton Özelleştirme Kartı
+  const controlCard = document.createElement("div");
+  controlCard.className = "card";
+  controlCard.innerHTML = `
+    <strong>🎛️ Tam Kontrol & Yüzen Buton Özelleştirme</strong>
+    <p class="muted" style="margin:4px 0 10px;">Uygulamanın öğrenme temposunu ve yüzen hızlı aksiyon butonunun konumunu kendi alışkanlığına göre belirle.</p>
+    <div class="toggle">
+      <span>Tekrar aralığı temposu (SRS)</span>
+      <select id="ctrlSrsPace">
+        <option value="yavas" ${state.settings.srsPace === "yavas" ? "selected" : ""}>Sık Tekrar (Pekiştirmeli)</option>
+        <option value="normal" ${state.settings.srsPace === "normal" ? "selected" : ""}>Dengeli (Standart)</option>
+        <option value="hizli" ${state.settings.srsPace === "hizli" ? "selected" : ""}>Hızlı İlerleme</option>
+      </select>
+    </div>
+    <div class="toggle">
+      <span>Sorularda İngilizce kelimeyi otomatik seslendir</span>
+      <input type="checkbox" id="ctrlAutoSpeak" ${state.settings.autoSpeakPrompt ? "checked" : ""}>
+    </div>
+    <div class="toggle">
+      <span>Yüzen hızlı aksiyon butonunu göster</span>
+      <input type="checkbox" id="ctrlFabVis" ${state.ui.fabVisible ? "checked" : ""}>
+    </div>
+    <div class="toggle">
+      <span>Yüzen buton konumu</span>
+      <select id="ctrlFabPos">
+        <option value="pos-br" ${state.ui.fabPos === "pos-br" ? "selected" : ""}>Sağ Alt Köşe</option>
+        <option value="pos-bl" ${state.ui.fabPos === "pos-bl" ? "selected" : ""}>Sol Alt Köşe</option>
+        <option value="pos-tr" ${state.ui.fabPos === "pos-tr" ? "selected" : ""}>Sağ Üst Köşe</option>
+        <option value="pos-tl" ${state.ui.fabPos === "pos-tl" ? "selected" : ""}>Sol Üst Köşe</option>
+      </select>
+    </div>
+    <div class="toggle">
+      <span>Yüzen buton görevi</span>
+      <select id="ctrlFabAction">
+        <option value="session" ${state.ui.fabAction === "session" ? "selected" : ""}>5 Soruluk Hızlı Kelime Turu</option>
+        <option value="sprint" ${state.ui.fabAction === "sprint" ? "selected" : ""}>60 Saniye Refleks Sprint</option>
+        <option value="reader" ${state.ui.fabAction === "reader" ? "selected" : ""}>Pasajdan Kelime Avcısı</option>
+        <option value="realworld" ${state.ui.fabAction === "realworld" ? "selected" : ""}>Gerçek Hayat Bağlantısı</option>
+      </select>
+    </div>
+    <div style="margin-top:8px;">
+      <button class="ghost" id="resetFabPosBtn" style="font-size:13px;">↺ Yüzen Buton Konumunu Varsayılana Döndür</button>
+    </div>
+  `;
+  el.insertBefore(controlCard, el.children[1] || el.firstChild);
+
+  $("ctrlSrsPace").onchange = e => { state.settings.srsPace = e.target.value; save(); toast("Tekrar temposu güncellendi"); };
+  $("ctrlAutoSpeak").onchange = e => { state.settings.autoSpeakPrompt = e.target.checked; save(); };
+  $("ctrlFabVis").onchange = e => { state.ui.fabVisible = e.target.checked; save(); applyFloatingLayout(); };
+  $("ctrlFabPos").onchange = e => { state.ui.fabPos = e.target.value; save(); applyFloatingLayout(); };
+  $("ctrlFabAction").onchange = e => { state.ui.fabAction = e.target.value; save(); applyFloatingLayout(); };
+  $("resetFabPosBtn").onclick = () => {
+    state.ui.fabPos = "pos-br";
+    state.ui.fabVisible = true;
+    state.ui.fabAction = "session";
+    save();
+    applyFloatingLayout();
+    renderSettings();
+    toast("Yüzen buton varsayılan konuma döndürüldü");
+  };
+};
+
+// İlk yüklemede yüzen buton konumunu ve profil bilgisini uygula
+applyFloatingLayout();
+updateProfilePill();
 </script>
 </body>
 </html>
