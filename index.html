@@ -180,13 +180,22 @@
     body:has(#tab-library:not(.hidden)) main { max-width: 980px; }
     .lib-split { grid-template-columns: minmax(0, 1fr) minmax(300px, 1fr); }
   }
-  .lib-pane { min-height: 160px; position: sticky; top: 72px; }
-  .lib-pane .dw-image-wrap { height: 150px; border-radius: 14px; }
-  .lib-pane .dw-content { max-height: none; padding: 14px 0 0; overflow: visible; }
+  .lib-list, .lib-pane, .dw-content, .dw-sec, .chips, .chip { min-width: 0; max-width: 100%; }
+  .dw-word, .dw-tr, .dw-def, .sentence, .hook, .dw-sec p { overflow-wrap: anywhere; }
+  .dw-header { flex-wrap: wrap; gap: 10px; }
+  .dw-stat-row { flex-wrap: wrap; }
+  .dw-stat-box { min-width: 0; flex: 1 1 90px; }
+  .iconrow { flex-wrap: wrap; }
+  .lib-pane { min-height: 160px; position: sticky; top: 72px; overflow: hidden; }
+  .lib-pane .dw-image-wrap { height: 140px; border-radius: 14px; }
+  .lib-pane .dw-content { max-height: none; padding: 12px 0 0; overflow: visible; }
+  .lib-pane .dw-word { font-size: 26px; }
   .lib-pane .dw-close { top: 8px; right: 8px; }
+  button.icon:hover, button.ghost:hover { filter: brightness(1.08); }
+  button.icon:active, button.ghost:active, button.primary:active { transform: scale(.97); }
   #webHits { margin: 8px 0 12px; }
-  #webHits .row { gap: 10px; }
-  #webHits .ghost { flex: 0 0 auto; } 
+  #webHits .row { gap: 10px; flex-wrap: wrap; }
+  #webHits .ghost { flex: 0 0 auto; }
 </style>
 </head>
 <body>
@@ -1532,10 +1541,9 @@ function renderDetail() {
           <button class="icon" id="dFav" aria-label="Favori">${w.favorite ? "⭐" : "☆"}</button>
           <button class="icon" id="dEdit" aria-label="Düzenle">✎</button>
           <button class="icon" id="dDel" aria-label="Sil">🗑</button>
-        <div class="iconrow">
           <button class="icon" id="dRead" aria-label="Hepsini oku">▶</button>
           <button class="icon" id="dSlow" aria-label="Yavaş oku">🐢</button>
-          <button class="icon" id="dPlay" aria-label="Dinle" style="font-size:24px; background:var(--primary); color:#fff; border:none; border-radius:50%; width:48px; height:48px;">🔊</button>
+          <button class="icon" id="dPlay" aria-label="Dinle" style="font-size:22px; background:var(--primary); color:#fff; border:none; border-radius:50%; width:44px; height:44px;">🔊</button>
         </div>
       </div>
 
@@ -1601,6 +1609,7 @@ function renderDetail() {
   $("dPlay").onclick = () => {
     if (w.audio) new Audio(w.audio).play().catch(() => speak(w.en));
     else speak(w.en);
+  };
   $("dFav").onclick = () => {
     w.favorite = !w.favorite;
     save();
@@ -1609,10 +1618,9 @@ function renderDetail() {
     toast(w.favorite ? "Favorilere eklendi" : "Favorilerden çıkarıldı");
   };
   $("dEdit").onclick = () => openEditWord(w);
-  $("dDel").onclick = () => deleteWord(w);      
-  };
+  $("dDel").onclick = () => deleteWord(w);
   $("dRead").onclick = () => speakCard(w, false);
-  $("dSlow").onclick = () => speakCard(w, true);    
+  $("dSlow").onclick = () => speakCard(w, true);
 }
 
 function familyLineHtml(w) {
