@@ -875,13 +875,19 @@ button.primary:active {
 /* === LEXORA 5.0 DÜZENLİ ÜST MENÜ & "DAHA FAZLA / KEŞFET" AÇILIR PANELİ === */
 nav {
   display: flex !important;
-  align-items: center !important;
+  align-items: flex-start !important;
   justify-content: space-between !important;
   gap: 8px !important;
-  overflow-x: visible !important;
-  flex-wrap: nowrap !important;
-  padding: 10px 14px !important;
+  overflow: visible !important;
+  flex-wrap: wrap !important;
+  padding: 10px 14px 14px !important;
 }
+main { padding-bottom: calc(108px + env(safe-area-inset-bottom, 0px)); }
+dialog { overflow: auto; }
+.wordbtn { display: flex; justify-content: space-between; gap: 8px; align-items: center; padding: 10px 0; }
+#marketBox .row { align-items: flex-start; flex-wrap: wrap; }
+#marketBox select, #marketBox input[type="text"] { max-width: 100%; min-width: 0; }
+.hourly-gift-dock { bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
 
 .lexora-nav-primary {
   display: flex;
@@ -925,14 +931,16 @@ nav {
   right: 0;
   top: calc(100% + 8px);
   width: min(320px, calc(100vw - 24px));
+  max-height: min(70vh, 420px);
+  overflow: auto;
   background: var(--surface);
   border: 1.5px solid color-mix(in srgb, var(--gold-accent, #d4af37) 35%, var(--border));
   border-radius: 18px;
   padding: 10px;
   box-shadow: 0 20px 45px rgba(15, 12, 36, 0.22);
-  z-index: 60;
+  z-index: 80;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 7px;
   animation: artCardFadeIn 0.2s ease;
 }
@@ -1512,7 +1520,10 @@ let state = load();
 let cache = loadCache();
 
 function save() {
-  try { localStorage.setItem(KEYS[0], JSON.stringify(state)); } catch (e) {}
+  try { localStorage.setItem(KEYS[0], JSON.stringify(state)); }
+  catch (e) {
+    if (typeof toast === "function") toast("Kayıt sığmadı. Ayarlar'dan önbelleği temizle.");
+  }
 }
 
 function loadCache() {
@@ -1831,7 +1842,7 @@ async function discover(mode, topicId) {
   const m = mode === "mix" ? ["topic", "syn", "ant"][Math.floor(Math.random() * 3)] : mode;
   if (m === "topic") {
     const cat = CATS.find(c => c.id === topicId) || CATS[Math.floor(Math.random() * CATS.length)];
-    const r = await net("datamuse", `https://api.datamuse.com/words?topics=${cat.topic}&md=pf&max=40`);
+    const r = await net("datamuse", `https://api.datamuse.com/words?ml=${encodeURIComponent(cat.topic)}&md=p&max=30`);
     if (!r.ok) return { error: r.reason };
     return { cands: (r.data || []).map(x => toCand(x, cat.label)), label: `Konu: ${cat.label}` };
   }
@@ -1848,15 +1859,18 @@ async function enrich(c) {
   const d = await lookupDict(c.word);
   if (d && d.error) return { reason: "sözlük erişilemedi" };
   if (!d) return { reason: "sözlükte yok" };
-  const tr = await translateTr(c.word);
-  if (tr.error) return { reason: "çeviri erişilemedi" };
-  if (!tr.value) return { reason: "çevirisi yok" };
+  let trValue = "";
+  try {
+    const tr = await translateTr(c.word);
+    trValue = tr && tr.value ? tr.value : "";
+  } catch (e) {}
   return {
     word: {
-      en: c.word, tr: tr.value, def: d.def, pos: d.pos || c.pos || "diğer", cat: c.cat,
+      en: c.word, tr: trValue, def: d.def, pos: d.pos || c.pos || "diğer", cat: c.cat,
       example: d.examples[0] || "", examples: d.examples, syn: d.syn, ant: d.ant,
       phonetic: d.phonetic, audio: d.audio, origin: d.origin,
-      level: levelOf(c.freq), source: "web"
+      level: levelOf(c.freq), source: "web",
+      needsTr: !trValue
     }
   };
 }
@@ -1884,8 +1898,9 @@ async function fetchWords(mode, topicId) {
     for (const r of results) {
       if (added >= 6) break;
       if (!r.word) { reasons[r.reason] = (reasons[r.reason] || 0) + 1; continue; }
-      if (state.words.some(w => w.tr === r.word.tr)) { reasons["aynı anlam"] = (reasons["aynı anlam"] || 0) + 1; continue; }
-      state.words.push({ ...r.word, id: nextId() });
+      const item = normalize({ ...r.word, id: nextId() });
+      if (typeof stampBorn === "function") stampBorn(item);
+      state.words.push(item);
       added++;
     }
     state.totals.fetched += added;
@@ -1956,9 +1971,9 @@ async function addFromWeb(en) {
   toast("Sözlük ve çeviri alınıyor…");
   const d = await lookupDict(en);
   const tr = await translateTr(en);
-  if ((!d || d.error || !d.def) && !tr.value) { toast("Bu kelime bulunamadı"); return; }
-  state.words.push(normalize({
-    id: nextId(), en, tr: tr.value || "",
+  if ((!d || d.error || !d.def) && !(tr && tr.value)) { toast("Bu kelime bulunamadı"); return; }
+  const added = normalize({
+    id: nextId(), en, tr: (tr && tr.value) || "",
     def: d && !d.error ? d.def : "",
     pos: d && !d.error ? (d.pos || "diğer") : "diğer",
     cat: "Genel", level: "B2",
@@ -1970,7 +1985,9 @@ async function addFromWeb(en) {
     audio: d && !d.error ? (d.audio || "") : "",
     origin: d && !d.error ? (d.origin || "") : "",
     source: "web"
-  }));
+  });
+  if (typeof stampBorn === "function") stampBorn(added);
+  state.words.push(added);
   save();
   lib.q = "";
   renderLibrary();
@@ -7062,32 +7079,22 @@ async function fetchRandomOnlineWord() {
     (Array.isArray(state?.words) ? state.words : []).map(w => (w.en || "").toLowerCase())
   );
 
-  // 1) Açık kelime havuzundan rastgele kelimeler dene
   let candidates = [];
+  const topic = (CATS[Math.floor(Math.random() * CATS.length)] || {}).topic || "learning";
   try {
-    const r1 = await fetch("https://random-word-api.herokuapp.com/word?number=8");
+    const r1 = await fetch(`https://api.datamuse.com/words?ml=${encodeURIComponent(topic)}&md=p&max=20`);
     if (r1.ok) {
       const arr = await r1.json();
-      if (Array.isArray(arr)) candidates.push(...arr);
+      if (Array.isArray(arr)) candidates.push(...arr.map(x => x.word));
     }
   } catch {}
-
-  if (!candidates.length) {
-    try {
-      const r2 = await fetch("https://random-word-api.vercel.app/api?words=8");
-      if (r2.ok) {
-        const arr = await r2.json();
-        if (Array.isArray(arr)) candidates.push(...arr);
-      }
-    } catch {}
-  }
 
   // Sözlükte olmayan ve tanımı bulunan ilk kelimeyi seç
   for (const rawWord of candidates) {
     const w = String(rawWord || "").trim().toLowerCase();
     if (!w || w.length < 4 || w.length > 16 || existing.has(w)) continue;
     const details = await fetchWordDetailsFromWeb(w);
-    if (details && details.tr) {
+    if (details && details.en) {
       return { ...details, fromWeb: true };
     }
   }
@@ -7139,15 +7146,16 @@ function injectOnlineWordFetcherUI() {
 
       if (typeof state === "object" && Array.isArray(state.words)) {
         if (!state.words.some(w => w.en.toLowerCase() === item.en.toLowerCase())) {
-          state.words.unshift({
-            id: Date.now(),
+          const fresh = normalize({
+            id: nextId(),
             en: item.en,
-            tr: item.tr,
-            cat: item.fromWeb ? `İnternet · ${item.cat}` : `Yedek · ${item.cat}`,
-            ex: item.ex,
-            correct: 0,
-            wrong: 0
+            tr: item.tr || "",
+            cat: item.cat || "Genel",
+            example: item.ex || "",
+            source: "web"
           });
+          if (typeof stampBorn === "function") stampBorn(fresh);
+          state.words.unshift(fresh);
           state.xp = (state.xp || 0) + 10;
           if (typeof saveState === "function") saveState();
           if (typeof applyTheme === "function") applyTheme();
@@ -7168,10 +7176,10 @@ function injectOnlineWordFetcherUI() {
     };
 
     lookupBtn.onclick = async () => {
-      const enInput = document.getElementById("addEn");
-      const trInput = document.getElementById("addTr");
-      const catInput = document.getElementById("addCat");
-      const exInput = document.getElementById("addEx");
+      const enInput = document.getElementById("newEn");
+      const trInput = document.getElementById("newTr");
+      const catInput = document.getElementById("newCat");
+      const exInput = document.getElementById("newExample");
       const targetWord = (enInput?.value || "").trim();
       if (!targetWord) {
         if (typeof toast === "function") toast("Önce İngilizce kelime kutusuna bir kelime yaz");
@@ -7646,7 +7654,8 @@ async function loadMarket(catId) {
   if (!marketItems.length) { box.innerHTML = `<p class="muted">Bu konuda yeni kelime kalmadı.</p>`; return; }
   const opts = [...new Set([...CATS.map(c => c.label), "Felsefe", "Genel"])];
   box.innerHTML = marketItems.map((w, i) => `<label class="row" style="cursor:pointer">
-      <span><input type="checkbox" data-mi="${i}" checked> <strong>${esc(w.en)}</strong> <span class="muted">${esc(w.tr)}</span></span>
+      <span style="flex:1;min-width:140px"><input type="checkbox" data-mi="${i}" checked> <strong>${esc(w.en)}</strong><br><span class="muted">${esc(w.def || "")}</span></span>
+      <input type="text" data-mtr="${i}" value="${esc(w.tr || "")}" placeholder="Türkçe anlam" style="flex:1;min-width:120px">
       <select data-mcat="${i}">${opts.map(c => `<option ${c === w.cat ? "selected" : ""}>${esc(c)}</option>`).join("")}</select>
     </label>`).join("") + `<button class="primary" id="marketAdd" style="margin-top:10px">Seçilenleri sözlüğe ekle</button>`;
   $("marketAdd").onclick = () => {
@@ -7656,7 +7665,10 @@ async function loadMarket(catId) {
       const w = marketItems[i];
       if (!w || state.words.some(x => x.en === w.en)) return;
       const cat = box.querySelector(`[data-mcat="${i}"]`).value;
-      const item = normalize({ ...w, id: nextId(), cat, source: "web" });
+      const trBox = box.querySelector(`[data-mtr="${i}"]`);
+      const tr = (trBox && trBox.value.trim()) || w.tr || "";
+      if (!tr) return;
+      const item = normalize({ ...w, id: nextId(), cat, tr, source: "web" });
       stampBorn(item);
       state.words.push(item);
       n++;
