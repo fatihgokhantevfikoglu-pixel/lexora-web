@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lexora-cache-v14';
+const CACHE_NAME = 'lexora-cache-v15';
 const urlsToCache = [
   './',
   './index.html',
