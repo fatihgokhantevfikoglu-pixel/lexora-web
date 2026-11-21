@@ -7869,6 +7869,148 @@ const _room = renderRoom;
 renderRoom = function () {
   _room();
   mountMatch($("tab-room"), "Raftaki kelimeler", "Favorilerin. Yoksa rastgele dört kelime.", fourPairs(w => w.favorite));
+};   
+async function lookupWiki(word) {
+  const r = await net("wiki", "https://en.wiktionary.org/api/rest_v1/page/definition/" + encodeURIComponent(word), 30 * DAY, d => d && typeof d === "object");
+  if (!r.ok || !r.data) return null;
+  const block = Array.isArray(r.data.en) ? r.data.en[0] : null;
+  const def0 = block && block.definitions && block.definitions[0];
+  if (!def0 || !def0.definition) return null;
+  const strip = s => String(s || "").replace(/<[^>]+>/g, "").trim();
+  return {
+    pos: DICT_POS[String(block.partOfSpeech || "").toLowerCase()] || "diğer",
+    def: strip(def0.definition),
+    defs: [],
+    examples: [].concat(def0.examples || []).map(strip).filter(Boolean).slice(0, 2),
+    syn: [], ant: [], phonetic: "", audio: "", origin: ""
+  };
+}
+
+const _lookupDictBare = lookupDict;
+lookupDict = async function (word) {
+  const first = await _lookupDictBare(word);
+  if (first && !first.error) return first;
+  const wiki = await lookupWiki(word);
+  return wiki || first;
+};
+
+enrich = async function (c) {
+  let d = null;
+  try { d = await lookupDict(c.word); } catch (e) {}
+  if (!d || d.error) d = null;
+  let trValue = "";
+  try {
+    const tr = await translateTr(c.word);
+    trValue = tr && tr.value ? tr.value : "";
+  } catch (e) {}
+  return {
+    word: {
+      en: c.word,
+      tr: trValue || "(anlamı yazılacak)",
+      def: d ? d.def : "",
+      pos: (d && d.pos) || c.pos || "diğer",
+      cat: c.cat,
+      example: d && d.examples ? (d.examples[0] || "") : "",
+      examples: d && d.examples ? d.examples : [],
+      syn: d && d.syn ? d.syn : [],
+      ant: d && d.ant ? d.ant : [],
+      phonetic: d ? (d.phonetic || "") : "",
+      audio: d ? (d.audio || "") : "",
+      origin: d ? (d.origin || "") : "",
+      level: levelOf(c.freq),
+      source: "web",
+      needsTr: !trValue
+    }
+  };
+};
+
+fetchWords = async function (mode, topicId) {
+  const btn = $("fetchBtn");
+  const msg = $("fetchMsg");
+  if (btn) btn.disabled = true;
+  if (msg) msg.textContent = "Kaynaklar sorgulanıyor...";
+  ["dictionary", "mymemory", "datamuse", "wiki"].forEach(s => {
+    const h = healthOf(s);
+    h.until = 0; h.fail = 0; h.status = "hazır";
+  });
+  try {
+    const d = await discover(mode, topicId);
+    if (d.error) { if (msg) msg.textContent = "Kelime listesi alınamadı: " + d.error; return; }
+    const seen = new Set();
+    const cands = (d.cands || []).filter(c => {
+      if (!/^[a-z]{3,20}$/.test(c.word) || seen.has(c.word) || state.words.some(w => w.en === c.word)) return false;
+      seen.add(c.word);
+      return true;
+    }).slice(0, 4);
+    if (!cands.length) { renderLibrary((d.label || "Liste") + ": yeni aday bulunamadı."); return; }
+    let added = 0;
+    for (let i = 0; i < cands.length; i++) {
+      if (msg) msg.textContent = (i + 1) + "/" + cands.length + ": " + cands[i].word;
+      const r = await enrich(cands[i]);
+      if (!r.word || state.words.some(w => w.en === r.word.en)) continue;
+      const item = normalize(Object.assign({ id: nextId() }, r.word));
+      if (typeof stampBorn === "function") stampBorn(item);
+      state.words.push(item);
+      added++;
+    }
+    state.totals.fetched = (state.totals.fetched || 0) + added;
+    save();
+    if (typeof checkBadges === "function") checkBadges();
+    renderLibrary((d.label || "Liste") + ": " + added + " yeni kelime eklendi.");
+  } catch (e) {
+    if (msg) msg.textContent = "Beklenmeyen bir hata oluştu. Tekrar deneyin.";
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+};
+
+fetchRandomOnlineWord = async function () {
+  const existing = new Set((state.words || []).map(w => String(w.en || "").toLowerCase()));
+  const topic = (CATS[Math.floor(Math.random() * CATS.length)] || {}).topic || "learning";
+  let candidates = [];
+  try {
+    const r = await fetch("https://api.datamuse.com/words?ml=" + encodeURIComponent(topic) + "&max=20");
+    if (r.ok) candidates = (await r.json()).map(x => x.word);
+  } catch (e) {}
+  for (const raw of candidates) {
+    const w = String(raw || "").toLowerCase();
+    if (!/^[a-z]{4,16}$/.test(w) || existing.has(w)) continue;
+    const packed = await enrich({ word: w, pos: "", cat: "Genel", freq: 0 });
+    return { en: w, tr: packed.word.tr, cat: "Genel", ex: packed.word.example || "", fromWeb: true };
+  }
+  const pool = (typeof LEXORA5_ONLINE_FALLBACK !== "undefined" ? LEXORA5_ONLINE_FALLBACK : []).filter(x => !existing.has(String(x.en).toLowerCase()));
+  if (!pool.length) return null;
+  return Object.assign({}, pool[Math.floor(Math.random() * pool.length)], { fromWeb: false });
+};    
+addFromWeb = async function (en) {
+  en = String(en || "").trim().toLowerCase();
+  if (!en) return;
+  const existing = state.words.find(w => w.en === en);
+  if (existing) { openDetail(existing.id); return; }
+  toast("Kelime ekleniyor…");
+  const packed = await enrich({ word: en, pos: "", cat: "Genel", freq: 0 });
+  const item = normalize(Object.assign({ id: nextId(), cat: "Genel" }, packed.word));
+  stampBorn(item);
+  state.words.push(item);
+  save();
+  if (typeof lib === "object") lib.q = "";
+  renderLibrary();
+  const saved = state.words.find(w => w.en === en);
+  if (saved) openDetail(saved.id);
+  toast('"' + en + '" sözlüğe eklendi');
+};
+
+const _detailsBare = fetchWordDetailsFromWeb;
+fetchWordDetailsFromWeb = async function (word) {
+  const clean = String(word || "").trim().toLowerCase();
+  try {
+    const found = await _detailsBare(clean);
+    if (found && found.en) {
+      if (!found.tr || /mymemory|quota|warning/i.test(found.tr) || found.tr.length > 80) found.tr = "";
+      return found;
+    }
+  } catch (e) {}
+  return { en: clean, tr: "", cat: "Genel", ex: "" };
 };    
 </script>
 </body>
