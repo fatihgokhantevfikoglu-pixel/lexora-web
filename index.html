@@ -1628,75 +1628,6 @@ main>section>.lx-head.v9-page-head{padding:17px 25px!important;gap:8px;margin-bo
 .v9-my-words{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}.v9-my-words>b{margin-right:7px}.v9-my-words>span{font-size:12px;padding:6px 9px;border-radius:8px;border:1px solid var(--v9-line);background:var(--surface)}
 @media(max-width:800px){header.v9-header .v9-top-menu>summary .v9-menu-lines{display:inline-flex!important;align-items:center;justify-content:center;color:var(--primary)!important;font-size:22px!important;min-width:20px}}
 
-/* LexiconCore 10 · professional adaptive surfaces / meaningful theme geometry */
-:root{--v10-card-radius:22px;--v10-title-font:Georgia,'Times New Roman',serif}
-body{padding-bottom:18px}
-header.v9-header.v10-top{display:grid!important;grid-template-columns:minmax(215px,1fr) auto auto;grid-template-areas:'brand hud actions' 'shortcuts shortcuts shortcuts';align-items:center;gap:10px 16px!important;padding:14px 20px 10px!important;width:min(1250px,calc(100% - 26px));border-radius:22px!important;background:var(--surface)!important;box-shadow:0 16px 42px rgba(21,30,51,.09)!important;margin:12px auto 6px!important}
-header.v10-top:before{border-radius:inherit;opacity:.55!important}
-header.v10-top .v9-brand{grid-area:brand;justify-self:start;gap:12px!important}
-header.v10-top .v9-brandmark{width:51px;height:51px;flex:0 0 51px;display:grid;place-items:center;border-radius:14px;border:1px solid color-mix(in srgb,var(--primary) 45%,var(--border));box-shadow:inset 0 0 0 4px color-mix(in srgb,var(--primary) 9%,transparent);background:color-mix(in srgb,var(--primary) 11%,var(--surface));color:var(--primary)}
-.v10-mark{font-family:var(--v10-title-font);font-size:38px;line-height:1;letter-spacing:-.06em}
-header.v10-top .v9-brandtext strong{font-size:clamp(21px,2.3vw,29px)!important;letter-spacing:-.045em!important}
-header.v10-top .v9-brandtext small{font-size:10px!important;letter-spacing:.18em!important}
-header.v10-top .v9-top-menu{grid-area:actions;margin:0!important;justify-self:end;z-index:61}
-header.v10-top .v9-top-menu>summary{border-radius:11px!important}
-.v10-hud{grid-area:hud;min-width:126px;border-radius:13px;padding:5px 7px 7px;border:1px solid var(--border);background:color-mix(in srgb,var(--primary) 6%,var(--surface));justify-self:end}
-.v10-hud>button{background:none;border:0;color:var(--text);font:inherit;display:flex;align-items:center;gap:8px;padding:3px 6px;cursor:pointer;font-size:14px;width:100%}.v10-hud>button>span{font-size:21px}.v10-hud small{margin-left:auto;font-size:12px;color:var(--primary)}
-.v10-hud-meter,.v10-meter{height:5px;background:var(--border);border-radius:100px;overflow:hidden;margin:3px 4px 0}.v10-hud-meter i,.v10-meter i{display:block;height:100%;background:var(--primary);border-radius:100px;transition:width .3s}
-.v10-shortcuts{grid-area:shortcuts;display:flex;justify-content:space-between;gap:6px;padding-top:9px;border-top:1px solid color-mix(in srgb,var(--border) 68%,transparent)}
-.v10-shortcuts button{flex:1;background:transparent;color:var(--muted);border:1px solid transparent;border-radius:10px;min-height:43px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;font-weight:740;font-size:13px;transition:background .2s,transform .2s,color .2s}
-.v10-shortcuts button:hover{color:var(--primary);background:color-mix(in srgb,var(--primary) 7%,transparent);transform:translateY(-1px)}
-.v10-shortcuts button span{font-size:21px;font-weight:400}.v10-shortcuts button.active{color:var(--primary);background:color-mix(in srgb,var(--primary) 11%,var(--surface));border-color:color-mix(in srgb,var(--primary) 20%,var(--border))}
-#v10-mobile-dock{display:none}
-.v10-kicker{font:750 10px/1.4 system-ui,sans-serif;letter-spacing:.18em;color:var(--primary);text-transform:uppercase}
-.v10-game,.v10-room-artifacts,.v10-home-game,.v10-theme-gallery{font-size:15px}
-.v10-game-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(195px,260px);align-items:center;gap:24px;padding:clamp(22px,3.2vw,38px);border:1px solid color-mix(in srgb,var(--primary) 48%,var(--border));border-radius:var(--v10-card-radius);background:linear-gradient(128deg,color-mix(in srgb,var(--primary) 14%,var(--surface)),var(--surface) 75%);position:relative;overflow:hidden}
-.v10-game-hero:after{content:'✧';position:absolute;right:25%;top:-32px;opacity:.1;font:140px Georgia;pointer-events:none}.v10-game-hero h2,.v10-section-heading h2{font:700 clamp(28px,3.5vw,42px)/1.1 var(--v10-title-font);letter-spacing:-.035em;margin:12px 0}.v10-game-hero p{color:var(--muted);max-width:550px;line-height:1.65;margin:0}.v10-rank-card{border-radius:17px;padding:18px;background:color-mix(in srgb,var(--primary) 12%,var(--surface));display:grid;gap:8px;min-height:160px}.v10-rank-card strong{font-size:44px;line-height:1;color:var(--primary);letter-spacing:-.04em}.v10-rank-card small,.v10-rank-card span{font-size:11px;color:var(--muted)}.v10-rank-card .v10-meter{margin:5px 0 0;height:8px}
-.v10-game-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}.v10-game-stats>div{display:grid;gap:5px;border:1px solid var(--border);border-radius:14px;padding:17px;background:var(--surface)}.v10-game-stats b{font-size:23px;letter-spacing:-.02em}.v10-game-stats small{color:var(--muted);font-size:11px}
-.v10-game-notice{font-size:13px;line-height:1.5;border-left:3px solid var(--primary);background:color-mix(in srgb,var(--primary) 7%,var(--surface));padding:12px 16px;border-radius:9px;margin:12px 0 25px}
-.v10-section-title{margin:24px 0 10px;font:700 clamp(20px,2vw,27px) var(--v10-title-font)}.v10-items{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.v10-item{border:1px solid var(--border);border-radius:18px;padding:20px 14px 14px;background:var(--surface);display:flex;flex-direction:column;align-items:flex-start;gap:8px;position:relative;min-height:270px;transition:box-shadow .2s,transform .2s}.v10-item.is-equipped{outline:2px solid var(--primary);outline-offset:-2px;box-shadow:0 12px 35px color-mix(in srgb,var(--primary) 14%,transparent)}.v10-item.is-locked{opacity:.86}.v10-item:hover{transform:translateY(-3px);box-shadow:0 15px 32px rgba(0,0,0,.08)}.v10-item-emblem{font-size:37px;background:color-mix(in srgb,var(--primary) 11%,var(--surface));border:1px solid var(--border);border-radius:14px;width:64px;height:64px;display:grid;place-items:center}.v10-item-rarity{color:var(--primary);font-size:10px;font-weight:800;letter-spacing:.1em}.v10-item h4{font:700 18px/1.2 var(--v10-title-font);margin:0}.v10-item p{color:var(--muted);font-size:12px;line-height:1.45;flex:1;margin:0}.v10-item>small{font-size:11px;color:var(--muted)}.v10-item-actions{display:flex;flex-wrap:wrap;gap:6px;width:100%}.v10-item-actions button{min-height:38px;padding:6px 8px;font-size:12px;flex:1}.v10-item-actions .v10-activated{border:1px solid var(--primary);background:var(--primary);color:#fff;border-radius:9px}.v10-buy-hint{font-size:11px;color:var(--muted)}
-.v10-showcase,.v10-room-items{display:flex;flex-wrap:wrap;gap:12px}.v10-showcase-piece{flex:1;min-width:160px;text-align:center;border:1px solid color-mix(in srgb,var(--primary) 25%,var(--border));border-radius:15px;padding:18px;background:color-mix(in srgb,var(--primary) 5%,var(--surface));display:grid;gap:6px}.v10-showcase-piece span{font-size:39px}.v10-showcase-piece b{font-size:13px}.v10-showcase-piece small{font-size:11px;color:var(--muted)}
-.v10-rulegrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.v10-rulegrid p{margin:0;padding:15px;background:var(--surface);border:1px solid var(--border);border-radius:11px;display:grid;gap:5px;font-size:12px}.v10-rulegrid span{color:var(--muted);line-height:1.5}
-.v10-room-artifacts{border-radius:18px;border:1px solid var(--border);background:linear-gradient(110deg,color-mix(in srgb,var(--primary) 8%,var(--surface)),var(--surface));padding:23px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:14px}.v10-room-artifacts h3{font:700 26px var(--v10-title-font);margin:5px 0}.v10-room-artifacts p{font-size:12px;color:var(--muted);max-width:380px}.v10-room-items>div{display:grid;justify-items:center;gap:7px;padding:10px;border:1px solid var(--border);border-radius:10px;min-width:85px}.v10-room-items span{font-size:27px}.v10-room-items small{font-size:10px}
-.v10-home-game{padding:20px 26px;border:1px solid color-mix(in srgb,var(--primary) 32%,var(--border));border-radius:18px;margin:14px 0;display:flex;align-items:center;flex-wrap:wrap;gap:13px;background:var(--surface)}.v10-home-game>div{flex:1;min-width:240px}.v10-home-game h2{font:700 24px/1.1 var(--v10-title-font);margin:6px 0}.v10-home-game small{font-size:10px;letter-spacing:.11em;color:var(--primary);font-weight:800}.v10-home-game p{color:var(--muted);font-size:12px;margin:0}
-.v10-quiz-tools{padding:14px;margin-top:12px;border:1px dashed color-mix(in srgb,var(--primary) 40%,var(--border));border-radius:13px;background:color-mix(in srgb,var(--primary) 4%,var(--surface));display:grid;gap:9px}.v10-quiz-tools>div:first-child{display:flex;flex-wrap:wrap;justify-content:space-between;gap:7px}.v10-quiz-tools small{font-size:11px;color:var(--muted)}.v10-quiz-actions{display:flex;gap:8px;flex-wrap:wrap}.v10-quiz-actions button{min-height:36px;font-size:12px}.v10-hint{padding:12px;background:var(--surface);border-left:3px solid var(--primary);border-radius:6px;font-size:13px}.v10-hint[hidden]{display:none}
-.v10-theme-gallery{padding:clamp(18px,3vw,32px);border-radius:var(--v10-card-radius);border:1px solid var(--border);background:var(--surface);margin-bottom:18px}.v10-section-heading p{color:var(--muted);max-width:650px;line-height:1.6}.v10-skin-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:20px}.v10-skin-tile{background:var(--surface);color:var(--text);border:1px solid var(--border);padding:7px;border-radius:16px;min-width:0;text-align:left;cursor:pointer;display:grid;gap:8px}.v10-skin-tile:hover{transform:translateY(-3px);box-shadow:0 12px 30px #0002}.v10-skin-tile.is-active{outline:2px solid var(--primary)}.v10-skin-tile>strong{font-size:12px;padding:0 5px}.v10-skin-tile>small{font-size:10px;color:var(--muted);padding:0 5px 7px}.v10-skin-scene{height:147px;border-radius:11px;display:flex;flex-direction:column;gap:4px;align-items:center;justify-content:center;position:relative;overflow:hidden;font-size:11px}.v10-skin-glyph{font-size:35px}.v10-skin-scene em{font-size:8px;letter-spacing:.08em}.v10-skin-scene i{font:italic 36px Georgia;opacity:.5;position:absolute;right:9px;bottom:2px}
-.v10-skin-atlas .v10-skin-scene{color:#534027;border:4px double #aa8a59;border-radius:0;background:repeating-linear-gradient(0deg,transparent 0 16px,#9b866624 17px 18px),radial-gradient(circle at 60% 48%,#e7ddbb,#f8edcb)}
-.v10-skin-neon .v10-skin-scene{color:#4ce7c1;border:1px solid #4ce7c1;clip-path:polygon(0 0,90% 0,100% 12%,100% 100%,10% 100%,0 90%);font-family:monospace;background:linear-gradient(#142f39bb 1px,transparent 1px),linear-gradient(90deg,#142f39bb 1px,transparent 1px),#070f19;background-size:16px 16px}.v10-skin-akademi .v10-skin-scene{color:#3c546b;border:9px ridge #b1aaa0;border-radius:0;font-family:Georgia;background:repeating-linear-gradient(90deg,#e9e6de 0 19px,#f9f6ef 20px 38px)}.v10-skin-botanik .v10-skin-scene{color:#2f7152;border-radius:30px 4px 30px 4px;border:2px solid #86ad88;font-family:Georgia;background:radial-gradient(ellipse at 20% 90%,#bfd8a4,transparent 58%),#f7fff0}.v10-skin-prisma .v10-skin-scene{color:#f8efff;border:1px solid #cab0ff;border-radius:24px;background:conic-gradient(from 125deg at 40% 40%,#784dba,#29366e,#52469a,#321b53,#784dba)}
-.v10-audio-settings{padding:24px}.v10-audio-settings h2{font:700 30px var(--v10-title-font);margin:8px 0}.v10-audio-settings h3{font:700 23px var(--v10-title-font);margin:25px 0 10px}.v10-audio-list{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.v10-audio-list button{display:flex;gap:16px;align-items:center}.v10-audio-list button.selected{background:var(--primary);color:#fff}.v10-sound-control{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px}.v10-sound-control input[type=range]{width:min(220px,50%)}
-.v10-level-rise{position:fixed;z-index:120;left:50%;top:20%;transform:translateX(-50%);padding:24px 40px;display:grid;justify-items:center;gap:8px;border:2px solid #d9bc79;border-radius:24px;color:#fdf1cf;background:radial-gradient(circle at center,#4c378a,#151737);box-shadow:0 35px 120px #070521ad;pointer-events:none;animation:v10Rise .35s ease}.v10-level-rise span{font-size:12px;letter-spacing:.22em}.v10-level-rise b{font-size:43px}.v10-level-rise small{font-size:12px}@keyframes v10Rise{from{opacity:0;transform:translate(-50%,30px) scale(.85)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
-/* Theme designs are complete compositions, not mere palette changes. */
-html[data-v10-skin='atlas']{--v10-title-font:Georgia,'Times New Roman',serif;--v10-card-radius:4px}html[data-v10-skin='atlas'] body{background:repeating-linear-gradient(0deg,transparent 0 54px,#ab936618 55px 56px),repeating-linear-gradient(90deg,transparent 0 59px,#ab936618 60px 61px),radial-gradient(circle at 90% 10%,#d9c7a144,transparent 38%),var(--bg)}html[data-v10-skin='atlas'] header.v9-header.v10-top{border:5px double #ad9168;border-radius:4px!important;box-shadow:6px 7px 0 #684a2f19!important}html[data-v10-skin='atlas'] .card,html[data-v10-skin='atlas'] .lx-head,html[data-v10-skin='atlas'] .v10-item,html[data-v10-skin='atlas'] .v10-game-hero{border-radius:4px!important;border:2px solid var(--border);box-shadow:4px 5px 0 #755f3c12!important}html[data-v10-skin='atlas'] .v9-page-title,html[data-v10-skin='atlas'] .v10-home-game h2{font-family:Georgia,serif!important;text-transform:capitalize}html[data-v10-skin='atlas'] header .v9-brandtext small{font-family:Georgia,serif!important}html[data-v10-skin='atlas'] .v10-mark{transform:rotate(-20deg)}
-html[data-v10-skin='neon']{--v10-title-font:ui-monospace,'Consolas',monospace;--v10-card-radius:2px}html[data-v10-skin='neon'] body{background-image:linear-gradient(#13e7cd0b 1px,transparent 1px),linear-gradient(90deg,#13e7cd0b 1px,transparent 1px),radial-gradient(circle at 85% 5%,#125a9a40,transparent 45%);background-size:33px 33px,33px 33px,auto}html[data-v10-skin='neon'] header.v10-top,html[data-v10-skin='neon'] .card,html[data-v10-skin='neon'] .lx-head,html[data-v10-skin='neon'] .v10-item,html[data-v10-skin='neon'] .v10-game-hero{clip-path:polygon(0 0,calc(100% - 17px) 0,100% 17px,100% 100%,18px 100%,0 calc(100% - 18px));border-radius:0!important;box-shadow:0 0 0 1px #4ce7c133!important}html[data-v10-skin='neon'] .v9-page-title,html[data-v10-skin='neon'] h2,html[data-v10-skin='neon'] h3{font-family:ui-monospace,'Consolas',monospace!important;letter-spacing:-.04em}html[data-v10-skin='neon'] .v10-shortcuts button.active{box-shadow:inset 0 -2px #4ce7c1}html[data-v10-skin='neon'] .v10-mark{filter:drop-shadow(0 0 8px #4ce7c1)}
-html[data-v10-skin='akademi']{--v10-title-font:Georgia,'Times New Roman',serif;--v10-card-radius:0px}html[data-v10-skin='akademi'] body{background:repeating-linear-gradient(90deg,transparent 0 190px,#8a817512 190px 191px,transparent 191px 380px),var(--bg)}html[data-v10-skin='akademi'] header.v10-top{border-top:7px solid var(--primary)!important;border-bottom:2px double var(--primary)!important;border-radius:0!important}html[data-v10-skin='akademi'] .card,html[data-v10-skin='akademi'] .lx-head,html[data-v10-skin='akademi'] .v10-item,html[data-v10-skin='akademi'] .v10-game-hero{border-radius:0!important;border-top:4px double var(--primary)!important;box-shadow:0 15px 50px #293c4b10!important}html[data-v10-skin='akademi'] .v9-page-title{font-family:Georgia,serif!important;text-transform:uppercase;letter-spacing:.025em}html[data-v10-skin='akademi'] .v10-shortcuts button{border-radius:0!important;font-family:Georgia,serif}
-html[data-v10-skin='botanik']{--v10-title-font:Palatino,Georgia,serif;--v10-card-radius:26px}html[data-v10-skin='botanik'] body{background:radial-gradient(ellipse at 0% 12%,#92b68f44,transparent 30%),radial-gradient(ellipse at 100% 80%,#8ab89b35,transparent 35%),var(--bg)}html[data-v10-skin='botanik'] header.v10-top{border-radius:38px 8px 38px 8px!important;border:2px solid #7faa82!important}html[data-v10-skin='botanik'] .card,html[data-v10-skin='botanik'] .lx-head,html[data-v10-skin='botanik'] .v10-item,html[data-v10-skin='botanik'] .v10-game-hero{border-radius:32px 8px 32px 8px!important;border:1px solid #a6c79b;box-shadow:0 17px 40px #2d6d4e1a!important}html[data-v10-skin='botanik'] h2,html[data-v10-skin='botanik'] .v9-page-title{font-family:Palatino,Georgia,serif!important;font-style:italic}html[data-v10-skin='botanik'] .v10-mark{font-size:43px}
-html[data-v10-skin='prisma']{--v10-title-font:system-ui,'Segoe UI',sans-serif;--v10-card-radius:28px}html[data-v10-skin='prisma'] body{background:radial-gradient(ellipse at 4% 5%,#8b48ff26,transparent 37%),radial-gradient(ellipse at 90% 80%,#40c7d326,transparent 40%),var(--bg)}html[data-v10-skin='prisma'] header.v10-top,html[data-v10-skin='prisma'] .card,html[data-v10-skin='prisma'] .lx-head,html[data-v10-skin='prisma'] .v10-game-hero{border-radius:28px!important;background:linear-gradient(135deg,color-mix(in srgb,var(--primary) 8%,var(--surface)),var(--surface) 55%,color-mix(in srgb,#39dbd8 6%,var(--surface)))!important;backdrop-filter:blur(16px);box-shadow:0 20px 60px #02031830!important}html[data-v10-skin='prisma'] header.v10-top .v10-mark{font-size:48px;transform:rotate(18deg)}
-@media(max-width:1180px){.v10-items{grid-template-columns:repeat(3,minmax(0,1fr))}.v10-skin-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:800px){header.v9-header.v10-top{grid-template-columns:minmax(0,1fr) auto auto;grid-template-areas:'brand hud actions';width:calc(100% - 18px);gap:7px!important;padding:8px 9px!important;min-height:65px!important;border-radius:15px!important}header.v10-top .v9-brand{gap:7px!important}header.v10-top .v9-brandmark{width:39px;height:39px;flex:0 0 39px;border-radius:10px}.v10-mark{font-size:31px}header.v10-top .v9-brandtext strong{font-size:16px!important}header.v10-top .v9-brandtext small{font-size:7px!important;letter-spacing:.07em!important}.v10-hud{padding:2px 4px 4px;min-width:73px}.v10-hud>button{font-size:11px;gap:3px;padding:3px}.v10-hud>button span{font-size:15px}.v10-hud small{font-size:9px}header.v10-top .v9-top-menu>summary{min-height:39px!important;padding:7px!important;font-size:0!important}header.v10-top .v9-top-menu>summary .v9-menu-lines{font-size:23px!important}.v10-shortcuts{display:none}.v10-items{grid-template-columns:repeat(2,minmax(0,1fr))}.v10-game-hero{grid-template-columns:1fr}.v10-game-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.v10-skin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.v10-rulegrid{grid-template-columns:1fr}.v10-home-game>div{min-width:180px}.v10-hud .v10-hud-meter{height:3px}
-#v10-mobile-dock{position:fixed;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));left:8px;right:8px;bottom:calc(7px + env(safe-area-inset-bottom));height:64px;z-index:59;background:color-mix(in srgb,var(--surface) 93%,transparent);border:1px solid var(--border);border-radius:19px;box-shadow:0 15px 55px rgba(0,0,0,.28);backdrop-filter:blur(20px);padding:5px}#v10-mobile-dock button{color:var(--muted);background:transparent;border:0;border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font-size:10px;font-weight:800;min-width:0;cursor:pointer}#v10-mobile-dock button span{font:500 23px var(--v10-title-font);line-height:1.3}#v10-mobile-dock button.active{background:color-mix(in srgb,var(--primary) 14%,var(--surface));color:var(--primary)}body{padding-bottom:100px!important}#v6-head-menu[open] {z-index:100}#lxMenu{z-index:90!important}
-}
-@media(max-width:480px){.v10-items{gap:8px}.v10-item{padding:12px 10px;min-height:275px}.v10-item h4{font-size:16px}.v10-skin-grid{gap:7px}.v10-skin-scene{height:117px}.v10-game-hero h2{font-size:30px}header.v10-top .v9-brandtext strong{font-size:13px!important}header.v10-top .v9-brandtext small{font-size:6px!important}header.v10-top .v9-brandmark{width:34px;height:34px;flex-basis:34px}.v10-mark{font-size:28px}.v10-hud{min-width:65px}.v10-hud small{display:none}}
-@media(prefers-reduced-motion:reduce){.v10-level-rise{animation:none}.v10-item:hover,.v10-shortcuts button:hover{transform:none}}
-
-/* The v10 navigation REPLACES the duplicated legacy row; legacy handlers remain mounted for compatibility. */
-body:has(header.v10-top) nav.lx-nav{display:none!important}
-header.v10-top #streakBadge,header.v10-top #profilePill,header.v10-top #ambientBtn,header.v10-top #openReaderHeaderBtn,header.v10-top #zenBtn{display:none!important}
-header.v10-top{margin-bottom:16px!important}
-.v10-quiz-actions button[data-v10='flag']{margin-left:auto;color:var(--muted)}
-@media(max-width:800px){#quickFloatFab,#lexoraHourlyGiftDock{display:none!important}header.v10-top{margin-bottom:13px!important}}
-/* Remove the legacy floating discovery dock in favor of the full quick menu. */
-body:has(header.v10-top) #wwDock{display:none!important}
-
-/* Professional all-pages mega menu. The legacy tab bar is no longer required. */
-header.v10-top .v6-drop{width:min(560px,calc(100vw - 28px));max-height:min(77vh,670px);overflow:auto;overscroll-behavior:contain;padding:12px!important;gap:2px!important}
-header.v10-top .v6-drop .v10-mega{border-bottom:1px solid var(--border);padding:5px 3px 12px;margin-bottom:5px}
-.v10-menu-label{color:var(--primary);font-size:10px;letter-spacing:.14em;font-weight:850;margin:2px 6px 12px}
-.v10-menu-group{margin-bottom:12px}.v10-menu-group>strong{display:block;color:var(--muted);font-size:12px;margin:0 8px 6px}
-header.v10-top .v10-menu-pages{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px}
-header.v10-top .v10-menu-pages button{min-height:40px!important;font-size:13px!important;padding:8px 9px!important;font-weight:650!important}
-header.v10-top .v10-menu-pages button.active{color:var(--primary);background:color-mix(in srgb,var(--primary) 11%,var(--surface))}
-@media(max-width:500px){header.v10-top .v6-drop{width:calc(100vw - 25px);max-height:calc(100dvh - 85px)}header.v10-top .v10-menu-pages button{font-size:12px!important}}
-
 </style>
 </head>
 <body class="lc-locked">
@@ -1930,7 +1861,7 @@ function levenshtein(a, b) {
   }
   return prev[b.length];
 }
-const wordRe = w => new RegExp('\\b' + String(w.en||'').trim().replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/\s+/g,'\\s+') + '\\b','i');
+const wordRe = w => new RegExp("\\b" + w.en.replace(/[^a-z]/gi, "") + "\\b", "i");
 const blankOf = w => esc(w.example).replace(wordRe(w), "_____");
 const highlightOf = w => esc(w.example).replace(wordRe(w), x => `<mark>${x}</mark>`);
 
@@ -2064,7 +1995,7 @@ const SEED = [
   { en: "pacification", tr: "barışçıllaştırma", level: "C1", pos: "isim", cat: "Felsefe", def: "Felsefi bir terim.", example: "The concept of pacification is crucial.", syn: [], hook: "Felsefe Sözlüğü" },
   { en: "repression", tr: "baskı", level: "C1", pos: "isim", cat: "Felsefe", def: "Felsefi bir terim.", example: "The concept of repression is crucial.", syn: [], hook: "Felsefe Sözlüğü" },
   { en: "repressive", tr: "baskıcı", level: "C1", pos: "sıfat", cat: "Felsefe", def: "Felsefi bir terim.", example: "The system is repressive.", syn: [], hook: "Felsefe Sözlüğü" },
-  { en: "suppress", tr: "bastırmak", level: "C1", pos: "fiil", cat: "Felsefe", def: "Felsefi bir terim.", example: "To suppress the feeling.", syn: [], hook: "Felsefe Sözlüğü" },
+  { en: "supress", tr: "bastırmak", level: "C1", pos: "fiil", cat: "Felsefe", def: "Felsefi bir terim.", example: "To supress the feeling.", syn: [], hook: "Felsefe Sözlüğü" },
   { en: "baseness", tr: "bayağılık", level: "C1", pos: "isim", cat: "Felsefe", def: "Felsefi bir terim.", example: "The concept of baseness is crucial.", syn: [], hook: "Felsefe Sözlüğü" },
   { en: "achievement", tr: "başarım", level: "C1", pos: "isim", cat: "Felsefe", def: "Felsefi bir terim.", example: "The concept of achievement is crucial.", syn: [], hook: "Felsefe Sözlüğü" },
   { en: "dominant", tr: "başat", level: "C1", pos: "sıfat", cat: "Felsefe", def: "Felsefi bir terim.", example: "The concept is dominant.", syn: [], hook: "Felsefe Sözlüğü" },
@@ -2086,7 +2017,7 @@ const SEED = [
   { en: "deterministic", tr: "belirlenimci", level: "C1", pos: "sıfat", cat: "Felsefe", def: "Felsefi bir terim.", example: "The concept is deterministic.", syn: [], hook: "Felsefe Sözlüğü" },
   { en: "determinism", tr: "belirlenimcilik", level: "C1", pos: "isim", cat: "Felsefe", def: "Felsefi bir terim.", example: "The concept of determinism is crucial.", syn: [], hook: "Felsefe Sözlüğü" },
   { en: "determinate", tr: "belirli", level: "C1", pos: "sıfat", cat: "Felsefe", def: "Felsefi bir terim.", example: "The concept is determinate.", syn: [], hook: "Felsefe Sözlüğü" },
-  { en: "symptom", tr: "belirti, semptom", level: "C1", pos: "isim", cat: "Felsefe", def: "Felsefi bir terim.", example: "The concept of symptom is crucial.", syn: [], hook: "Felsefe Sözlüğü" },
+  { en: "symptom", tr: "belirti", level: "C1", pos: "isim", cat: "Felsefe", def: "Felsefi bir terim.", example: "The concept of symptom is crucial.", syn: [], hook: "Felsefe Sözlüğü" },
   { en: "explicit", tr: "belirtik", level: "C1", pos: "sıfat", cat: "Felsefe", def: "Felsefi bir terim.", example: "The concept is explicit.", syn: [], hook: "Felsefe Sözlüğü" },
   { en: "axiom", tr: "belit", level: "C1", pos: "isim", cat: "Felsefe", def: "Felsefi bir terim.", example: "The concept of axiom is crucial.", syn: [], hook: "Felsefe Sözlüğü" },
   { en: "memory", tr: "bellek", level: "C1", pos: "isim", cat: "Felsefe", def: "Felsefi bir terim.", example: "The concept of memory is crucial.", syn: [], hook: "Felsefe Sözlüğü" },
@@ -2109,7 +2040,7 @@ const SEED = [
   { en: "science", tr: "bilim", level: "C1", pos: "isim", cat: "Felsefe", def: "Felsefi bir terim.", example: "The concept of science is crucial.", syn: [], hook: "Felsefe Sözlüğü" },
   { en: "agnostic", tr: "bilinemezci", level: "C1", pos: "isim", cat: "Felsefe", def: "Felsefi bir terim.", example: "The concept of agnostic is crucial.", syn: [], hook: "Felsefe Sözlüğü" },
   { en: "consciousness", tr: "bilinç", level: "C1", pos: "isim", cat: "Felsefe", def: "Felsefi bir terim.", example: "The concept of consciousness is crucial.", syn: [], hook: "Felsefe Sözlüğü" },
-  { en: "the unconscious", tr: "bilinçdışı", level: "C1", pos: "isim", cat: "Felsefe", def: "Felsefi bir terim.", example: "The concept of the unconscious is crucial.", syn: [], hook: "Felsefe Sözlüğü" },
+  { en: "the unconscious", tr: "bilinçaltı", level: "C1", pos: "isim", cat: "Felsefe", def: "Felsefi bir terim.", example: "The concept of the unconscious is crucial.", syn: [], hook: "Felsefe Sözlüğü" },
   { en: "cognitive", tr: "bilişsel", level: "C1", pos: "sıfat", cat: "Felsefe", def: "Felsefi bir terim.", example: "The concept is cognitive.", syn: [], hook: "Felsefe Sözlüğü" },
   { en: "one", tr: "bir", level: "C1", pos: "isim", cat: "Felsefe", def: "Felsefi bir terim.", example: "The concept of one is crucial.", syn: [], hook: "Felsefe Sözlüğü" },
   { en: "coexistence", tr: "birarada varolma", level: "C1", pos: "isim", cat: "Felsefe", def: "Felsefi bir terim.", example: "The concept of coexistence is crucial.", syn: [], hook: "Felsefe Sözlüğü" },
@@ -8782,91 +8713,99 @@ fetchWordDetailsFromWeb = async function (word) {
 
 // ===== Soru-cevap tamiri: sadece gerçek anlamı olan kelimeler, tam 4 şık, uygun soru =====
 function realTr(w) {
-  const t = String(w && w.tr || '').trim();
-  if (t.length < 2 || /yazılacak|çeviri bekliyor|anlam yok|anlamı yaz/i.test(t)) return '';
+  const t = String(w && w.tr || "").trim();
+  if (t.length < 2) return "";
+  if (/yazılacak|çeviri bekliyor|anlam yok|anlamı yaz/i.test(t)) return "";
+  if (t.toLowerCase() === String(w.en || "").trim().toLowerCase()) return "";
   return t;
 }
 function realEn(w) {
-  const e = String(w && w.en || '').trim().toLowerCase();
-  return /^[a-z][a-z\-' ]{1,58}$/.test(e) && !/\s{2}/.test(e) ? e : '';
+  const e = String(w && w.en || "").trim().toLowerCase();
+  return /^[a-z][a-z-]{1,24}$/.test(e) ? e : "";
 }
 function usableWord(w) { return !!(realEn(w) && realTr(w)); }
 function usablePool() { return (state.words || []).filter(usableWord); }
-function normTr(s) { return String(s || '').toLocaleLowerCase('tr-TR').normalize('NFC').replace(/[^\p{L}\p{N}\s]/gu,' ').replace(/\s+/g,' ').trim(); }
-// Treat comma/semicolon/slash separated senses as possible valid Turkish answers.
-// Never use substring matching: e.g. 'yasa' must not match 'yasak'.
-function trAliases(s) {
-  const raw=String(s||'').replace(/\s+(?:veya|ya da)\s+/gi,';');
-  return [...new Set(raw.split(/\s*[,;/]\s*/).map(normTr).filter(Boolean))];
+function normTr(s) {
+  return String(s || "").toLocaleLowerCase("tr").replace(/[^\p{L}\p{N}\s]/gu, " ").replace(/\s+/g, " ").trim();
 }
-function trMatch(typed,want) {
-  const a=normTr(typed);return !!a && trAliases(want).includes(a);
+function trMatch(typed, want) {
+  const a = normTr(typed), b = normTr(want);
+  if (!a || !b) return false;
+  if (a === b) return true;
+  const parts = b.split(/[,;/]| veya | ya da /).map(x => x.trim()).filter(x => x.length >= 2);
+  return parts.some(p => p === a || (a.length >= 3 && (p.includes(a) || a.includes(p))));
 }
-function qaOverlap(a,b) { const x=new Set(trAliases(a));return trAliases(b).some(s=>x.has(s)); }
 function expectedLabel(q) {
-  if (!q) return '';
-  if (q.type === 'meaning' || q.type === 'morph' || q.type === 'produce') return realTr(q.w);
+  if (!q) return "";
+  if (q.type === "meaning" || q.type === "morph" || q.type === "produce") return realTr(q.w);
   return q.w.en;
 }
 
-pickDistractors = function(word,key,n=3) {
-  const pool=usablePool().filter(x => x.id!==word.id && realEn(x)!==realEn(word));
-  const out=[], labels=new Set([key==='tr'?normTr(word.tr):realEn(word)]);
-  for(const x of shuffle(pool)) {
-    const value=key==='tr'?realTr(x):realEn(x),label=key==='tr'?normTr(value):value;
-    if(!label || labels.has(label))continue;
-    // A choice synonymous with the target would make the question unfair.
-    if(key==='tr' && (qaOverlap(value,word.tr)||out.some(y=>qaOverlap(y.tr,value))))continue;
-    labels.add(label);out.push(x);
-    if(out.length===n)break;
+pickDistractors = function (word, key, n = 3) {
+  const pool = usablePool().filter(x => x.id !== word.id);
+  const seen = new Set([String(word[key] || "").toLowerCase()]);
+  const out = [];
+  for (const x of shuffle(pool)) {
+    if (out.length >= n) break;
+    const v = String(x[key] || "").trim();
+    if (!v || seen.has(v.toLowerCase())) continue;
+    if (key === "tr" && !realTr(x)) continue;
+    if (key === "en" && !realEn(x)) continue;
+    seen.add(v.toLowerCase());
+    out.push(x);
   }
   return out;
 };
-availableTypes = function(w) {
-  const types=['meaning','produce'];
-  if(analyze(w).parts.some(p=>p.info))types.push('morph');
-  if(w.example&&wordRe(w).test(w.example)&&w.example.trim().split(/\s+/).length>=3)types.push('cloze');
-  if(speechOK()){types.push('listen','dictation');}
+
+availableTypes = function (w) {
+  const types = ["meaning", "produce"];
+  if (analyze(w).parts.some(p => p.info)) types.push("morph");
+  if (w.example && wordRe(w).test(w.example) && w.example.trim().split(/\s+/).length >= 3) types.push("cloze");
+  if (speechOK()) { types.push("listen"); types.push("dictation"); }
   return types;
 };
-function makeOptions(w,type) {
-  if(type==='meaning'||type==='morph')return shuffle([w,...pickDistractors(w,'tr',3)]);
-  if(type==='cloze')return shuffle([w,...pickDistractors(w,'en',3)]);
-  if(type==='listen') {
-    const nearby=pickSimilar(w,12).filter(x=>x.id!==w.id && realEn(x)!==realEn(w));
-    const typo=typoOf(w);
-    const options=[w],seen=new Set([realEn(w)]);
-    const candidates=[...nearby,...shuffle(usablePool()),...(typo?[typo]:[])];
-    for(const x of candidates){const key=realEn(x);if(!key||seen.has(key))continue;seen.add(key);options.push(x);if(options.length===4)break;}
-    // CRITICAL: choose three distractors first, then shuffle. Never slice a shuffled bag containing the correct word.
-    return shuffle(options);
+
+function makeOptions(w, type) {
+  if (type === "meaning" || type === "morph") return shuffle([w, ...pickDistractors(w, "tr", 3)]);
+  if (type === "cloze") return shuffle([w, ...pickDistractors(w, "en", 3)]);
+  if (type === "listen") {
+    const near = pickSimilar(w, 3).filter(realEn);
+    const typo = typoOf(w);
+    const bag = [w, ...near];
+    if (typo && !bag.some(x => x.en === typo.en)) bag.push(typo);
+    const seen = new Set();
+    return shuffle(bag.filter(x => {
+      const e = String(x.en || "").toLowerCase();
+      if (!e || seen.has(e)) return false;
+      seen.add(e);
+      return true;
+    })).slice(0, 4);
   }
   return [];
 }
-function qaIsValid(q) {
-  if(!q||!usableWord(q.w))return false;
-  if(!['meaning','morph','cloze','listen'].includes(q.type))return true;
-  if(!Array.isArray(q.opts)||q.opts.length!==4)return false;
-  const useTr=['meaning','morph'].includes(q.type);
-  const labels=q.opts.map(x=>useTr?normTr(x.tr):realEn(x));
-  const answers=q.opts.filter(x=>x.id===q.w.id);
-  if(answers.length!==1 || labels.some(x=>!x)||new Set(labels).size!==labels.length)return false;
-  if(useTr){for(const x of q.opts){if(x.id!==q.w.id && qaOverlap(x.tr,q.w.tr))return false;}}
-  return true;
-}
-buildQuestion=function(w,prevType,focus){
-  if(!usableWord(w))return null;
-  let types=availableTypes(w);
-  if(focus&&focus!=='karisik'&&types.includes(focus))types=[focus];
-  else{const alternatives=types.filter(x=>x!==prevType);if(alternatives.length)types=alternatives;}
-  const preferred=types[Math.floor(Math.random()*types.length)];
-  for(const type of [preferred,'meaning','cloze','listen','produce']){
-    if(!availableTypes(w).includes(type))continue;
-    const q={w,type,opts:makeOptions(w,type),spoken:false,conf:null};
-    if(qaIsValid(q))return q;
+
+buildQuestion = function (w, prevType, focus) {
+  if (!usableWord(w)) return null;
+  let types = availableTypes(w);
+  if (focus && focus !== "karisik" && types.includes(focus)) types = [focus];
+  else {
+    const alt = types.filter(t => t !== prevType);
+    if (alt.length) types = alt;
   }
-  return null;
+  let type = types[Math.floor(Math.random() * types.length)];
+  let opts = makeOptions(w, type);
+  const needsOpts = type === "meaning" || type === "morph" || type === "cloze" || type === "listen";
+  if (needsOpts && opts.length < 4) {
+    type = "meaning";
+    opts = makeOptions(w, "meaning");
+  }
+  if ((type === "meaning" || type === "morph" || type === "cloze" || type === "listen") && opts.length < 2) {
+    type = "produce";
+    opts = [];
+  }
+  return { w, type, opts, spoken: false, conf: null };
 };
+
 pickSessionWords = function (len, onlyHard) {
   let pool = usablePool().filter(w => !w.mastered || isDue(w));
   if (onlyHard) pool = pool.filter(isHard);
@@ -12322,345 +12261,6 @@ window.LEXORA_STUDIO={renderReading,renderAccount,stQuizBuild,stDocsGet,stDocsPu
   v9Header();
   v9Enhance(currentTab);
   new MutationObserver(v9UpdateHeader).observe(document.body,{attributes:true,attributeFilter:['data-ww-tab']});
-
-  /* ========================================================================
-   * LexiconCore v10 · QA-first quiz, local Expedition economy, acoustic themes
-   * All rewards remain device-local. No fictitious remote players or payments.
-   * ====================================================================== */
-  const V10_VERSION='10.0.0';
-  const V10_SKINS={
-    atlas:{name:'Kartografın Atlası',line:'ATLAS · EXPLORATION',icon:'◈',font:'Georgia, Times New Roman, serif'},
-    neon:{name:'Neon Laboratuvar',line:'LEXICON / SIGNAL SYSTEM',icon:'⌘',font:'ui-monospace, Menlo, Consolas, monospace'},
-    akademi:{name:'Klasik Akademi',line:'ACADEMIA · WORD & REASON',icon:'Ω',font:'Georgia, Times New Roman, serif'},
-    botanik:{name:'Botanik Arşiv',line:'HERBARIUM · LIVING WORDS',icon:'❦',font:'Palatino, Georgia, serif'},
-    prisma:{name:'Prizma Stüdyosu',line:'PRISM · MEMORY STUDIO',icon:'◇',font:'system-ui, Segoe UI, sans-serif'}
-  };
-  const v10Colors={
-    atlas:{name:'Kartografın Atlası',dark:false,bg:'#eae1cd',surface:'#fffcf3',text:'#28362f',muted:'#66756b',primary:'#846434',border:'#d2bfa0',ok:'#256d54',bad:'#ae433e',okbg:'#e2f2df',badbg:'#ffe0dc'},
-    neon:{name:'Neon Laboratuvar',dark:true,bg:'#070f19',surface:'#111b29',text:'#e3faff',muted:'#9baeba',primary:'#4ce7c1',border:'#2c5162',ok:'#79ee9a',bad:'#fa8ab0',okbg:'#113a31',badbg:'#3e2038'},
-    akademi:{name:'Klasik Akademi',dark:false,bg:'#efece5',surface:'#fffdfa',text:'#262e3d',muted:'#65707a',primary:'#304f6c',border:'#cac5b9',ok:'#246c57',bad:'#a63338',okbg:'#e2f3e9',badbg:'#ffe5e5'},
-    botanik:{name:'Botanik Arşiv',dark:false,bg:'#ebf1e7',surface:'#fbfff7',text:'#1d3c30',muted:'#557262',primary:'#377f59',border:'#b8cfac',ok:'#218654',bad:'#ad3d49',okbg:'#d9f4e1',badbg:'#ffe1e8'},
-    prisma:{name:'Prizma Stüdyosu',dark:true,bg:'#11122b',surface:'#1b1e40',text:'#f1f2ff',muted:'#b5b5cc',primary:'#bd9cff',border:'#444575',ok:'#5ed9bc',bad:'#ff91a3',okbg:'#144a43',badbg:'#60283d'}
-  };
-  Object.assign(THEMES,v10Colors);
-  const V10_ITEMS=[
-    {id:'pusula',icon:'🧭',name:'Gezgin Pusulası',rarity:'Başlangıç',cost:0,level:1,detail:'Soru sırasında tür ve konu ipucunu gösterir.',perk:'Hedefe dair tür ve konuyu göster'},
-    {id:'mercek',icon:'🔎',name:'Kök Merceği',rarity:'Nadir',cost:45,level:2,detail:'Soru sırasında bilinen kök ve eklerin ipucunu açar.',perk:'Kök ayrımını göster'},
-    {id:'yanki',icon:'🔔',name:'Yankı Kristali',rarity:'Nadir',cost:55,level:3,detail:'Etkinlik sırasında yavaş İngilizce tekrar düğmesi verir.',perk:'Yavaş okuma'},
-    {id:'kalem',icon:'✒️',name:'Bilginin Kalemi',rarity:'Değerli',cost:65,level:4,detail:'Cümle kurma alıştırmasında örnek cümle yapısı sunar.',perk:'Yazma şablonu'},
-    {id:'parsomen',icon:'📜',name:'Kadim Parşömen',rarity:'Değerli',cost:70,level:4,detail:'Parşömen temasını etkinleştirir; çalışma odasında sergilenir.',perk:'Özel görünüm'},
-    {id:'rasat',icon:'🔭',name:'Yıldız Rasadı',rarity:'Epik',cost:100,level:6,detail:'Rasathane temasını etkinleştirir ve vitrinde yıldız mührü taşır.',perk:'Özel görünüm'},
-    {id:'atlas',icon:'🗺️',name:'Gizemli Harita Parçası',rarity:'Buluntu',cost:null,level:1,detail:'Günün beş farklı doğru sözcüğünün ardından keşfedilir. Atlas görünümünü açar.',perk:'Özel görünüm'},
-    {id:'taç',icon:'👑',name:'Ustalık Tacı',rarity:'Efsanevi',cost:150,level:8,detail:'Profilde ve üst markada koleksiyoncu unvanını gösterir.',perk:'Prestij simgesi'}
-  ];
-  const v10ById=id=>V10_ITEMS.find(x=>x.id===id);
-  function v10InitGame(){
-    const previous=state.game && typeof state.game==='object'?state.game:{};
-    const previousLevel=levelInfo().L;
-    const game={coins:20,owned:['pusula'],active:'pusula',showcase:['pusula'],highestLevel:previousLevel,
-      correctByDay:{},discoveries:[],...previous};
-    if(!Array.isArray(game.owned))game.owned=['pusula'];
-    if(!game.owned.includes('pusula'))game.owned.unshift('pusula');
-    if(!game.owned.includes(game.active))game.active='pusula';
-    if(!Array.isArray(game.showcase))game.showcase=['pusula'];
-    if(!game.correctByDay||typeof game.correctByDay!=='object')game.correctByDay={};
-    state.game=game;
-    if(!Array.isArray(state.qaFlags))state.qaFlags=[];
-    save();
-  }
-  v10InitGame();
-  function v10CoinAdd(n,why){if(!n)return;state.game.coins+=n;if(why)toast(`✦ ${why} · +${n} bilgi kristali`);}
-  function v10DistinctToday(){return (state.game.correctByDay[dayKey()]||[]).length;}
-  function v10GameReward(word,ok,baseXp){
-    const g=state.game,history=state.history[dayKey()],en=realEn(word)||String(word.en).toLowerCase();
-    const daily=g.correctByDay[dayKey()]||[];
-    const already=daily.includes(en),before=levelInfo().L;
-    if(ok&&!already){daily.push(en);g.correctByDay[dayKey()]=daily;v10CoinAdd(3);}
-    // Keep question practice meaningful; the same word grants full XP only once/day.
-    // Correct 2nd/3rd attempts: 2 XP, after that: 0. Mistakes: 0 XP.
-    const useKey=dayKey()+':'+en,uses=g.xpAttempts||(g.xpAttempts={});
-    const attempts=uses[useKey]||0;if(ok)uses[useKey]=attempts+1;
-    const allowed=ok ? (attempts===0?10:attempts<3?2:0) : 0;
-    const delta=allowed-baseXp;
-    if(delta){state.xp=Math.max(0,state.xp+delta);if(history)history.xp=Math.max(0,(history.xp||0)+delta);}
-    // Activity completion: the fragment is guaranteed; no loot-box odds or paid randomness.
-    if(daily.length>=5&&!g.owned.includes('atlas')){
-      g.owned.push('atlas');g.discoveries.push({id:'atlas',date:dayKey()});
-      toast('🗺️ Gizemli Harita Parçası bulundu! Envanterinde.');v10Sound('treasure');
-    }
-    const level=levelInfo().L;
-    if(level>g.highestLevel){const raised=level-g.highestLevel;g.highestLevel=level;v10CoinAdd(raised*8);v10Sound('level');
-      const announcement=document.createElement('div');announcement.className='v10-level-rise';announcement.setAttribute('role','status');announcement.innerHTML=`<span>✦ LEVEL UP ✦</span><b>Seviye ${level}</b><small>Yeni yetenek ve eşyalar açıldı</small>`;document.body.appendChild(announcement);setTimeout(()=>announcement.remove(),3200);
-    }
-    for(const k of Object.keys(uses)){if(!k.startsWith(dayKey())&&Object.keys(uses).length>600)delete uses[k];}
-    for(const k of Object.keys(g.correctByDay)){if(k!==dayKey()&&Object.keys(g.correctByDay).length>12)delete g.correctByDay[k];}
-    save();
-    v10UpdateHUD();
-  }
-  const v10PreviousRecord=recordAnswer;
-  recordAnswer=function(word,correct,ms,type){const xp=state.xp;const result=v10PreviousRecord(word,correct,ms,type);v10GameReward(word,correct,state.xp-xp);return result;};
-  const v10PreviousAnswer=answerSession;
-  answerSession=function(pickedId){
-    const q=sessionQ();if(!q||session?.answered)return;
-    if(['meaning','morph','cloze','listen'].includes(q.type)){
-      if(!qaIsValid(q)){
-        const replacement=buildQuestion(q.w,null,q.type);if(replacement){session.queue[session.i]=replacement;toast('Sorudaki seçenekler doğrulandı ve yeniden oluşturuldu.');renderSession();return;}
-        q.type='produce';q.opts=[];toast('Bu soruda seçenek belirsizliği vardı; yazma çalışmasına geçildi.');renderSession();return;
-      }
-      const candidate=q.opts.find(x=>x.id===pickedId),turkish=q.type==='meaning'||q.type==='morph';
-      const ok=!!candidate && (candidate.id===q.w.id || (turkish&&qaOverlap(candidate.tr,q.w.tr)) || (!turkish&&realEn(candidate)===realEn(q.w)));
-      resolveAnswer(q,ok,pickedId,null);return;
-    }
-    return v10PreviousAnswer(pickedId);
-  };
-  // Live audit, usable for both the built-in corpus and personally imported entries.
-  function v10Audit(){
-    const words=state.words||[],invalid=words.filter(w=>!usableWord(w)),groups=new Map(),gloss=new Map();
-    for(const w of words){const key=realEn(w);if(!key)continue;groups.set(key,[...(groups.get(key)||[]),w]);const tr=normTr(realTr(w));if(tr)gloss.set(tr,(gloss.get(tr)||0)+1);}
-    const duplicate=[...groups.entries()].filter(([_,list])=>list.length>1);
-    return {count:words.length,valid:words.length-invalid.length,invalid:invalid.map(w=>({en:w.en,tr:w.tr})),duplicates:duplicate.map(([en,list])=>({en,variants:list.map(x=>x.tr)})),sharedGloss:[...gloss.values()].filter(n=>n>1).length};
-  }
-  // Evidence-backed seed corrections are applied only to unchanged original entries, not personal edits.
-  function v10CorrectSeed(){
-    const fixes={symptom:{from:'belirti',to:'belirti, semptom',pos:'isim',example:'A persistent cough can be a symptom of illness.'},
-      'the unconscious':{from:'bilinçaltı',to:'bilinçdışı'},
-      'supress':{from:'bastırmak',rename:'suppress',to:'bastırmak'}};
-    let changed=0;
-    for(const w of state.words){const item=fixes[String(w.en||'').toLowerCase()];if(!item)continue;
-      if(item.rename&&w.source==='seed'){w.en=item.rename;changed++;}
-      if(w.tr===item.from&&w.source==='seed'){w.tr=item.to;if(item.example)w.example=item.example;if(item.pos)w.pos=item.pos;changed++;}
-    }
-    if(changed)save();
-  }
-  v10CorrectSeed();
-  // Duplicate rows with the same lemma + gloss must not generate indistinguishable options.
-  // Merge counters conservatively, preserve notes/achievements, and keep distinct senses separate.
-  function v10MergeExactDuplicates(){
-    const lookup=new Map(),next=[],duplicates=[];
-    for(const w of state.words){
-      const key=realEn(w)+'|'+normTr(w.tr);
-      if(!realEn(w)){next.push(w);continue;}
-      const older=lookup.get(key);
-      if(!older){lookup.set(key,w);next.push(w);continue;}
-      older.correct=(older.correct||0)+(w.correct||0);
-      older.wrong=(older.wrong||0)+(w.wrong||0);
-      older.favorite=!!(older.favorite||w.favorite);older.mastered=!!(older.mastered||w.mastered);
-      older.notes=[...(older.notes||[]),...(w.notes||[])];
-      if((w.last||0)>(older.last||0)){older.last=w.last;older.next=w.next;older.ease=w.ease;older.interval=w.interval;}
-      duplicates.push({en:w.en,id:w.id});
-    }
-    if(duplicates.length){state.words=next;save();}
-    return duplicates;
-  }
-  const v10Merged=v10MergeExactDuplicates();
-  // Sound palette: optional synth, respects mute, volume and user-gesture audio unlocking.
-  const V10_SOUNDS={soft:{name:'Yumuşak piyano',kind:'sine',notes:[392,523,659]},arcade:{name:'Arcade · 8 bit',kind:'square',notes:[440,660,880]},crystal:{name:'Kristal çanlar',kind:'triangle',notes:[659,880,1047]},library:{name:'Kütüphane · ahşap',kind:'triangle',notes:[262,330,392]}};
-  if(!WW.audioTheme||!V10_SOUNDS[WW.audioTheme])WW.audioTheme='crystal';
-  function v10Sound(kind='tap'){
-    if(!WW.sound||!WW.volume)return;
-    try{
-      const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
-      window.v10AudioCtx=window.v10AudioCtx||new AC();const ctx=window.v10AudioCtx;
-      if(ctx.state==='suspended')ctx.resume().catch(()=>{});
-      const skin=V10_SOUNDS[WW.audioTheme],now=ctx.currentTime;
-      const patterns={tap:[0],success:[0,1,2],error:[-3,-5],open:[0,2],level:[0,1,2,4,5],treasure:[2,0,3,5]};
-      (patterns[kind]||patterns.tap).forEach((step,i)=>{
-        const f=skin.notes[Math.abs(step)%skin.notes.length]*(step<0?.5:step>2?2:1),at=now+i*.09;
-        const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type=skin.kind;
-        osc.frequency.setValueAtTime(f,at);gain.gain.setValueAtTime(.0001,at);
-        gain.gain.exponentialRampToValueAtTime(Math.max(.0002,.06*WW.volume),at+.015);
-        gain.gain.exponentialRampToValueAtTime(.0001,at+.16);osc.connect(gain);gain.connect(ctx.destination);osc.start(at);osc.stop(at+.18);
-      });
-    }catch(_){/* blocked audio in sandbox/without gesture */}
-  }
-  wwSound=v10Sound;
-  SFX.ok=()=>v10Sound('success');SFX.bad=()=>v10Sound('error');SFX.flip=()=>v10Sound('tap');SFX.fanfare=()=>v10Sound('level');
-  playLexoraSound=kind=>v10Sound(kind==='reward'?'treasure':'level');
-  function v10League(){const xp=Number(state.xp)||0;return xp>=3200?'Elmas':xp>=1400?'Altın':xp>=600?'Gümüş':'Bronz';}
-  function v10Inventory(){const g=state.game,l=levelInfo(),items=V10_ITEMS;
-    return `<div class="v10-game-hero"><div><span class="v10-kicker">LEXICON EXPEDITION / KİŞİSEL LİG</span><h2>Bilginin hazinesi</h2><p>Gerçek çalışma ile seviye yükselt, kristal kazan, eserleri kullan ve koleksiyonunu sergile.</p></div><div class="v10-rank-card"><small>${v10League()} ligi · Yerel profil</small><strong>Lv ${l.L}</strong><div class="v10-meter"><i style="width:${l.pct}%"></i></div><span>Sonraki seviyeye ${l.next-state.xp} XP</span></div></div>
-      <div class="v10-game-stats"><div><b>${state.xp}</b><small>Toplam XP</small></div><div><b>✧ ${g.coins}</b><small>Bilgi kristali</small></div><div><b>${v10DistinctToday()}</b><small>Bugün farklı doğru sözcük</small></div><div><b>${g.owned.length}/${items.length}</b><small>Koleksiyon</small></div></div>
-      <div class="v10-game-notice">Bu lig ve envanter yalnızca sana ait yerel oyun ilerlemesidir. Gerçek üye sıralaması, sunucu bağlanana kadar etkin değildir. Aynı sözcüğü tekrarlamak sınırsız XP kazandırmaz.</div>
-      <h3 class="v10-section-title">Özel eşyalar · Gizemli buluntular</h3><p class="muted">Sergilemek için en fazla üç eser seç. Aktif eşyanı alıştırma içinde kullanabilirsin.</p>
-      <div class="v10-items">${items.map(item=>{
-        const has=g.owned.includes(item.id),active=g.active===item.id,pinned=g.showcase.includes(item.id),locked=l.L<item.level;
-        const button=has?`<button type="button" class="${active?'v10-activated':'ghost'}" data-v10="equip" data-id="${item.id}" ${active?'disabled':''}>${active?'✓ Kullanımda':'Kullan'}</button><button type="button" class="ghost" data-v10="showcase" data-id="${item.id}">${pinned?'Sergiden çıkar':'Sergile'}</button>`:
-           item.cost===null?'<span class="v10-buy-hint">5 farklı doğru sözcükle bulunur</span>':`<button type="button" class="ghost" data-v10="buy" data-id="${item.id}" ${locked||g.coins<item.cost?'disabled':''}>${locked?'Seviye '+item.level+' gerekli':'✧ '+item.cost+' · Edin'}</button>`;
-        return `<article class="v10-item ${active?'is-equipped':''} ${has?'is-owned':'is-locked'}"><div class="v10-item-emblem" aria-hidden="true">${item.icon}</div><span class="v10-item-rarity">${item.rarity.toUpperCase()}</span><h4>${item.name}</h4><p>${item.detail}</p><small>${has?'✦ Koleksiyonda':`Gereken seviye ${item.level}`}</small><div class="v10-item-actions">${button}</div></article>`;
-      }).join('')}</div>
-      <h3 class="v10-section-title">Sergim</h3><div class="v10-showcase">${g.showcase.map(id=>v10ById(id)).filter(Boolean).map(x=>`<div class="v10-showcase-piece"><span>${x.icon}</span><b>${x.name}</b><small>${x.rarity}</small></div>`).join('')||'<p>Henüz sergilenen eşya yok. Koleksiyonundan üç eser seç.</p>'}</div>
-      <h3 class="v10-section-title">Seviye ve ödül kuralları</h3><div class="v10-rulegrid"><p><b>Doğru yanıt</b><span>İlk aynı sözcük +10 XP, sonraki iki tekrar +2 XP; günün sonraki aynı yanıtları 0 XP</span></p><p><b>Farklı doğru sözcük</b><span>Günde ilk kez doğru bildiğin her ayrı kelime +3 kristal</span></p><p><b>Seviye yükselişi</b><span>Her yeni seviye +8 kristal</span></p><p><b>Buluntu</b><span>Bir günde beş farklı doğru sözcük: Gizemli Harita Parçası (bir defalık)</span></p></div>`;
-  }
-  function v10MountInventory(){
-    const tab=document.querySelector('#tab-profile');if(!tab)return;
-    tab.querySelector('#v10-game')?.remove();
-    const root=document.createElement('section');root.id='v10-game';root.className='v10-game';root.innerHTML=v10Inventory();
-    tab.prepend(root);
-    // Replace contradictory linear level badge from legacy profile with canonical XP level.
-    const old=tab.querySelector('.profile-hero');if(old){old.classList.add('v10-old-profile');old.querySelector('.pill.active')?.remove();old.querySelector('.progress')?.remove();
-      const line=old.querySelector('.muted[style*="font-size:12px"]');if(line)line.textContent=`Seviye ${levelInfo().L} · 🔥 ${effectiveStreak()} gün seri · 📚 ${state.words.length} kelime · XP, yeni profilde yukarıdan izlenir.`;
-    }
-  }
-  const v10PrevProfile=renderProfile;
-  renderProfile=function(...args){const r=v10PrevProfile(...args);v10MountInventory();v10UpdateHUD();return r;};
-  function v10MountRoomShowcase(){
-    const tab=document.querySelector('#tab-room');if(!tab)return;
-    tab.querySelector('#v10-room-artifacts')?.remove();
-    const host=document.createElement('section');host.id='v10-room-artifacts';host.className='v10-room-artifacts';
-    host.innerHTML=`<div><span class="v10-kicker">KİŞİSEL MÜZE · BAŞARILAR</span><h3>Emeklerinin eserleri</h3><p>Sergilediğin bilgi varlıkları çalışma odanda görünür. Değiştirmek için profile git.</p></div><div class="v10-room-items">${state.game.showcase.map(id=>v10ById(id)).filter(Boolean).map(x=>`<div title="${x.name}"><span>${x.icon}</span><small>${x.name}</small></div>`).join('')||'Henüz sergilenen eşya yok'}</div><button class="ghost" data-v10="nav" data-tab="profile">Envanteri aç</button>`;
-    tab.prepend(host);
-  }
-  const v10PrevRoom=LX_RENDER.room;
-  LX_RENDER.room=function(...args){const r=v10PrevRoom?.(...args);v10MountRoomShowcase();return r;};
-  function v10ActiveItem(){return v10ById(state.game.active)||V10_ITEMS[0];}
-  function v10QuizAddon(){
-    const box=document.querySelector('#tab-session > .card');if(!box||!session||session.done)return;
-    box.querySelector('#v10-quiz-tools')?.remove();
-    const current=sessionQ(),item=v10ActiveItem();if(!current)return;
-    const tools=document.createElement('div');tools.id='v10-quiz-tools';tools.className='v10-quiz-tools';
-    let special=item.id==='yanki'?'<button class="ghost" type="button" data-v10="slow">🔈 Yavaş dinle</button>':'';
-    tools.innerHTML=`<div><span class="v10-kicker">EŞYA ETKİSİ / ${item.icon} ${item.name}</span><small>${item.perk}</small></div><div class="v10-quiz-actions"><button class="ghost" type="button" data-v10="hint">💡 Yardımcı ipucu</button>${special}<button class="ghost" type="button" data-v10="nav" data-tab="profile">🎒 Çanta</button><button class="ghost" type="button" data-v10="flag" title="Şüpheli kelime ya da soru işaretle">⚑ Soruyu bildir</button></div><div id="v10-hint" role="status" class="v10-hint" hidden></div>`;
-    const head=box.querySelector('.v9-mode-switch');if(head)head.before(tools);else box.append(tools);
-  }
-  const v10PrevSession=renderSession;
-  renderSession=function(...args){const r=v10PrevSession(...args);v10QuizAddon();return r;};
-  function v10ReportQuestion(){
-    const q=sessionQ();if(!q||!q.w)return;
-    const report={word:q.w.en,turkish:q.w.tr,type:q.type,options:(q.opts||[]).map(x=>({en:x.en,tr:x.tr})),date:new Date().toISOString()};
-    if(!Array.isArray(state.qaFlags))state.qaFlags=[];
-    const key=report.word+":"+report.type;
-    const old=state.qaFlags.findIndex(x=>x.word+":"+x.type===key);
-    if(old<0)state.qaFlags.push(report);else state.qaFlags[old]=report;
-    save();v10Sound("tap");toast("⚑ Bu soruyu yerel denetim listene ekledim. Ayarlardan raporunu indirebilirsin.");
-  }
-  function v10Hint(){
-    const q=sessionQ(),host=document.querySelector('#v10-hint');if(!q||!host)return;
-    const w=q.w,parts=analyze(w).parts.filter(p=>p.info),it=v10ActiveItem();
-    const hints={pusula:`Sözcük türü: ${w.pos||'bilinmiyor'} · Alan: ${w.cat||'genel'}.`,
-      mercek:parts.length?parts.map(p=>`${p.f} = ${p.info.tr}`).join(' · '):'Bu sözcüğün doğrulanmış bir kök ayrımı bulunmuyor.',
-      yanki:'Sözcüğü yeniden, yavaş hızda seslendir. Yavaş dinle düğmesini kullan.',
-      kalem:w.example?`Cümle yapısı örneği: ${w.example}`:`${w.en} sözcüğüyle kısa bir özne + fiil + nesne cümlesi kur.`,
-      parsomen:`Sözcük türü: ${w.pos}. Etimolojik araştırma için Etymonline bağlantısını kullan.`,
-      rasat:`${w.level} seviyesinde, ${w.cat} alanında bir sözcük. Önce kök ipuçlarını düşün.`,
-      atlas:`Alan: ${w.cat}. Bu konuya ait diğer sözcükleri atlas bölümünde birlikte incele.`,
-      taç:`${w.pos||'Sözcük'} türünde. Doğru seçeneği anlam ilişkisine göre düşün.`};
-    host.hidden=false;host.textContent=hints[it.id]||hints.pusula;v10Sound('tap');
-  }
-  // Appearance is structural: letterforms, illustration, framing, page depth and banner all switch.
-  function v10ApplyBrand(){
-    const theme=state.ui.theme||'lila',x=V10_SKINS[theme]||{icon:'◈',line:'WORD · ROOT · REASON'},h=document.querySelector('header');if(!h)return;
-    document.documentElement.dataset.v10Skin=theme;
-    const emblem=h.querySelector('.v9-brandmark');if(emblem)emblem.innerHTML=`<span class="v10-mark">${x.icon}</span>`;
-    const tagline=h.querySelector('.v9-brandtext small');if(tagline)tagline.textContent=x.line;
-    const v=h.querySelector('.v9-brandtext em');if(v)v.textContent='10';
-  }
-  const v10PrevApplyUi=applyUi;
-  applyUi=function(...args){const r=v10PrevApplyUi(...args);v10ApplyBrand();return r;};
-  function v10UpdateHUD(){
-    const container=document.querySelector('#v10-hud');if(!container)return;
-    const l=levelInfo(),it=v10ActiveItem();
-    container.innerHTML=`<button type="button" data-v10="nav" data-tab="profile" title="Koleksiyon ve profil"><span>${it.icon}</span><b>Lv ${l.L}</b><small>✧ ${state.game.coins}</small></button><div class="v10-hud-meter"><i style="width:${l.pct}%"></i></div>`;
-    v10ApplyBrand();
-  }
-  function v10BuildChrome(){
-    const h=document.querySelector('header');if(!h)return;
-    h.classList.add('v10-top');
-    h.querySelector('#v10-hud')?.remove();
-    const hud=document.createElement('div');hud.id='v10-hud';hud.className='v10-hud';
-    h.querySelector('.v9-progress-pill')?.replaceWith(hud);
-    h.querySelector('.v9-header-mid')?.remove();
-    const shortcuts=document.createElement('div');shortcuts.id='v10-shortcuts';shortcuts.className='v10-shortcuts';
-    shortcuts.innerHTML=`<button data-v10="nav" data-tab="dashboard"><span>⌂</span>Ana sayfa</button><button data-v10="nav" data-tab="learn"><span>✦</span>Çalış</button><button data-v10="nav" data-tab="reading"><span>▤</span>Oku</button><button data-v10="nav" data-tab="classes"><span>◉</span>Evren</button><button data-v10="nav" data-tab="profile"><span>♜</span>Envanter</button>`;
-    h.append(shortcuts);
-    const drop=h.querySelector('.v6-header-menu .v6-drop');
-    if(drop){
-      drop.querySelector('.v10-mega')?.remove();
-      const allPages=[
-        ['Öğrenme',['dashboard','today','learn','reading','library','classes','philo','path','focus']],
-        ['Keşif ve çalışmalar',['world','realworld','assistant','room','journal']],
-        ['Kişisel alan',['stats','awards','profile','community','look','settings','account']]
-      ];
-      const allKeys=new Set(allPages.flatMap(x=>x[1]));
-      const misc=Object.keys(TABS).filter(x=>!allKeys.has(x)&&x!=='session');
-      if(misc.length)allPages.push(['Diğer bölümler',misc]);
-      const explorer=document.createElement('section');explorer.className='v10-mega';
-      explorer.innerHTML=`<p class="v10-menu-label">TÜM ÇALIŞMA ALANLARI</p>${allPages.map(([title,ids])=>`<div class="v10-menu-group"><strong>${title}</strong><div class="v10-menu-pages">${ids.filter(x=>!!TABS[x]).map(x=>`<button type="button" data-v10="nav" data-tab="${x}">${TABS[x].icon||'✦'} ${safe(TABS[x].label||x)}</button>`).join('')}</div></div>`).join('')}`;
-      drop.prepend(explorer);
-    }
-    const mobile=document.createElement('div');mobile.id='v10-mobile-dock';mobile.className='v10-mobile-dock';mobile.setAttribute('aria-label','Mobil hızlı gezinme');
-    mobile.innerHTML=`<button data-v10="nav" data-tab="dashboard"><span>⌂</span>Ana</button><button data-v10="nav" data-tab="learn"><span>✦</span>Çalış</button><button data-v10="nav" data-tab="classes"><span>◉</span>Evren</button><button data-v10="nav" data-tab="profile"><span>♜</span>Çanta</button><button data-v10="menu"><span>☰</span>Menü</button>`;
-    document.body.append(mobile);
-    v10UpdateHUD();v10MarkNav();
-  }
-  function v10MarkNav(){const tab=document.body.dataset.wwTab||'dashboard';
-    document.querySelectorAll('[data-v10="nav"]').forEach(btn=>{const active=btn.dataset.tab===(tab==='session'?'learn':tab);btn.classList.toggle('active',active);if(active)btn.setAttribute('aria-current','page');else btn.removeAttribute('aria-current');});
-  }
-  const v10ThemeGallery=()=>`<section id="v10-theme-gallery" class="v10-theme-gallery"><div class="v10-section-heading"><span class="v10-kicker">GERÇEK SAHNE DÖNÜŞÜMÜ</span><h2>Bir tema değil, bir öğrenme mekânı seç.</h2><p>Seçim; logo işaretini, başlık yazı karakterini, arka plan desenini, kart çerçevesini, sayfa geometrisini ve ışık düzenini birlikte değiştirir.</p></div><div class="v10-skin-grid">${Object.entries(V10_SKINS).map(([key,s])=>`<button type="button" data-v10="theme" data-id="${key}" class="v10-skin-tile v10-skin-${key} ${state.ui.theme===key?'is-active':''}"><span class="v10-skin-scene"><span class="v10-skin-glyph">${s.icon}</span><b>LEXICONCORE</b><em>${s.line}</em><i>Aa</i></span><strong>${s.name}</strong><small>${state.ui.theme===key?'✓ Etkin tema':'Temayı uygula'}</small></button>`).join('')}</div></section>`;
-  const v10PrevLook=LX_RENDER.look;
-  LX_RENDER.look=function(...args){const r=v10PrevLook?.(...args),sec=document.querySelector('#tab-look');if(sec){sec.querySelector('#v10-theme-gallery')?.remove();const node=document.createElement('div');node.innerHTML=v10ThemeGallery();const gallery=node.firstChild;const head=sec.querySelector('.lx-head');if(head)head.after(gallery);else sec.prepend(gallery);}return r;};
-  const v10PrevSettings=LX_RENDER.settings;
-  LX_RENDER.settings=function(...args){const r=v10PrevSettings?.(...args),sec=document.querySelector('#tab-settings');if(!sec)return r;
-    sec.querySelector('#v10-audio-settings')?.remove();const section=document.createElement('section');section.id='v10-audio-settings';section.className='card v10-audio-settings';
-    const a=v10Audit();
-    section.innerHTML=`<span class="v10-kicker">SES TASARIMI / DOĞRULUK</span><h2>Ses ve soru denetimi</h2><p>Uygulama seslerini seç, sınava girmeden önce dört farklı atmosferi dene.</p><div class="v10-audio-list">${Object.entries(V10_SOUNDS).map(([key,item])=>`<button class="ghost ${WW.audioTheme===key?'selected':''}" type="button" data-v10="audio" data-id="${key}">${item.name} <span>▶</span></button>`).join('')}</div><label class="v10-sound-control"><input type="checkbox" id="v10-sounds-enabled" ${WW.sound?'checked':''}> Uygulama sesleri açık</label><label class="v10-sound-control">Ses düzeyi <input type="range" id="v10-sounds-volume" value="${WW.volume}" min="0" max="1" step="0.05"></label><h3>İngilizce–Türkçe kayıt denetimi</h3><p class="muted">${a.count} toplam · ${a.valid} alıştırmaya uygun · ${a.invalid.length} biçim/anlamı eksik · ${a.duplicates.length} yinelenen İngilizce başlık · ${a.sharedGloss} ortak Türkçe karşılık grubu. Ortak anlamlar otomatik hata sayılmaz.</p><p class="muted">İngilizce–Türkçe sözlüğün tamamına elle anlam doğrulaması yapıldığı iddia edilmez. Denetim çıktısını indirerek bağlama göre kontrol edebilirsin.</p><button type="button" class="ghost" data-v10="audit">📄 Sözlük denetim raporunu CSV indir</button><button type="button" class="ghost" data-v10="issues">⚑ İşaretlediğim sorular (${(state.qaFlags||[]).length}) · JSON indir</button>`;
-    const head=sec.querySelector('.lx-head');if(head)head.after(section);else sec.prepend(section);return r;
-  };
-  function v10DownloadAudit(){const a=v10Audit(),duplicates=new Set(a.duplicates.map(x=>x.en)),rows=[['İngilizce','Türkçe','Tür','Kaynak','Kontrol durumu']];
-    for(const w of state.words){const issues=[];if(!usableWord(w))issues.push('Eksik/şüpheli biçim');if(duplicates.has(realEn(w)))issues.push('Çok anlamlı/yinelenen başlık');rows.push([w.en,w.tr,w.pos||'',w.source||'',issues.join(' | ')||'Otomatik yapı kontrolü geçti; anlamı elle doğrulanmadı']);}
-    const csv='\ufeff'+rows.map(row=>row.map(x=>'"'+String(x??'').replace(/"/g,'""')+'"').join(';')).join('\r\n');
-    const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),el=document.createElement('a');el.href=url;el.download='LexiconCore_v10_sozluk_denetimi.csv';document.body.append(el);el.click();el.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);
-  }
-  function v10DownloadIssues(){
-    const data=JSON.stringify({app:'LexiconCore',version:V10_VERSION,kind:'Yerel soru inceleme listesi',questions:state.qaFlags||[]},null,2);
-    const blob=new Blob([data],{type:'application/json;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
-    a.href=url;a.download='LexiconCore_v10_soru_bildirimleri.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
-  }
-  const v10PreviousDashboard=LX_RENDER.dashboard;
-  LX_RENDER.dashboard=function(...args){const r=v10PreviousDashboard?.(...args);const sec=document.querySelector('#tab-dashboard');if(sec&&!sec.querySelector('#v10-home-game')){const c=document.createElement('section');c.id='v10-home-game';c.className='v10-home-game';const l=levelInfo();c.innerHTML=`<div><small>LEXICON EXPEDITION · ${v10League()} ligi</small><h2>Bugünün keşfine hazır mısın?</h2><p>Seviye ${l.L} · ${l.next-state.xp} XP sonra yeni seviye · Bugün ${v10DistinctToday()}/5 farklı doğru sözcükle gizemli harita keşfi.</p></div><button class="primary" data-v10="nav" data-tab="learn">Çalışmaya başla</button><button class="ghost" data-v10="nav" data-tab="profile">Eşya envanterim</button>`;const hero=sec.querySelector('.ww-home-hero');hero?.after(c);}return r;};
-  function v10Equip(item){const g=state.game;if(!g.owned.includes(item.id))return;
-    g.active=item.id;
-    if(item.id==='parsomen')state.ui.theme='parsomen';
-    if(item.id==='rasat')state.ui.theme='rasathane';
-    if(item.id==='atlas')state.ui.theme='atlas';
-    applyUi();save();v10Sound('open');renderProfile();v10UpdateHUD();toast(`${item.name} kullanıma alındı`);
-  }
-  function v10Handle(evt){const b=evt.target.closest?.('[data-v10]');if(!b||b.disabled)return;evt.preventDefault();const act=b.dataset.v10;
-    if(act==='nav'){document.querySelector('#v6-head-menu')?.removeAttribute('open');lxGo(b.dataset.tab);v10MarkNav();return;}
-    if(act==='menu'){document.querySelector('#lxMenuBtn')?.click();return;}
-    if(act==='theme'){state.ui.theme=b.dataset.id;save();applyUi();lxGo('look');v10Sound('open');return;}
-    if(act==='hint'){v10Hint();return;}
-    if(act==='flag'){v10ReportQuestion();return;}
-    if(act==='slow'){const q=sessionQ();if(q) speak(q.w.en,'en-US',.64);return;}
-    if(act==='audio'){WW.audioTheme=b.dataset.id;wwSave();v10Sound('success');lxGo('settings');return;}
-    if(act==='audit'){v10DownloadAudit();return;}
-    if(act==='issues'){v10DownloadIssues();return;}
-    const item=v10ById(b.dataset.id);if(!item)return;const g=state.game;
-    if(act==='equip'){v10Equip(item);return;}
-    if(act==='showcase'){
-      if(!g.owned.includes(item.id))return;
-      if(g.showcase.includes(item.id))g.showcase=g.showcase.filter(x=>x!==item.id);
-      else if(g.showcase.length>=3){toast('Serginde en fazla üç eser olabilir. Önce birini çıkar.');return;}
-      else g.showcase.push(item.id);
-      save();renderProfile();v10Sound('open');return;
-    }
-    if(act==='buy'){
-      if(item.cost===null||g.owned.includes(item.id)||levelInfo().L<item.level||g.coins<item.cost)return;
-      g.coins-=item.cost;g.owned.push(item.id);save();renderProfile();v10Sound('treasure');toast(`${item.name} koleksiyona eklendi`);return;
-    }
-  }
-  document.addEventListener('click',v10Handle);
-  document.addEventListener('change',evt=>{
-    if(evt.target.id==='v10-sounds-enabled'){WW.sound=evt.target.checked;state.settings.sound=WW.sound;wwSave();save();if(WW.sound)v10Sound('success');}
-    if(evt.target.id==='v10-sounds-volume'){WW.volume=Math.max(0,Math.min(1,Number(evt.target.value)||0));wwSave();v10Sound('tap');}
-  });
-  // Reconcile pre-existing answer text: correct persisted English words do not lose their translations.
-  // Root/question integrity testing helper exposed strictly for diagnostics.
-  window.LEXICONCORE_V10={version:V10_VERSION,audit:v10Audit,questionValid:qaIsValid,question:buildQuestion,
-    sample:(en,type)=>{const w=state.words.find(x=>realEn(x)===en);return w&&buildQuestion(w,null,type)},
-    level:()=>levelInfo(),game:()=>structuredClone(state.game),navigate:lxGo,
-    get tab(){return document.body.dataset.wwTab;},get audio(){return WW.audioTheme;},skins:Object.keys(V10_SKINS)};
-  v10BuildChrome();v10ApplyBrand();
-  new MutationObserver(v10MarkNav).observe(document.body,{attributes:true,attributeFilter:['data-ww-tab']});
 
   window.LEXICONCORE_V8={version:V8.version,orbit:()=>V8.mode,groups:()=>V8.groups||[],navigate:window.LC_NAVIGATE,concepts:()=>V8_CONCEPTS.length};
 
