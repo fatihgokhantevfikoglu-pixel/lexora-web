@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="tr" data-theme="kristal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#173e46">
+  <meta name="description" content="LexiconCore: sözcük, kök, okuma ve kişisel öğrenme alanı.">
+  <title>Lexiconcore · A4</title>
+  <link rel="icon" href="/assets/pro/logo.jpg" type="image/jpeg">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./assets/css/app.css?release=A3">
+  <script type="module" src="./assets/js/app.js?release=A4"></script>
+<link rel="stylesheet" href="/assets/pro/studio.css"></head>
+<body>
+  <a class="skip-link" href="#view">İçeriğe geç</a>
+  <div id="app-shell" hidden>
+    <button class="menu-scrim" data-shell-action="close-menu" aria-label="Menüyü kapat"></button>
+    <aside id="main-sidebar" class="sidebar" aria-label="Uygulama menüsü">
+      <button class="brand" data-route="today"><img src="/assets/pro/logo.jpg" width="44" height="44" alt=""><span>Lexicon<span class="brand-core">Core</span><small>SÖZCÜKTEN KAVRAMA</small></span></button>
+      <nav aria-label="Öğrenme"><span class="nav-label">KEŞFET & ÖĞREN</span><div id="nav-main"></div></nav>
+      <nav aria-label="Kişisel araçlar"><span class="nav-label">KENDİ DÜNYAM</span><div id="nav-personal"></div></nav>
+      <nav aria-label="Hesap"><span class="nav-label">HESABIM</span><div id="nav-account"></div></nav>
+      <div class="sidebar-footer"><span class="version">A4</span><span>Sözcüklerden düşünceye.</span></div>
+    </aside>
+    <div class="app-main">
+      <header class="topbar"><div class="topbar-start"><button class="icon-button mobile-menu" data-shell-action="menu" aria-label="Menüyü aç" aria-controls="main-sidebar" aria-expanded="false">☰</button><div><strong class="topbar-title">Öğrenmeye yer aç.</strong><small id="workspace-kind">Kişisel öğrenme alanı</small></div></div><div class="topbar-end"><span class="header-stat" title="Çalışma serisi">♨ <b id="header-streak">0 gün</b></span><span class="header-stat xp-stat">✦ <b id="header-xp">0 XP</b></span><button class="text-button" data-route="prefs" aria-label="Gezinme ve ses tercihlerim">☷</button><button class="profile-button" data-route="account"><span id="header-avatar">📖</span><span id="header-name">Öğrenci</span></button></div></header>
+      <div class="routebar"><div class="history-buttons" aria-label="Sayfa geçmişi"><button class="icon-button" data-shell-action="back" aria-label="Geri" disabled>←</button><button class="icon-button" data-shell-action="forward" aria-label="İleri" disabled>→</button></div><nav id="breadcrumbs" aria-label="Sayfa konumu"></nav><span class="routebar-version">Lexiconcore A4</span></div>
+      <main id="view" tabindex="-1"></main>
+      <footer class="app-footer">LexiconCore <span>A4</span><button class="text-button" data-route="settings">Kayıtlar ve ayarlar</button> <a href="/gizlilik">Gizlilik</a> <a href="/telif">Telif</a></footer>
+    </div>
+    <nav class="mobile-bottom" aria-label="Hızlı erişim"><button data-route="today"><span>⌂</span>Ana sayfa</button><button data-route="learn"><span>✦</span>Çalış</button><button data-route="library"><span>Aa</span>Sözlük</button><button data-route="journey"><span>↗</span>Yolum</button></nav>
+  </div>
+  <main id="auth-view" class="auth-view" tabindex="-1" hidden></main>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <dialog id="celebration" class="celebration" aria-labelledby="celebration-title"><div class="celebration-particles" aria-hidden="true"></div><div class="celebration-symbol" aria-hidden="true">✦</div><h2 id="celebration-title"></h2><p></p><button class="primary" data-close>Devam et</button></dialog>
+  <noscript><section class="panel">LexiconCore’u kullanmak için tarayıcınızda JavaScript’i etkinleştirin.</section></noscript>
+</body>
+</html>

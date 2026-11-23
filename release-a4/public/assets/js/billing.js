@@ -1,0 +1,1 @@
+export function billingPanel(){return '<section class="panel pro-offer"><p class="eyebrow">ÜYELİK</p><h2>Lexiconcore Pro</h2><p>Açıklamalı okuma ve kişisel yazma çalışmaları. Doğrulanmış hesabınla yedi gün ücretsiz deneyebilirsin.</p><button data-route="pro" class="primary">Pro stüdyosunu aç</button></section>';} export function mountBilling(){};
